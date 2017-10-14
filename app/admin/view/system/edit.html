@@ -1,0 +1,151 @@
+{include file="public/meta" /}
+
+<title>编辑配置项</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<article class="page-container">
+	{include file="public/redirect" /}
+	<form action="{:url('System/edit')}" method="post" class="form form-horizontal" id="form-config-add">
+		<input type="hidden" name="id" value="{$rs.id}">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>配置名称：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.title}" placeholder="" id="title" name="title">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>配置标识：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.name}" placeholder="" id="name" name="name">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>配置分组：</label>
+			<div class="formControls col-xs-8 col-sm-5"> 
+			<span class="select-box radius">
+				<select name="group" id="group" class="select">
+					<option value="">请选择配置分组</option>
+					<option value="1">自定义</option>
+					<option value="2">网站配置</option>
+					<option value="3">接口配置</option>
+					<option value="4">文件配置</option>
+				</select>
+				</span> 
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>配置类型：</label>
+			<div class="formControls col-xs-8 col-sm-5"> 
+			<span class="select-box radius">
+				<select name="type" id="type" class="select">
+					<option value="">请选择配置类型</option>
+					<option value="1">自定义</option>
+					<option value="2">单行文本</option>
+					<option value="3">多行文本</option>
+					<option value="4">单选按钮</option>
+					<option value="5">下拉列表</option>
+				</select>
+				</span> 
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">配置值：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<textarea name="extra" cols="" rows="" class="textarea radius"  placeholder="">{$rs.extra}</textarea>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>排序值：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.sort}" placeholder="" id="sort" name="sort">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">默认值：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.value}" placeholder="" id="value" name="value">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">配置说明：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<textarea name="remark" cols="" rows="" class="textarea radius"  placeholder="">{$rs.remark}</textarea>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">状态：</label>
+			<div class="formControls col-xs-8 col-sm-5 skin-minimal">
+				<div class="radio-box">
+				    <input type="radio" id="status" name="status" value="1" {eq name="rs.status" value="1"}checked{/eq}>
+				    <label for="status">启用</label>
+				</div>
+				<div class="radio-box">
+				    <input type="radio" id="status" name="status" value="0" {eq name="rs.status" value="0"}checked{/eq}>
+				    <label for="status">禁用</label>
+				</div>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存提交</button>
+				<button onClick="window.location.href='{:url('System/config')}'" class="btn btn-default radius" type="button"><i class="Hui-iconfont">&#xe66b;</i> 取消</button>
+			</div>
+		</div>
+	</form>
+</article>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+{tag:validatejs /}
+<script type="text/javascript">
+$(function(){
+	// 初始化
+	$("#group").val("{$rs.group}");
+	$("#type").val("{$rs.type}");
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+
+	// 表单验证
+	$("#form-config-add").validate({
+		rules:{
+			title:{required:true},
+			name:{required:true},
+			group:{required:true},
+			type:{required:true},
+			sort:{
+				required:true,
+				digits:true
+			},
+		},
+		messages:{
+		  	title: {
+		    	required: "请输入配置名称"
+		  	},
+		  	name: {
+		    	required: "请输入配置标识"
+		  	},
+		  	group: {
+		    	required: "请选择配置分组"
+		  	},
+		  	type: {
+		  		required: "请选择配置类型"
+		  	},
+		  	sort: {
+		    	required: "请输入排序值",
+		    	digits: "必须为数字"
+		  	},
+		}
+	});
+});
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

@@ -1,0 +1,142 @@
+{include file="public/meta" /}
+
+<title>编辑模型字段</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<article class="page-container">
+	{include file="public/redirect" /}
+	<form action="{:url('Fields/edit')}" method="post" class="form form-horizontal" id="for">
+		<input type="hidden" name="id" value="{$rs.id}">
+		<input type="hidden" name="mid" value="{$rs.mid}">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">提示文字：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.cname}" placeholder="" id="cname" name="cname">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">字段名称：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.ename}" placeholder="" id="ename" name="ename">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">字段类型：</label>
+			<div class="formControls col-xs-8 col-sm-5"> 
+				<span class="select-box radius">
+					<select name="type" id="type" class="select">
+						<option value="">请选择类型</option>
+	                    <option value="varchar">单行文本</option>
+	                    <option value="number">整数类型</option>
+	                    <option value="float">小数类型</option>
+	                    <option value="date">时间日期</option>
+						<option value="email">邮箱类型</option>
+						<option value="alpha">字母类型</option>
+						<option value="alphaNum">数字字母混合</option>
+						<option value="url">链接类型</option>
+						<option value="ip">IP类型</option>
+						<option value="unique">唯一类型</option>
+	                    <option value="textarea">多行文本</option>
+	                    <option value="radio">单选按钮</option>
+	                    <option value="checkbox">复选框</option>                            
+	                    <option value="select">下拉列表</option>
+					</select>
+				</span> 
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">注释文字：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.tips}" placeholder="" id="tips" name="tips">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">默认值：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<textarea name="values" id="values" cols="" rows="" class="textarea radius"  placeholder="">{$rs.values}</textarea>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">外观长度：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.width}" placeholder="" id="width" name="width">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">备注：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<textarea name="mark" id="mark" cols="" rows="" class="textarea radius"  placeholder="">{$rs.mark}</textarea>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">排序：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.sorting}" placeholder="" id="sorting" name="sorting">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">字段必填：</label>
+			<div class="formControls col-xs-8 col-sm-5 skin-minimal">
+				<div class="radio-box">
+				    <input type="radio" id="isneed" name="isneed" value="1" {eq name="rs.isneed" value="1" }checked{/eq}>
+				    <label for="isneed">是</label>
+				</div>
+				<div class="radio-box">
+				    <input type="radio" id="isneed" name="isneed" value="0" {eq name="rs.isneed" value="0" }checked{/eq}>
+				    <label for="isneed">否</label>
+				</div>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存提交</button>
+				<button onClick="window.location.href='{:url('Fields/lis',['mid'=>$mid])}'" class="btn btn-default radius" type="button"><i class="Hui-iconfont">&#xe66b;</i> 取消</button>
+			</div>
+		</div>
+	</form>
+</article>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+{tag:validatejs /}
+<script type="text/javascript">
+$(function(){
+	$("#type").val('{$rs.type}');
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+	// 表单验证
+	$("#for").validate({
+		rules:{
+			id:{required:true},
+			mid:{required:true},
+			cname:{required:true},
+			ename:{required:true},
+			type:{required:true},
+			tips:{required:true},
+			sorting:{required:true},
+			isneed:{required:true},
+		},
+		messages:{
+			id:{required: "缺少参数"},
+			mid:{required: "缺少参数"},
+		  	cname:{required: "请输入提示文字"},
+		  	ename:{required: "请输入字段名称"},
+		  	type:{required: "请选择类型"},
+		  	tips:{required: "请输入注释文字"},
+		  	sorting:{required: "请输入排序"},
+		  	isneed:{required: "选择字段必填选项"},
+		},
+	});
+});
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

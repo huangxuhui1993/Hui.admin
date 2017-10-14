@@ -1,0 +1,437 @@
+{php}
+	use think\Session;
+	use think\Db;
+{/php}
+
+{include file="public/meta" /}
+
+<title>添加文档</title>
+
+<link href="__ROOT__/js/webuploader/webuploader.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<article class="page-container">
+	{include file="public/redirect" /}
+	<form class="form form-horizontal" action="{:url('Document/add')}" method="post">
+		<input type="hidden" name="cid" value="{$crs.id}" />
+        <input type="hidden" name="mid" value="{$crs.model}" />
+        <input type="hidden" name="table" value="{$mrs.table}" />
+
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">信息标题：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$Think.session.data.topic}" placeholder="请输入信息标题" name="topic">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">文档属性：</label>
+			<div class="formControls col-xs-8 col-sm-5 skin-minimal">
+				{php}
+                    # 获取重定向返回值
+                    $property = Session::get('data.property');
+                    $propertys = empty($property) ? [] : $property;
+				{/php}
+				{volist name="d_list" id="vo"}
+					<div class="radio-box">
+					    <input name="property[]" value="{$vo.mark}" type="checkbox" {if condition="in_array($vo['mark'],$propertys)"}checked{/if}>
+					    <label for="property">{$vo.name}【{$vo.mark}】</label>
+					</div>
+				{/volist}
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">Tag标签：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$Think.session.data.tags}" placeholder="多个关键字用 | 隔开！" name="tags">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">外部链接：</label>
+			<div class="formControls col-xs-8 col-sm-4">
+				<input type="text" class="input-text radius" value="{$Think.session.data.outurl}" name="outurl">
+			</div>
+			<div class="formControls col-xs-8 col-sm-5 skin-minimal">
+				<div class="radio-box">
+				    <input name="isout" value="on" type="checkbox" {eq name="Think.session.data.isout" value="on" }checked{/eq}>
+				    <label for="isout">启用</label>
+				</div>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">点击次数：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$Think.session.data.hits ?? $hits}" placeholder="点击次数必须为数字！" name="hits" onkeyup="if(event.keyCode !=37 && event.keyCode != 39)value=value.replace(/\D/g,'')">
+			</div>													
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">信息排序：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$Think.session.data.sorting}" name="sorting" placeholder="排序必须为数字！" onkeyup="if(event.keyCode !=37 && event.keyCode != 39)value=value.replace(/\D/g,'');if(value==0)value='';">
+			</div>
+		</div>
+
+		<!--自定义字段Start-->
+        {volist name="f_list" id="vo"}
+        	
+        	{php}
+        		# 获取重定向返回值
+        		$values = empty(Session::get('data.'.$vo['ename'])) ? $vo['values'] : Session::get('data.'.$vo['ename']); 
+        	{/php}
+        	
+        	{switch name="vo.type"}
+				{case value="varchar|number|float|email|alpha|alphaNum|url|ip|unique"}
+					<div class="row cl">
+						<label class="form-label col-xs-4 col-sm-2">{$vo.cname}：</label>
+						<div class="formControls col-xs-8 col-sm-5">
+							<input type="text" class="input-text radius" name="{$vo.ename}" value="{$values}" placeholder="{$vo.tips}{eq name="vo.isneed" value="1"} 必填！{/eq}" {notempty name="vo.width"}style="width:{$vo.width}px;"{/notempty}>
+						</div>
+					</div>			
+                {/case}
+
+                {case value="date"}
+                <!--date时间类型-->
+                	<div class="row cl">
+						<label class="form-label col-xs-4 col-sm-2">{$vo.cname}：</label>
+						<div class="formControls col-xs-8 col-sm-2">
+							<input type="text" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" class="input-text radius" name="{$vo.ename}" value="{$values}" placeholder="{$vo.tips}{eq name="vo.isneed" value="1"} 必选！{/eq}" style="{notempty name="vo.width"}width:{$vo.width}px;{/notempty}cursor:pointer;" readonly>
+						</div>
+					</div>
+                {/case}
+
+				{case value="textarea"}
+                <!--textarea多行文本-->
+					<div class="row cl">
+						<label class="form-label col-xs-4 col-sm-2">{$vo.cname}：</label>
+						<div class="formControls col-xs-8 col-sm-5">
+							<textarea id="{$vo.ename}" name="{$vo.ename}" class="textarea radius"  placeholder="{$vo.tips}{eq name="vo.isneed" value="1"} 必填！{/eq}">{$values}</textarea>
+						</div>
+					</div>
+                {/case}
+
+                {case value="radio"}
+                    <!--radio单选按钮-->
+					<div class="row cl">
+						<label class="form-label col-xs-4 col-sm-2">{$vo.cname}：</label>
+						<div class="formControls col-xs-8 col-sm-5 skin-minimal">
+                        {php}
+                            $_arr = explode("|",$vo['values']);
+
+                            # 获取重定向返回值
+                            $radio = Session::get('data.'.$vo['ename']);
+
+                            foreach($_arr as $v){
+                                $_iarr = explode(",",$v);
+                                if($_iarr[0] == $radio){
+	 								echo   '<div class="radio-box">
+	                                           <input name="'.$vo['ename'].'" value="'.$_iarr[0].'" type="radio" checked>
+	                                           <label for="'.$vo['ename'].'">'.$_iarr[1].'</label>
+	                                        </div>';
+                                }else{
+	 								echo   '<div class="radio-box">
+	                                           <input name="'.$vo['ename'].'" value="'.$_iarr[0].'" type="radio" >
+	                                           <label for="'.$vo['ename'].'">'.$_iarr[1].'</label>
+	                                        </div>';
+                                }
+                            }
+                        {/php}		
+						</div>
+					</div>
+                {/case}
+
+                {case value="checkbox"}
+                    <!--checkbox复选框-->
+					<div class="row cl">
+						<label class="form-label col-xs-4 col-sm-2">{$vo.cname}：</label>
+						<div class="formControls col-xs-8 col-sm-5 skin-minimal">
+                        {php}
+                            $_arr = explode("|",$vo['values']);
+
+                            # 获取重定向返回值
+                            $checkbox = Session::get('data.'.$vo['ename']);
+                            $checkboxs = empty($checkbox) ? [] : $checkbox;
+
+                            foreach($_arr as $v){
+                                $_iarr = explode(",",$v);
+                                if(in_array($_iarr[0],$checkboxs)){
+	                                echo   '<div class="radio-box">
+	                                            <input name="'.$vo['ename'].'[]" value="'.$_iarr[0].'" type="checkbox" checked>
+	                                            <label for="'.$vo['ename'].'">'.$_iarr[1].'</label>
+	                                        </div>';
+                                }else{
+	                                echo   '<div class="radio-box">
+	                                            <input name="'.$vo['ename'].'[]" value="'.$_iarr[0].'" type="checkbox">
+	                                            <label for="'.$vo['ename'].'">'.$_iarr[1].'</label>
+	                                        </div>';
+	                            }
+                            }
+                        {/php}		
+						</div>
+					</div>
+                {/case}
+
+                {case value="select"}
+                    <!--select下拉列表-->
+					<div class="row cl">
+						<label class="form-label col-xs-4 col-sm-2">{$vo.cname}：</label>
+						<div class="formControls col-xs-8 col-sm-5"> 
+						<span class="select-box radius">
+			                <select name="{$vo.ename}" class="select">
+			                	<option value="">{$vo.tips}{eq name="vo.isneed" value="1"} 必选！{/eq}</option>
+                                {php}
+                                    $_arr = explode("|",$vo['values']);
+
+                                    # 获取重定向返回值
+		                            $select = Session::get('data.'.$vo['ename']);
+
+                                    foreach($_arr as $v){
+                                        $_iarr = explode(",",$v);
+                                        if($_iarr[0] == $select){
+                                        	echo '<option value="'.$_iarr[0].'" selected>'.$_iarr[1].'</option>';
+                                        }else{
+                                        	echo '<option value="'.$_iarr[0].'">'.$_iarr[1].'</option>';
+                                        }
+                                    }
+                                {/php}
+			                </select>
+						</span> 
+						</div>
+					</div>
+                {/case}
+
+        	{/switch}
+        {/volist}
+        <!--自定义字段End-->
+
+        {php}
+        	# 获取图片重定向返回值
+            $photos = Session::get('data.photos');
+            unset($imglist);       
+            if(!empty($photos)){
+				foreach($photos as $key => $value){
+					$imglist[] = Db::name('attach')->field('id')->where(['id'=>$value])->find();
+				}          
+            }else{
+            	$imglist = [];
+            }
+        {/php}
+		<div class="row cl {empty name="photos"}hide{/empty}" id="imageList">
+			<label class="form-label col-xs-4 col-sm-2">图片列表：</label>
+			<div class="formControls col-xs-8 col-sm-5" id="Images">
+                {volist name="imglist" id="vo"}
+	            	<span class="imglist{$vo.id} ml-20">
+	            		<div class="imgDiv">
+			                <img src="{:get_file_url($vo['id'],'__ROOT__/images/nopic.png',false)}" alt="{$vo.id}" class="img-thumbnail img-responsive thumbnail">
+			                <a href="javascript:delete_file({$vo.id},0);" class="delete" title="删除">
+			                	<img src="__ADMIN__/h-ui.admin/images/dialog_del.gif">
+			                </a>
+			                <div class="cover label label-success radius">
+				                <input type="radio" name="photo" value="{$vo.id}" {eq name="Think.session.data.photo" value="$vo['id']"}checked{/eq}>
+				                <label for="photo">设为封面</label>
+			                </div>
+			                <input type="checkbox" name="photos[]" value="{$vo.id}" class="hide" checked/>
+	                	</div>
+	                </span>
+                {/volist}
+			</div>
+		</div>
+        
+        {php}
+        	# 获取附件重定向返回值
+            $attach = Session::get('data.attach');
+            unset($attachlist);       
+            if(!empty($attach)){
+				foreach($attach as $key => $value){
+					$attachlist[] = Db::name('attach')->field('id,ext')->where(['id'=>$value])->find();
+				}          
+            }else{
+            	$attachlist = [];
+            }
+        {/php}
+		<div class="row cl {empty name="attach"}hide{/empty}" id="attachList">
+			<label class="form-label col-xs-4 col-sm-2">附件列表：</label>
+			<div class="formControls col-xs-8 col-sm-5" id="Attach">
+                {volist name="attachlist" id="vo"}
+	            	<span class="imglist{$vo.id} ml-20">
+	            		<div class="imgDiv">
+			                <img src="__ROOT__/images/files/{$vo.ext}.png" class="img-responsive thumbnail" style="width:60px;height:60px;">
+			                <a href="javascript:delete_file({$vo.id},1);" class="delete" title="删除">
+			                	<img src="__ADMIN__/h-ui.admin/images/dialog_del.gif">
+			                </a>
+			                <input type="checkbox" name="attach[]" value="{$vo.id}" class="hide" checked/>
+	                	</div>
+	                </span>
+                {/volist}
+			</div>
+		</div>
+
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">信息内容：</label>
+			<div class="formControls col-xs-8 col-sm-10">
+					<textarea id="content" name="content" class="size-MINI" style="border:0px;">{$Think.session.data.content}</textarea>
+			</div>
+		</div>
+
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">状态：</label>
+			<div class="formControls col-xs-8 col-sm-5 skin-minimal">
+				<div class="radio-box">
+				    <input type="radio" id="status" name="status" value="1" checked>
+				    <label for="status">审核</label>
+				</div>
+				<div class="radio-box">
+				    <input type="radio" id="status" name="status" value="0">
+				    <label for="status">隐藏</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">优化关键词：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<textarea name="keywords" class="textarea radius"  placeholder="">{$Think.session.data.keywords}</textarea>
+			</div>
+		</div>
+
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">优化描述：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<textarea name="describle" class="textarea radius"  placeholder="">{$Think.session.data.describle}</textarea>
+			</div>
+		</div>
+
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button class="btn btn-primary radius" id="sub" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存提交</button>
+				<button onClick="window.location.href='{:url('Document/lis')}'" class="btn btn-default radius" type="button"><i class="Hui-iconfont">&#xe66b;</i> 取消</button>
+			</div>
+		</div>
+	</form>
+</article>
+
+{tag:adminjs /}
+
+<script type="text/javascript" src="__ROOT__/js/webuploader/webuploader.js"></script>
+
+{tag:ueditor /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+$(document).ready(function(){
+	window.UEDITOR_HOME_URL = "__ADMIN__/lib/Ueditor/";
+    var Ueditor = UE.getEditor('content',{
+    	serverUrl:"{:url('Ueditor/fileUpload')}", // 上传服务器地址
+        initialFrameHeight: 400,
+        initialFrameWidth: 900,
+        autoFloatEnabled: false,
+        autoHeightEnabled:false
+    });
+
+    Ueditor.ready(function(){
+    	// 监听多图上传的插入动作
+	    Ueditor.addListener('beforeInsertImage', function (t,result){
+            var imageHtml = '';
+            for(var i in result){
+            	if (!isNaN(result[i].alt) && result[i].alt != ''){
+	            	imageHtml += '<span class="imglist'+result[i].alt+' ml-20">';
+	            	imageHtml += '<div class="imgDiv">';
+	                imageHtml += '<img src="'+result[i].src+'" alt="'+result[i].alt+'" class="img-thumbnail img-responsive thumbnail">';
+	                imageHtml += '<a href="javascript:delete_file('+result[i].alt+',0);" class="delete" title="删除">';
+	                imageHtml += '<img src="__ADMIN__/h-ui.admin/images/dialog_del.gif">';
+	                imageHtml += '</a>';
+	                imageHtml += '<div class="cover label label-success radius"><input type="radio" name="photo" value="'+result[i].alt+'" checked><label for="photo">设为封面</label></div>';
+	                imageHtml += '<input type="checkbox" name="photos[]" value="'+result[i].alt+'" class="hide" checked/>';
+	                imageHtml += '</div>';
+	                imageHtml += '</span>';       		
+            	}
+            }
+            if(imageHtml.length > 0){
+	            $("#imageList").show();
+	            $('#Images').append(imageHtml);
+            }
+	    });
+
+		/**
+		 * 	新增“afterUpfile”动作
+		 * 	对于附件上传，ue源码中并未提供插入动作的相关事件，所以这里我们手动添加一个触发动作“afterUpfile”。
+		 * 	打开ueditor.all.js，搜索代码：
+		 * 	me.execCommand('insertHtml', html);   //在此代码后插入以下代码
+		 * 	me.fireEvent('afterUpfile', filelist);
+		 */
+		// 监听插入附件
+	    Ueditor.addListener("afterUpfile", function(t,result){
+	    	console.log(result);
+	    	var afterHtml = '';
+	    	for(var i in result){
+            	if (!isNaN(result[i].title) && result[i].title != ''){
+            		var fileName = result[i].url;
+	            	afterHtml += '<span class="imglist'+result[i].title+' ml-20">';
+	            	afterHtml += '<div class="imgDiv">';
+	                afterHtml += '<img src="__ROOT__/images/files/'+fileName.substring(fileName.lastIndexOf('.') + 1)+'.png" class="img-responsive thumbnail" style="width:60px;height:60px;">';
+	                afterHtml += '<a href="javascript:delete_file('+result[i].title+',1);" class="delete" title="删除">';
+	                afterHtml += '<img src="__ADMIN__/h-ui.admin/images/dialog_del.gif">';
+	                afterHtml += '</a>';
+	                afterHtml += '<input type="checkbox" name="attach[]" value="'+result[i].title+'" class="hide" checked/>';
+	                afterHtml += '</div>';
+	                afterHtml += '</span>';       		
+            	}
+	    	}
+	    	if(afterHtml.length > 0){
+	            $("#attachList").show();
+	            $('#Attach').append(afterHtml);
+            }
+	    });
+
+    });
+
+	window.onbeforeunload = function(event){
+	    return '关闭或刷新页面，将导致数据添加失败！';
+	}
+    $("#sub").click(function(){
+        window.onbeforeunload = "";
+    });
+
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+});
+
+// 清除文件
+function delete_file(id,type){
+    if(id.length == 0){
+        parent.layer.msg('没有文件可以删除', {icon:0,shade: 0.04,time:1000,offset:'100px'});
+        return false;
+	}
+	if(type.length == 0){
+		parent.layer.msg('文件类型缺失', {icon:0,shade: 0.04,time:1000,offset:'100px'});
+        return false;
+	}
+	var msg = new Array('图片已删除，请清理编辑器内对应的图片！','附件删除成功！'); 	// 提示信息
+	var box = new Array('Images','Attach'); // 列表详情ID
+	var clas = new Array('imageList','attachList'); // 列表ID
+
+    $.ajax({type:'post', url:"{:url('common/deleteFile')}",data:{'id':id},
+        success: function(result){
+            if(result.error == 0){
+                $(".imglist"+id).remove(); // 删除页面对应文件
+
+                if($.trim($("#"+box[type]).html()).length == 0){
+                	$("#"+clas[type]).hide();
+                }
+
+                parent.layer.msg(msg[type], {icon:1,shade: 0.04,time:1500,offset:'100px'});
+            }else{
+                parent.layer.msg('删除失败', {icon:0,shade: 0.04,time:1000,offset:'100px'});
+            }
+        }
+    });
+}
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

@@ -1,0 +1,120 @@
+{include file="public/meta" /}
+<title>上传文件列表</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+	<div class="text-c">
+		<form action="{:url('Files/uploadFile')}" method="post">
+			<span class="channel-select select-box radius mr-20">
+	            <select name="state" id="state" class="select">
+	            	<option value="">{$state ? '显示全部' : '请选择状态'}</option>
+					<option value="1">已使用</option>
+					<option value="2">未使用</option>
+	            </select>
+			</span>
+			<input type="text" name="keywords" value="{$keywords}" placeholder="请输入文件名（或格式）" class="search-input input-text radius">
+			<button class="btn btn-success radius" type="submit" ><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+		</form>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20">
+		<span class="l">
+			<a class="btn btn-success radius" href="javascript:;" onclick="delete_info('{:url('Files/cleanFile')}','垃圾文件')">
+				<i class="Hui-iconfont">&#xe6e2;</i> 清理垃圾文件
+			</a>
+		</span>
+		<span class="r va-m">
+			总数：<span class="badge badge-default radius mr-10">{$count}</span>
+			使用中：<span class="badge badge-success radius mr-10">{$ycount}</span>
+			未使用：<span class="badge badge-warning radius">{$ncount}</span>
+			<smail class="c-success">（请定时清理未使用文件，减少磁盘负担）</smail>
+		</span>
+	</div>
+
+	<div class="portfolio-content">
+		{include file="public/redirect" /}
+		<ul class="cl portfolio-area">
+			{volist name="list" id="vo"}
+				<li class="item" id="tips{$vo.id}">
+					<div class="portfoliobox">
+						<input class="checkbox" name="" type="checkbox" value="{$vo.id}">
+						<a href="{:get_file_url($vo['id'],'__ROOT__/images/nopic.png',false)}" target="_blank" title="点击下载">
+							<div class="picbox">
+								<img src="__ROOT__/images/files/{$vo.ext}.png">
+							</div>
+						</a>
+						<div class="textbox f-18">
+							<a title="删除" href="javascript:;" onclick="delete_file('{$vo.id}')" data-toggle="tooltip" data-placement="top">
+								<i class="Hui-iconfont">&#xe6e2;</i>
+							</a>
+							<a title="详情" href="javascript:;" class="ml-10" onclick="tips('文件类型：{$vo.type|get_file_type}<br>原文件名称：{$vo.title}<br>大小：{$vo.size|truesize}<br>上传时间：{$vo.create_time}','tips{$vo.id}')" data-toggle="tooltip" data-placement="top">
+								<i class="Hui-iconfont">&#xe695;</i>
+							</a>
+						</div>
+						<em>
+							{neq name="vo.aid" value="0"}
+							<span class="label label-success radius">使用中</span>
+							{else /}
+							<span class="label label-warning radius">未使用</span>
+							{/neq}
+						</em>
+					</div>
+				</li>
+			{/volist}
+		</ul>
+		<div class="f-r">
+			{:$list->render()}
+		</div>
+	</div>
+
+</div>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+$(function(){
+	// 初始化
+	$("#state").val('{$state}');
+	$(".portfolio-area li").Huihover();
+});
+
+// 删除文件
+function delete_file(id){
+    if(id.length == 0){
+        parent.layer.msg('没有文件可以删除', {icon:0,shade: 0.04,time:1000,offset:'100px'});
+        return false;
+	}
+    parent.layer.msg('删除之后无法恢复！', {
+        time: 0,
+        offset: '100px',
+        btn: ['确定', '取消'],
+        yes: function(index){
+        	parent.layer.close(index);
+		    $.ajax({type:'post', url:"{:url('Common/deleteFile')}",data:{'id':id},
+		        success: function(result){
+		            if(result.error == 0){
+		                parent.layer.msg('删除成功', {icon:1,shade: 0.04,time:1000,offset:'100px'},function(){
+		                	location.href = "{:url('Files/uploadFile')}";
+		                });
+		            }else{
+		                parent.layer.msg('删除失败', {icon:0,shade: 0.04,time:1000,offset:'100px'});
+		            }
+		        }
+		    });
+        }
+    });
+}
+
+function tips(title,id){
+	layer.tips(title,'#'+id,{
+		tips: [1, '#000']
+	});
+}
+</script>
+
+</body>
+</html>

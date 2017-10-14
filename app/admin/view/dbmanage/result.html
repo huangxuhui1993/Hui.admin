@@ -1,0 +1,48 @@
+{include file="public/meta" /}
+<title>优化详情</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+	<div class="cl pd-5 bg-1 bk-gray">
+		<span class="l">
+			<button class="btn btn-primary radius" type="button" onClick="javascript:window.location.href = '{:url('Dbmanage/lis')}'">
+				<i class="Hui-iconfont">&#xe66b;</i> 返回管理
+			</button>
+		</span>
+	</div>
+	<div class="mt-20">
+		<table class="table table-border table-bordered table-hover table-bg table-sort">
+			<thead>
+				<tr class="text-c">
+                    <th>序号</th>
+                    <th>表名</th>
+                    <th>状态</th>
+                    <th>结果</th>
+                    <th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+			{volist name="list" id="vo" empty="$empty_str"}
+				<tr class="text-c">
+                    <td>{$i}</td>
+                    <td>{$vo.Table}</td>
+                    <td>{$vo.Msg_type}</td>
+                    <td>{$vo.Msg_text}</td>
+                    <td>{$vo.Op}</td>
+				</tr>
+			{/volist}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+
+</body>
+</html>

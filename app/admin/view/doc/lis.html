@@ -1,0 +1,68 @@
+{include file="public/meta" /}
+<title>属性列表</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+	<div class="cl pd-5 bg-1 bk-gray">
+		<span class="l">
+			<a class="btn btn-primary radius" href="{:url('Doc/add')}" >
+				<i class="Hui-iconfont">&#xe600;</i> 添加属性
+			</a>
+		</span>
+		<span class="r">共 <span class="badge badge-default radius">{$count}</span> 条数据</span>
+	</div>
+	<div class="mt-20">
+		{include file="public/redirect" /}
+		<table class="table table-border table-bordered table-hover table-bg table-sort">
+			<thead>
+				<tr class="text-c">
+					<th>ID</th>
+                    <th>标识</th>
+                    <th>名称</th>
+                    <th>排序</th>
+                    <th>更新时间</th>
+                    <th>状态</th>
+                    <th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+			{volist name="list" id="vo" empty="$empty_str"}
+				<tr class="text-c">
+                    <td>{$vo.id}</td>
+                    <td>{$vo.mark}</td>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.sorting}</td>
+                    <td>{$vo.update_time}</td>
+                    <td>{$vo.status.1}</td>
+					<td class="f-14">
+						<a onclick="setup_status('{:url('Doc/docStatus',['id'=>$vo['id'],'status'=>$vo['status']['2']])}','{$vo.status.2}')" href="javascript:;" title="状态" data-toggle="tooltip" data-placement="top">
+							{eq name="vo.status.2" value="1"}
+								<i class="Hui-iconfont">&#xe631;</i>
+							{else /}
+								<i class="Hui-iconfont">&#xe615;</i>
+							{/eq}
+						</a>
+						<a title="编辑" href="{:url('Doc/edit',['id'=>$vo['id']])}" class="ml-15" data-toggle="tooltip" data-placement="top">
+							<i class="Hui-iconfont">&#xe6df;</i>
+						</a>
+						<a title="删除" href="javascript:;" onclick="delete_info('{:url('Doc/del',['id'=>$vo['id']])}','文档属性')" class="ml-15" data-toggle="tooltip" data-placement="top">
+							<i class="Hui-iconfont">&#xe6e2;</i>
+						</a>
+					</td>
+				</tr>
+			{/volist}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+﻿{include file="public/meta" /}
+
+<title>网站配置</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+
+	{include file="public/redirect" /}
+
+	<form action="{:url('System/websetup')}" method="post" class="form form-horizontal" id="form-article-add">
+		<input type="hidden" name="group" value="{$group}">
+		<div class="HuiTab">
+			
+			{volist name="list" id="vo"}
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-2">{$vo.title}：</label>
+				<div class="formControls col-xs-8 col-sm-5">
+					{switch name="vo.type"}
+					    {case value="2"}
+							<input type="text" name="{$vo.name}" id="{$vo.name}" placeholder="" value="{$vo.value}" class="input-text radius">
+					    {/case}
+
+					    {case value="3"}
+							<textarea name="{$vo.name}" id="{$vo.name}" style="height:150px;" class="textarea radius" placeholder="">{$vo.value}</textarea>
+					    {/case}
+
+					    {case value="4"}
+							<span class="skin-minimal">
+								{volist name=":parse_config_attr($vo['extra'])" id="v"}
+								<div class="radio-box">
+								    <input type="radio" name="{$vo.name}" id="{$vo.name}" value="{$key}" {eq name="vo.value" value="$key"}checked{/eq} >
+								    <label for="status">{$v}</label>
+								</div>
+								{/volist}
+							</span>
+					    {/case}
+
+					    {case value="5"}
+							<span class="select-box radius">
+								<select name="{$vo.name}" id="{$vo.name}" class="select">
+									<option value="">请选择{$vo.title}</option>
+									{volist name=":parse_config_attr($vo['extra'])" id="v"}
+									<option value="{$key}" {eq name="vo.value" value="$key"}selected{/eq}>{$v}</option>
+									{/volist}
+								</select>
+							</span>
+					    {/case}
+
+					{/switch}
+				</div>
+			</div>
+			{/volist}
+
+			<div class="row cl">
+				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+					<button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存更新</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+{tag:validatejs /}
+
+<script type="text/javascript">
+$(function(){
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+});
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

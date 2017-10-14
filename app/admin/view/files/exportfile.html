@@ -1,0 +1,74 @@
+{include file="public/meta" /}
+<title>导出文件列表</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+	<div class="text-c">
+		<form action="{:url('Files/exportFile')}" method="post">
+			<input type="text" name="keywords" value="{$keywords}" placeholder="请输入文件名" class="search-input input-text radius">
+			<button class="btn btn-success radius" type="submit" ><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+		</form>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20">
+		<span class="l">
+			<a class="btn btn-danger radius" href="javascript:;" onclick="export_del()">
+				<i class="Hui-iconfont">&#xe6e2;</i> 批量删除
+			</a>
+		</span>
+		<span class="r">共 <span class="badge badge-default radius">{$count}</span> 条数据</span>
+	</div>
+
+	<div class="portfolio-content">
+		{include file="public/redirect" /}
+		<form action="{:url('Files/exportDel')}" method="post" id="files-form">
+			<ul class="cl portfolio-area">
+				{volist name="list" id="vo"}
+					<li class="item" id="tips{$vo.id}">
+						<div class="portfoliobox">
+							<input class="checkbox" name="id[]" type="checkbox" value="{$vo.id}">
+							<a href="/{:config('hui_files_path')}/{$vo.url}" target="_blank" title="点击下载">
+								<div class="picbox">
+									<img src="__ROOT__/images/files/{$vo.ext}.png">
+								</div>
+							</a>
+							<div class="textbox f-18">
+								<a title="删除" href="javascript:;" onclick="delete_info('{:url('Files/exportDel',['id'=>$vo['id']])}','导出文件')">
+									<i class="Hui-iconfont">&#xe6e2;</i>
+								</a>
+								<a title="详情" href="javascript:;" class="ml-10" onclick="tips('文件分类：{$vo.title}<br>文件名称：{$vo.name}<br>导出时间：{$vo.create_time}','tips{$vo.id}')" data-toggle="tooltip" data-placement="top">
+									<i class="Hui-iconfont">&#xe695;</i>
+								</a>
+							</div>
+						</div>
+					</li>
+				{/volist}
+			</ul>
+		</form>
+		<div class="f-r">
+			{:$list->render()}
+		</div>
+	</div>
+
+</div>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+$(function(){
+	$(".portfolio-area li").Huihover();
+});
+
+function tips(title,id){
+	layer.tips(title,'#'+id,{
+		tips: [1, '#000']
+	});
+}
+</script>
+
+</body>
+</html>

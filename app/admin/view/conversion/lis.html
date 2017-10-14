@@ -1,0 +1,85 @@
+{include file="public/meta" /}
+
+<title>转换文件列表</title>
+</head>
+<body>
+
+<div class="page-container">
+	<div class="cl pd-5 bg-1 bk-gray">
+		<span class="l">
+			<a class="btn btn-success radius" href="javascript:;" onclick="open_conversion_window('{:url('Conversion/index')}')">
+				<i class="Hui-iconfont">&#xe6ab;</i> 文档转换
+			</a>
+		</span>
+		<span class="r">共 <span class="badge badge-default radius">{$count}</span> 条数据</span>
+	</div>
+	<div class="mt-20">
+		{include file="public/redirect" /}
+		<table class="table table-border table-bordered table-hover table-bg table-sort">
+			<thead>
+				<tr>
+					<th class="text-c">ID</th>
+					<th>原文件名</th>
+					<th class="text-c">页数</th>
+					<th class="text-c">转换文件</th>
+					<th class="text-c">格式</th>
+					<th class="text-c">添加时间</th>
+					<th class="text-c">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+			{volist name="list" id="vo" empty="$empty_str"}
+				<tr>
+					<td class="text-c">{$vo.id}</td>
+					<td>{$vo.title}</td>
+					<td class="text-c">{$vo.page}</td>
+					<td class="text-c">{$vo.name}</td>
+					<td class="text-c">{$vo.ext}</td>
+					<td class="text-c">{$vo.create_time}</td>
+					<td class="text-c f-14">
+						<a title="预览" href="javascript:;" onclick="preview_file('{:url('Conversion/preview',['id'=>$vo['id']])}','预览文件：{$vo.title} 【 {$vo.name} 】')" data-toggle="tooltip" data-placement="top">
+							<i class="Hui-iconfont">&#xe695;</i>
+						</a>
+						<a title="删除" href="javascript:;" onclick="delete_info('{:url('Conversion/del',['id'=>$vo['id']])}','转换文件')" class="ml-15" data-toggle="tooltip" data-placement="top">
+							<i class="Hui-iconfont">&#xe6e2;</i>
+						</a>
+					</td>
+				</tr>
+			{/volist}
+			</tbody>
+		</table>
+		<div class="f-r">
+			{:$list->render()}
+		</div>
+	</div>
+
+</div>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+	// 检测flash
+    var fls = flashChecker();
+    var url = ''
+    if(!fls.f){
+		//询问框
+        parent.layer.confirm('您没有安装flash，无法预览swf文件',{
+            title:'系统提示',
+			btn: ['安装','取消'] //按钮
+        },function(){
+            window.open('https://www.adobe.com/go/getflash?spm=a2h0j.8191423.movie_player.5~5~5~8~A');
+        },function(){
+        });
+	}
+
+	// 打开文件转换窗口
+	function open_conversion_window(url){
+		// 获取窗口索引
+		var index = parent.layer.getFrameIndex(window.name);
+		parent.conversion_window(url,"文档转换器");
+		parent.layer.close(index);
+	}
+</script>
+</body>
+</html>

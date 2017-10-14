@@ -1,0 +1,131 @@
+{include file="public/meta" /}
+
+<title>添加角色</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<article class="page-container">
+	{include file="public/redirect" /}
+	<form action="{:url('Group/add')}" method="post" class="form form-horizontal" id="form-authgroup-add">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">角色名称：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$Think.session.data.title}" placeholder="" id="title" name="title">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">角色权限：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+			{volist name="list" id="vo"}
+				<dl class="permission-list">
+					<dt>
+						<label>
+							<input type="checkbox" value="{$vo.id}" name="rules[]" id="rules[]">
+							{$vo.title}
+						</label>
+					</dt>
+					<dd>
+					{php}
+						$list2 = $auth_rule->where('pid','=',$vo['id'])->order('id')->select();
+					{/php}
+					{volist name="list2" id="vo2"}
+						<dl class="cl permission-list2">
+							<dt>
+								<label class="">
+									<input type="checkbox" value="{$vo2.id}" name="rules[]" id="rules[]">
+									{$vo2.title}</label>
+							</dt>
+							<dd>
+								{php}
+									$list3 = $auth_rule->where('pid','=',$vo2['id'])->order('id')->select();
+								{/php}
+								{volist name="list3" id="vo3"}
+								<label class="">
+									<input type="checkbox" value="{$vo3.id}" name="rules[]" id="rules[]">
+									{$vo3.title}
+								</label>
+								{/volist}
+							</dd>
+						</dl>
+					{/volist}
+					</dd>
+				</dl>
+			{/volist}
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">状态：</label>
+			<div class="formControls col-xs-8 col-sm-5 skin-minimal">
+				<div class="radio-box">
+				    <input type="radio" id="status" name="status" value="1" {eq name="Think.session.data.status" value="1" }checked{/eq}>
+				    <label for="status">启用</label>
+				</div>
+				<div class="radio-box">
+				    <input type="radio" id="status" name="status" value="0" {eq name="Think.session.data.status" value="0" }checked{/eq}>
+				    <label for="status">禁用</label>
+				</div>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存提交</button>
+				<button onClick="window.location.href='{:url('Group/lis')}'" class="btn btn-default radius" type="button"><i class="Hui-iconfont">&#xe66b;</i> 取消</button>
+			</div>
+		</div>
+	</form>
+</article>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+{tag:validatejs /}
+<script type="text/javascript">
+$(function(){
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+
+	$(".permission-list dt input:checkbox").click(function(){
+		$(this).closest("dl").find("dd input:checkbox").prop("checked",$(this).prop("checked"));
+	});
+	$(".permission-list2 dd input:checkbox").click(function(){
+		var l =$(this).parent().parent().find("input:checked").length;
+		var l2=$(this).parents(".permission-list").find(".permission-list2 dd").find("input:checked").length;
+		if($(this).prop("checked")){
+			$(this).closest("dl").find("dt input:checkbox").prop("checked",true);
+			$(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",true);
+		}else{
+			if(l==0){
+				$(this).closest("dl").find("dt input:checkbox").prop("checked",false);
+			}
+			if(l2==0){
+				$(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",false);
+			}
+		}
+	});
+
+	// 表单验证
+	$("#form-authgroup-add").validate({
+		rules:{
+			title:{required:true},
+			rules:{required:true},
+		},
+		messages:{
+		  	title: {
+		    	required: "请输入管理组名称"
+		  	},
+		  	rules: {
+		    	required: "请选择角色权限"
+		  	},
+		}
+	});
+});
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

@@ -1,0 +1,37 @@
+{__NOLAYOUT__}
+{include file="public/meta" /}
+
+<title>系统提示</title>
+<body>
+<div class="page-container">
+	<div class="progress radius" style="width: 100%;">
+		<div class="progress-bar progress-bar-success">
+			<span class="sr-only"></span>
+		</div><i></i>
+	</div>
+</div>
+{tag:adminjs /}
+
+<script type="text/javascript">
+$(function (){
+    // 询问框
+    var url  = '{$url}';
+    var code = '{$code}';
+    var msg  = '{:strip_tags($msg)}';
+    var wait = '{$wait}';
+    prompt_html(url,code,msg,wait);
+	progress();
+});
+
+var i = 1;
+function progress(){
+	if(i <= parseInt('{$wait}')){
+		setInterval("progress()", 500)
+		$(".sr-only").css("width",i*(100/parseInt('{$wait}'))+"%");
+	    i++;
+	}
+}
+</script>
+
+</body>
+</html>

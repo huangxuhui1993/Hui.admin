@@ -1,0 +1,73 @@
+@charset "utf-8";
+
+.Hui-tags-list, .Huitags-list {
+    padding:0px;
+}
+.statistical-1{border-right:1px solid #ddd}
+.statistical-1,.statistical-2{height:300px;border-bottom:1px solid #ddd}
+.statistical-3{height:300px;border-right:1px solid #ddd}
+.statistical-4{height:300px}
+.imgDiv{position:relative;display:inline-block}
+.imgDiv .delete{position:absolute;top:-2px;right:0}
+.imgDiv .delete img{width:14px;height:14px}
+.imgDiv .cover{position:absolute;top:75px;right:0;left:0;text-align:center}
+.imgDiv .cover input{cursor:pointer}
+.imgDiv .img-thumbnail{height:75pt}
+.refresh{margin-top:3px;line-height:1.6em}
+.channel-select{width:200px}
+#datemax,#datemin{width:90pt;cursor:pointer}
+input.search-input{width:250px}
+input.page-input{width:5pc}
+.pagination{margin:20px 0;height:40px}
+.pagination ul{display:inline-block;margin-bottom:0;margin-left:0;border-radius:3px 3px 3px 3px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.pagination li{display:inline}
+.pagination a,.pagination span{float:left;padding:0 14px;border-color:#ddd;border-style:solid;border-width:1px 1px 1px 0;border-image:none;background-color:#fff;text-decoration:none;line-height:38px;border:none}
+.pagination .active a,.pagination .active span,.pagination a:hover{background-color:#f5f5f5}
+.pagination .active a,.pagination .active span{color:#999;cursor:default}
+.pagination .disabled a,.pagination .disabled a:hover,.pagination .disabled span{background-color:transparent;color:#999;cursor:default}
+.pagination li:first-child a,.pagination li:first-child span{border-radius:3px 0 0 3px;border-left-width:1px}
+.pagination li:last-child a,.pagination li:last-child span{border-radius:0 3px 3px 0}
+.pagination-centered{text-align:center}
+.pagination-right{text-align:right}
+/*定义滚动条的高宽*/
+::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+/*CSS的坐标系，左上角为(0,0),往右往下为增加，往上往左为减少*/
+/*显示滚动条上方的渐增按钮*/
+::-webkit-scrollbar-button:start:decrement,
+/*显示滚动条上方的渐减按钮*/
+::-webkit-scrollbar-button:end:increment {
+    display: block;
+}
+/*隐藏滚动条上方的渐增按钮*/
+::-webkit-scrollbar-button:vertical:start:increment,
+::-webkit-scrollbar-button:vertical:end:decrement {
+    display: none;
+}
+/* 定义滚动条渐增按扭的样式 */
+::-webkit-scrollbar-button:end:increment {
+    background-image: url(../images/scroll_cntrl_dwn.png);
+}
+/* 定义滚动条渐减按扭的样式 */
+::-webkit-scrollbar-button:start:decrement {
+    background-image: url(../images/scroll_cntrl_up.png);
+}
+/* 垂直滚动条的第三层轨道的上段 */
+::-webkit-scrollbar-track-piece:vertical:start {
+    background-image: url(../images/scroll_gutter_top.png), url(../images/scroll_gutter_mid.png);
+    background-repeat: no-repeat, repeat-y;
+}
+/* 垂直滚动条的第三层轨道的下段 */
+::-webkit-scrollbar-track-piece:vertical:end {
+    background-image: url(../images/scroll_gutter_btm.png), url(../images/scroll_gutter_mid.png);
+    background-repeat: no-repeat, repeat-y;
+    background-position: bottom left, 0 0;
+}
+/* 垂直滚动条的滑动块 */
+::-webkit-scrollbar-thumb:vertical {
+    height: 56px;
+    -webkit-border-image: url(../images/scroll_thumb.png) 8 0 8 0 stretch stretch;
+    border-width: 8 0 8 0;
+}

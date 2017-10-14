@@ -1,0 +1,74 @@
+{include file="public/meta" /}
+<title>上传文件列表</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+	<div class="text-c">
+		<form action="{:url('Files/conversionFile')}" method="post">
+			<input type="text" name="keywords" value="{$keywords}" placeholder="请输入文件名" class="search-input input-text radius">
+			<button class="btn btn-success radius" type="submit" ><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+		</form>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20">
+		<span class="l">
+			<a class="btn btn-danger radius" href="javascript:;" onclick="conversion_del()">
+				<i class="Hui-iconfont">&#xe6e2;</i> 批量删除
+			</a>
+		</span>
+		<span class="r">共 <span class="badge badge-default radius">{$count}</span> 条数据</span>
+	</div>
+
+	<div class="portfolio-content">
+		{include file="public/redirect" /}
+		<form action="{:url('Files/conversionDel')}" method="post" id="files-form">
+			<ul class="cl portfolio-area">
+				{volist name="list" id="vo"}
+					<li class="item" id="tips{$vo.id}">
+						<div class="portfoliobox">
+							<input class="checkbox" name="id[]" type="checkbox" value="{$vo.id}">
+							<a href="javascript:;" onclick="parent.preview_file('{:url('conversion/preview',['id'=>$vo['id']])}','预览文件：{$vo.title} 【 {$vo.name} 】')" title="点击预览">
+								<div class="picbox">
+									<img src="__ROOT__/images/files/{$vo.ext}.png">
+								</div>
+							</a>
+							<div class="textbox f-18">
+								<a title="删除" href="javascript:;" onclick="delete_info('{:url('Files/conversionDel',['id'=>$vo['id']])}','转换文件')" data-toggle="tooltip" data-placement="top">
+									<i class="Hui-iconfont">&#xe6e2;</i>
+								</a>
+								<a title="详情" href="javascript:;" class="ml-10" onclick="tips('原文件名称：{$vo.title}<br>转换文件：{$vo.name}<br>上传时间：{$vo.create_time}','tips{$vo.id}')" data-toggle="tooltip" data-placement="top">
+									<i class="Hui-iconfont">&#xe695;</i>
+								</a>
+							</div>
+						</div>
+					</li>
+				{/volist}
+			</ul>
+		</form>
+		<div class="f-r">
+			{:$list->render()}
+		</div>
+	</div>
+
+</div>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+$(function(){
+	$(".portfolio-area li").Huihover();
+});
+
+function tips(title,id){
+	layer.tips(title,'#'+id,{
+		tips: [1, '#000']
+	});
+}
+</script>
+
+</body>
+</html>

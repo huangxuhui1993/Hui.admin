@@ -1,0 +1,76 @@
+{include file="public/meta" /}
+<title>管理员列表</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+	<div class="text-c">
+		<form action="{:url('User/lis')}" method="post" id="search">
+			<input type="text" name="keywords" id="keywords" value="{$keywords}" placeholder="请输入关键字" class="search-input input-text radius">
+			<button class="btn btn-success radius" type="button" onclick="search()"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+		</form>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20">
+		<span class="l">
+			<a class="btn btn-primary radius" href="{:url('User/add')}" >
+				<i class="Hui-iconfont">&#xe600;</i> 添加管理员
+			</a>
+		</span>
+		<span class="r">共 <span class="badge badge-default radius">{$count}</span> 条数据</span>
+	</div>
+	<div class="mt-20">
+		{include file="public/redirect" /}
+		<table class="table table-border table-bordered table-hover table-bg table-sort">
+			<thead>
+				<tr class="text-c">
+					<th>ID</th>
+                    <th>账号</th>
+                    <th>角色</th>
+                    <th>邮箱</th>
+                    <th>登陆时间</th>
+                    <th>登录IP</th>
+                    <th>状态</th>
+                    <th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+			{volist name="list" id="vo" empty="$empty_str"}
+				<tr class="text-c">
+                    <td>{$vo.id}</td>
+                    <td>{$vo.username}</td>
+                    <td>{:get_user_role($vo['id'])}</td>
+                    <td>{$vo.email}</td>
+                    <td>{$vo.logintime}</td>
+                    <td>{$vo.loginip}</td>
+                    <td>{$vo.state.1}</td>
+					<td class="f-14">
+						<a onclick="setup_status('{:url('User/userState',['id'=>$vo['id'],'state'=>$vo['state']['2']])}','{$vo.state.2}')" href="javascript:;" title="状态" data-toggle="tooltip" data-placement="top">
+							{eq name="vo.state.2" value="1"}
+								<i class="Hui-iconfont">&#xe631;</i>
+							{else /}
+								<i class="Hui-iconfont">&#xe615;</i>
+							{/eq}
+						</a>
+						<a title="编辑" href="{:url('User/edit',['id'=>$vo['id']])}" class="ml-15" data-toggle="tooltip" data-placement="top">
+							<i class="Hui-iconfont">&#xe6df;</i>
+						</a>
+						<a title="删除" href="javascript:;" onclick="delete_info('{:url('User/del',['id'=>$vo['id']])}','管理员')" class="ml-15" data-toggle="tooltip" data-placement="top">
+							<i class="Hui-iconfont">&#xe6e2;</i>
+						</a>
+					</td>
+				</tr>
+			{/volist}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+
+</body>
+</html>

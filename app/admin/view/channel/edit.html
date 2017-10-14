@@ -1,0 +1,213 @@
+{include file="public/meta" /}
+
+<title>编辑栏目</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<article class="page-container">
+	{include file="public/redirect" /}
+	<form class="form form-horizontal" id="for">
+		<input type="hidden" name="id" id="id" value="{$rs.id}" />
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">所属栏目：</label>
+			<div class="formControls col-xs-8 col-sm-5"> 
+			<span class="select-box radius">
+                <select name="pid" id="pid" class="select">
+                	<option value="">请选择所属栏目</option>
+					<option value="0">≡ 顶级栏目 ≡</option>
+					{volist name="c_list" id="vo"}
+					<option value="{$vo.id}">{$vo.cname}</option>
+					{/volist}
+                </select>
+			</span> 
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">栏目名称：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.cname}" placeholder="" id="cname" name="cname">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">英文名称：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.ename}" placeholder="" id="ename" name="ename">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">栏目模型：</label>
+			<div class="formControls col-xs-8 col-sm-5"> 
+			<span class="select-box radius">
+               <select name="model" id="model" class="select">
+					<option value="">请选择模型</option>
+					{volist name="m_list" id="vo"}
+					<option value="{$vo.id}" rel="{$vo.id}" {eq name="vo.id" value="$rs.model"}selected="selected"{/eq}>{$vo.name}</option>
+					{/volist}
+					<option value="-1" rel="-1" {eq name="rs.model" value="-1"}selected="selected"{/eq}>外部栏目</option>
+                </select>
+			</span> 
+			</div>
+		</div>
+		<div class="row cl" id="model_name">
+			<label class="form-label col-xs-4 col-sm-2">模块名称：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.mname}" placeholder="" id="mname" name="mname">
+			</div>
+		</div>
+		<div class="row cl" id="out_url">
+			<label class="form-label col-xs-4 col-sm-2">外部地址：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.outurl}" placeholder="" id="outurl" name="outurl">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">关键词：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<textarea name="keywords" cols="" rows="" class="textarea radius"  placeholder="">{$rs.keywords}</textarea>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">优化描述：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<textarea name="describle" cols="" rows="" class="textarea radius"  placeholder="">{$rs.describle}</textarea>
+			</div>
+		</div>
+		<div class="row cl" id="list_num">
+			<label class="form-label col-xs-4 col-sm-2">分页数量：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.listnum}" placeholder="" id="listnum" name="listnum">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">排序：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.sorting}" placeholder="" id="sorting" name="sorting">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">状态：</label>
+			<div class="formControls col-xs-8 col-sm-5 skin-minimal">
+				<div class="radio-box">
+				    <input type="radio" id="status" name="status" value="1" {eq name='rs.status' value='1'}checked{/eq}>
+				    <label for="status">启用</label>
+				</div>
+				<div class="radio-box">
+				    <input type="radio" id="status" name="status" value="0" {eq name='rs.status' value='0'}checked{/eq}>
+				    <label for="status">禁用</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button class="btn btn-primary radius" id="dosubmit" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存提交</button>
+				<button onClick="window.location.href='{:url('Channel/lis')}'" class="btn btn-default radius" type="button"><i class="Hui-iconfont">&#xe66b;</i> 取消</button>
+			</div>
+		</div>
+	</form>
+</article>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+{tag:validatejs /}
+<script type="text/javascript">
+$(function(){
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+	//初始化
+	$("#pid").val('{$rs.pid}');
+	var $mod = "{$rs.model}"; 
+	if($mod == -1){			
+		$("#list_num").hide();
+		$("#out_url").show();
+		$("#model_name").hide();
+	}else{
+		$("#list_num").show();
+		$("#out_url").hide();
+		$("#model_name").show();
+	}
+	//添加栏目
+	$("#dosubmit").click(function(){
+		var id = $.trim($("#id").val());
+		var pid = $.trim($("#pid").val());
+		var cname = $.trim($("#cname").val());
+		var ename = $.trim($("#ename").val());
+		var model = $.trim($("#model").val());
+		var mname = $.trim($("#mname").val());
+		var outurl = $.trim($("#outurl").val());
+		var sorting = $.trim($("#sorting").val());
+		var keywords = $.trim($("#keywords").val());
+		var describle = $.trim($("#describle").val());
+		var listnum = $.trim($("#listnum").val());
+		var status = $("input[name='status']:checked").val();
+        $.ajax({
+			type:'POST',
+			url:'{:url("Channel/editAjax")}',
+			data:'id='+id+'&pid='+pid+'&cname='+cname+'&ename='+ename+'&model='+model+'&mname='+mname+'&outurl='+outurl+'&sorting='+sorting+'&keywords='+keywords+'&describle='+describle+'&listnum='+listnum+'&status='+status,
+			success: function(data){
+				if(data.code == 1){
+					layer.msg(data.message);
+					return false;
+				}else{
+					layer.msg(data.message, {icon:1,time:1000},function(){
+                        location.href="{:url('Channel/lis')}";
+                    });
+				}
+				
+			}	
+		});
+	});
+
+	$("#pid").change(function(){
+		if($(this).val() == ''){
+			$("#mname").val("");
+			$("#model").val("");
+			$("#listnum").val("10");
+		}else{
+			$.get('{:url("Channel/getChannel")}',{id:$(this).val()},function(data){
+				if(parseInt(data.code) == 2){
+					$("#mname").val(data.mname);
+					$("#model").val(data.model);
+					$("#listnum").val(data.listnum);
+					if(parseInt(data.model) == -1){
+						$("#out_url").show();
+						$("#model_name").hide();
+						$("#list_num").hide();
+					}else{
+						$("#out_url").hide();
+						$("#model_name").show();
+						$("#list_num").show();	
+					}
+				}
+			});
+		}		
+	});
+	
+	$("#model").change(function(){
+		if($(this).val() == -1){
+			$("#listnum").val("0");
+			$("#list_num").hide();
+			$("#out_url").show();
+			$("#mname").val("");
+			$("#model_name").hide();
+		}else{
+			$("#listnum").val("10");
+			$("#list_num").show();
+			$("#outurl").val('');
+			$("#out_url").hide();
+			$("#model_name").show();
+		}
+	});
+
+});
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

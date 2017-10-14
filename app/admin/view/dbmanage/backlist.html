@@ -1,0 +1,69 @@
+{include file="public/meta" /}
+<title>数据库备份</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+	<div class="cl pd-5 bg-1 bk-gray">
+		<span class="l">
+			<button class="btn btn-primary radius" type="button" onclick="backup_db('{:url('Dbmanage/backupOperation')}','1')">
+				<i class="Hui-iconfont">&#xe632;</i> 全部备份
+			</button>
+			<button class="btn btn-primary radius" type="button" onclick="backup_db('{:url('Dbmanage/backupOperation')}','2')">
+				<i class="Hui-iconfont">&#xe644;</i> 分卷备份
+			</button>
+		</span>
+		<span class="r va-m">
+			数据库：<span class="label label-success radius mr-15">{:config('database.database')}</span>
+			数据库大小：<span class="label label-success radius">{:truesize($db_size)}</span>
+			<smail class="c-success">（数据库大小超过50M，系统自动启用分卷备份）</smail>
+		</span>
+	</div>
+	<div class="mt-20">
+
+		{include file="public/redirect" /}
+		
+		<table class="table table-border table-bordered table-hover table-bg table-sort">
+			<thead>
+				<tr class="text-c">
+                    <th>编号</th>
+                    <th>SQL文件</th>
+                    <th>管理员</th>
+                    <th>创建时间</th>
+                    <th>查看</th>
+				</tr>
+			</thead>
+			<tbody>
+			{volist name="list" id="vo" empty="$empty_str"}
+				<tr class="text-c">
+                    <td>{$i}</td>
+                    <td>{$vo.filename}</td>
+                    <td>{:get_username($vo.uid)}</td>
+                    <td align="center">{:date('Y-m-d H:i:s',$vo['create_time'])}</td>
+                    <td class="f-14">
+                        <a title="恢复备份" href="" data-toggle="tooltip" data-placement="top">
+	                    	<i class="Hui-iconfont">&#xe645;</i>
+	                    </a>
+	                    <a title="删除备份" href="javascript:;" onclick="delete_info('{:url('Dbmanage/delSql',['id'=>$vo['id']])}','备份文件')" class="ml-15" data-toggle="tooltip" data-placement="top">
+	                    	<i class="Hui-iconfont">&#xe6e2;</i>
+	                    </a>
+                    </td>
+				</tr>
+			{/volist}
+			</tbody>
+		</table>
+		<div class="f-r">
+			{:$list->render()}
+		</div>
+	</div>
+</div>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+
+</body>
+</html>

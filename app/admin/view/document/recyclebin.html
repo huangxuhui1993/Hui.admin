@@ -1,0 +1,76 @@
+{include file="public/meta" /}
+<title>文档列表</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+	<div class="text-c">
+		<form action="{:url('Document/recyclebin')}" method="post" id="search">
+			日期范围：
+			<input type="text" name="datemin" id="datemin" onclick="laydate()" class="input-text radius" readonly>
+			-
+			<input type="text" name="datemax" id="datemax" onclick="laydate()" class="input-text radius mr-20" readonly>
+			<input type="text" name="keywords" id="keywords" value="{$keywords}" placeholder="请输入关键字" class="search-input input-text radius">
+			<button class="btn btn-success radius" type="button" onclick="search()"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+		
+		</form>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20">
+		<span class="l">
+			<a class="btn btn-success radius" href="javascript:;" onclick="recyclebin_operation('reduction','还原文档')" >
+				<i class="Hui-iconfont">&#xe615;</i> 还原文档
+			</a>
+			<a class="btn btn-danger radius" href="javascript:;" onclick="recyclebin_operation('delete','批量删除')" >
+				<i class="Hui-iconfont">&#xe6e2;</i> 批量删除
+			</a>
+		</span>
+		<span class="r">共 <span class="badge badge-default radius">{$count}</span> 条数据</span>
+	</div>
+	<div class="mt-20">
+		{include file="public/redirect" /}
+		<form action="{:url('Document/recyclebinOperation')}" method="post" id="document-form">
+			<input type="hidden" name="style" id="style" value="">
+			<table class="table table-border table-bordered table-hover table-bg table-sort">
+				<thead>
+					<tr class="text-c">
+						<th><input type="checkbox"></th>
+	                    <th>ID</th>
+	                    <th>信息标题</th>
+	                    <th>栏目分类</th>
+	                    <th>栏目模型</th>
+	                    <th>点　击</th>
+						<th>作　者</th>
+	                    <th>发布时间</th>
+					</tr>
+				</thead>
+				<tbody>
+				{volist name="list" id="vo" empty="$empty_str"}
+					<tr class="text-c">
+						<td><input type="checkbox" value="{$vo.id}" name="id[]"></td>
+	                    <td>{$vo.id}</td>
+	                    <td><font color="{$vo.color}">{$vo.topic}</font></td>
+	                    <td>{$vo.cid|get_channel_name}</td>
+	                    <td>{$vo.cid|get_channel_model_name}</td>
+	                    <td>{$vo.hits}</td>
+	                    <td>{$vo.uid|get_username}</td>
+	                    <td>{$vo.create_time}</td>
+					</tr>
+				{/volist}
+				</tbody>
+			</table>
+		</form>
+		<div class="f-r">
+			{:$list->render()}
+		</div>
+	</div>
+</div>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+
+</body>
+</html>

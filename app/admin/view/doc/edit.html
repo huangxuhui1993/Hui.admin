@@ -1,0 +1,87 @@
+{include file="public/meta" /}
+
+<title>编辑文档属性</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<article class="page-container">
+	{include file="public/redirect" /}
+	<form action="{:url('Doc/edit')}" method="post" class="form form-horizontal" id="for">
+		<input type="hidden" name="id" id="id" value="{$rs.id}">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">名称：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.name}" placeholder="" id="name" name="name">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">标识：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.mark}" placeholder="" id="mark" name="mark">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">排序：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.sorting}" placeholder="" id="sorting" name="sorting">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">状态：</label>
+			<div class="formControls col-xs-8 col-sm-5 skin-minimal">
+				<div class="radio-box">
+				    <input type="radio" id="status" name="status" value="1" {eq name="rs.status" value="1"}checked{/eq}>
+				    <label for="status">启用</label>
+				</div>
+				<div class="radio-box">
+				    <input type="radio" id="status" name="status" value="0" {eq name="rs.status" value="0"}checked{/eq}>
+				    <label for="status">禁用</label>
+				</div>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存提交</button>
+				<button onClick="window.location.href='{:url('Doc/lis')}'" class="btn btn-default radius" type="button"><i class="Hui-iconfont">&#xe66b;</i> 取消</button>
+			</div>
+		</div>
+	</form>
+</article>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+{tag:validatejs /}
+<script type="text/javascript">
+$(function(){
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+	// 表单验证
+	$("#for").validate({
+		rules:{
+			name:{required:true},
+			mark:{required:true},
+			sorting:{required:true},
+			status:{required:true},
+		},
+		messages:{
+		  	name:{required: "请输入名称"},
+		  	mark:{required: "请输入标识"},
+		  	sorting:{required: "请输入排序"},
+		  	status:{required: "选择状态"},
+		},
+		onkeyup:false,
+		focusCleanup:true,
+		success:"valid",
+	});
+});
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

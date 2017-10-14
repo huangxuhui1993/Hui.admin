@@ -1,0 +1,108 @@
+{include file="public/meta" /}
+
+<title>添加管理员</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<article class="page-container">
+	{include file="public/redirect" /}
+	<form action="{:url('User/add')}" method="post" class="form form-horizontal" id="for">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">角色：</label>
+			<div class="formControls col-xs-8 col-sm-5"> 
+				<span class="select-box radius">
+					<select name="group_id" id="group_id" class="select">
+						<option value="">请选择角色</option>
+	                    {volist name="group" id="vo"}
+						<option value="{$vo.id}">{$vo.title}</option>
+	                    {/volist}
+					</select>
+				</span> 
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">账号：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$Think.session.data.username}" placeholder="" id="username" name="username">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">密码：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$Think.session.data.password}" placeholder="" id="password" name="password">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">邮箱：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$Think.session.data.email}" placeholder="" id="email" name="email">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">电话：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$Think.session.data.phone}" placeholder="" id="phone" name="phone">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">状态：</label>
+			<div class="formControls col-xs-8 col-sm-5 skin-minimal">
+				<div class="radio-box">
+				    <input type="radio" id="status" name="state" value="1" {eq name="Think.session.data.state" value="1" }checked{/eq}>
+				    <label for="state">启用</label>
+				</div>
+				<div class="radio-box">
+				    <input type="radio" id="state" name="state" value="0" {eq name="Think.session.data.state" value="0" }checked{/eq}>
+				    <label for="state">禁用</label>
+				</div>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存提交</button>
+				<button onClick="window.location.href='{:url('User/lis')}'" class="btn btn-default radius" type="button"><i class="Hui-iconfont">&#xe66b;</i> 取消</button>
+			</div>
+		</div>
+	</form>
+</article>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+{tag:validatejs /}
+<script type="text/javascript">
+$(function(){
+	// 初始化
+	$("#group_id").val("{$Think.session.data.group_id}");
+
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+	// 表单验证
+	$("#for").validate({
+		rules:{
+			group_id:{required:true},
+			username:{required:true},
+			password:{required:true},
+			state:{required:true},
+		},
+		messages:{
+		  	group_id:{required: "请选择角色"},
+		  	username:{required: "请输入账号"},
+		  	password:{required: "请输入密码"},
+		  	state:{required: "选择状态"},
+		},
+		onkeyup:false,
+		focusCleanup:true,
+		success:"valid",
+	});
+});
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

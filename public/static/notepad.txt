@@ -1,0 +1,25 @@
+	<input type="color" name="color" value="选择颜色">
+
+	Composer命令
+
+	安装包 
+		composer require 
+	
+	卸载包
+		composer remove 
+	
+	更新包
+		composer update 
+	
+	搜索包
+		composer search
+	
+	包详情
+		composer show -all
+
+	TP5
+	创建时间 create_time
+	更新时间 update_time
+
+	站点统计小地球
+	申请地址：http://www.revolvermaps.com/

@@ -1,0 +1,70 @@
+{include file="public/meta" /}
+<title>数据管理</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+<form name="frm" id="frm" method="post" action="{:url('Dbmanage/optimize')}">
+	<div class="cl pd-5 bg-1 bk-gray">
+		<span class="l">
+			<button class="btn btn-success radius" type="submit"><i class="Hui-iconfont">&#xe728;</i> 立即优化</button>
+			<a class="btn btn-primary radius" href="javascript:;" onclick="db_statistical('1','{:url('Dbmanage/statistical',['style'=>1])}')"><i class="Hui-iconfont">&#xe61c;</i> 记录数统计图</a>
+			<a class="btn btn-primary radius" href="javascript:;" onclick="db_statistical('2','{:url('Dbmanage/statistical',['style'=>2])}')"><i class="Hui-iconfont">&#xe618;</i> 大小统计图</a>
+			<a class="btn btn-primary radius" href="javascript:;" onclick="db_statistical('3','{:url('Dbmanage/statistical',['style'=>3])}')"><i class="Hui-iconfont">&#xe618;</i> 碎片统计图</a>
+		</span>
+	</div>
+	<div class="mt-20">
+
+		{include file="public/redirect" /}
+
+		<table class="table table-border table-bordered table-hover table-bg table-sort radius">
+			<thead>
+				<tr class="text-c">
+					<th width="25"><input type="checkbox"></th>
+					<th>编号</th>
+                    <th>表名</th>
+                    <th>存储引擎</th>
+                    <th>记录数</th>
+                    <th>大小</th>
+                    <th>碎片</th>
+                    <th>整理</th>
+                    <th>备注</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+			{volist name="list" id="vo" empty="$empty_str"}
+				<tr class="text-c">
+					<td><input type="checkbox" value="{$vo.Name}" name="name[]"></td>
+                    <td>{$i}</td>
+                    <td>{$vo.Name}</td>
+                    <td>{$vo.Engine}</td>
+                    <td>{$vo.Rows}</td>
+                    <td>{$vo.Data_length|truesize}</td>
+                    <td>{$vo.Data_free|truesize}</td>
+                    <td>{$vo.Collation}</td>
+                    <td>{$vo.Comment}</td>
+                    <td>{$vo.Create_time}</td>
+                    <td class="f-14">
+	                    <a title="预览" href="{:url('Dbmanage/details',['name'=>$vo['Name']])}" data-toggle="tooltip" data-placement="top">
+	                    	<i class="Hui-iconfont">&#xe695;</i>
+	                    </a>
+                    </td>
+				</tr>
+			{/volist}
+			</tbody>
+		</table>
+	</div>
+</form>
+</div>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+
+</body>
+</html>

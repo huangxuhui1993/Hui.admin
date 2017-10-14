@@ -1,0 +1,207 @@
+﻿{include file="public/meta" /}
+
+<title>我的桌面</title>
+</head>
+<body>
+<div class="page-container">
+
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<p class="f-20 text-success">欢迎使用Hui.admin v1.0管理系统！</p>
+			<p><i class="Hui-iconfont">&#xe728;</i> 运行天数：{:site_run_time()}天</p>
+			<p><i class="Hui-iconfont">&#xe668;</i> {:time_tips()}</p>
+			<p><i class="Hui-iconfont">&#xe671;</i> 上次登录IP：{:session('loginip')}　　<i class="Hui-iconfont">&#xe606;</i> 上次登录时间：{:date('Y-m-d H:i:s',session('logintime'))}　　<i class="Hui-iconfont">&#xe64b;</i> 登录次数：{$user_info.loginnumber}</p>
+		</div>
+	</div>
+	
+	<div class="panel panel-default mt-20">
+		<div class="panel-header"><i class="Hui-iconfont">&#xe61c;</i> 信息统计</div>
+		<div class="panel-body">
+			<div class="row cl mt-20">
+				<div id="access" class="col-xs-6 col-sm-6 statistical-1"></div>
+				<div id="source" class="col-xs-6 col-sm-6 statistical-2"></div>
+				<div id="document" class="col-xs-6 col-sm-6 statistical-3"></div>
+				<div id="china" class="col-xs-6 col-sm-6 statistical-4"></div>
+			</div>
+		</div>
+	</div>
+
+	<table class="table table-border table-bordered table-bg mt-20 radius">
+		<thead>
+			<tr class="success">
+				<th colspan="2" scope="col"><i class="Hui-iconfont">&#xe64f;</i> 服务器信息</th>
+			</tr>
+		</thead>
+		<tbody>
+		{volist name="server_list" id="vo"}
+			<tr>
+				<td>{$vo.name}</td>
+				<td><span class="label label-secondary radius">{$vo.val}</span></td>
+			</tr>
+		{/volist}
+		</tbody>
+	</table>
+</div>
+<footer class="footer mt-20">
+	<div class="container">
+		<p>本后台系统由<a href="http://www.h-ui.net/" target="_blank" title="H-ui前端框架">H-ui前端框架</a>提供前端技术支持</p>
+	</div>
+</footer>
+
+<script type="text/javascript" src="__ADMIN__/lib/jquery/1.9.1/jquery.min.js"></script>
+
+{tag:echarts /}
+
+<!-- 中国地图 -->
+<script type="text/javascript" src="__ROOT__/js/echarts/china.js"></script>
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+// 初始化
+toolbox = {feature:{saveAsImage:{},right:'20px'}};
+textStyle = {fontSize: 14};
+
+// 访问统计
+var accessChart = echarts.init(document.getElementById('access'));
+accessChart.setOption({
+    title: {
+    	text: '访问量',
+    	textStyle:textStyle
+	},
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c}"
+    },
+    legend: {
+        data:['访问次数']
+    },
+    toolbox: {
+		feature:{
+			restore:{},
+			saveAsImage:{},
+			magicType: {
+				type: ['line', 'bar']
+			}
+		}
+	},
+    xAxis: {
+        data: {$access_list.x}
+    },
+    yAxis: {},
+    series: [{
+        name: '访问次数',
+        type: 'bar',
+        data: {$access_list.y}
+    }],
+    color:['#6e7074']
+});
+
+// 访问来源
+var sourceChart = echarts.init(document.getElementById('source'));
+sourceChart.setOption({
+    title : {
+        text: '访问来源',
+        textStyle:textStyle,
+        x:'center'
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    toolbox: toolbox,
+    legend: {
+        orient: 'vertical',
+        left: 'left',
+        data: {$source_list.source}
+    },
+    series : [{
+        name: '访问来源',
+        type: 'pie',
+        radius : '55%',
+        center: ['50%', '60%'],
+        data: {$source_list.value},
+        itemStyle: {
+            emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+        }
+    }]
+});
+
+// 文档统计
+var documentChart = echarts.init(document.getElementById('document'));
+documentChart.setOption({
+    title: {
+        text: '文档',
+        textStyle:textStyle,
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c}"
+    },
+    legend: {
+        data:['文档统计']
+    },
+    toolbox: {
+		feature:{
+			restore:{},
+			saveAsImage:{},
+			magicType: {
+				type: ['line', 'bar']
+			}
+		}
+	},
+    xAxis: {
+        data: {$document_list.x}
+    },
+    yAxis: {},
+    series: [{
+        name: '文档统计',
+        type: 'line',
+        data: {$document_list.y}
+    }]
+});
+
+// 中国地图
+var chartChart = echarts.init(document.getElementById('china'));
+chartChart.setOption({
+    title: {
+        text: '地区',
+        textStyle:textStyle
+    },
+    tooltip: {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c}次"
+    },
+    visualMap: {
+        min: {$map_list.min},
+        max: {$map_list.max},
+        left: 'left',
+        top: 'bottom',
+        orient: 'horizontal',
+        text: ['max', 'min'], // 文本，默认为数值文本
+        calculable: true  //是否启用值域漫游，即是否有拖拽用的手柄，以及用手柄调整选中范围。
+    },
+    toolbox: {              //工具栏
+        show: true,
+        orient: 'vertical', //垂直
+        left: 'right',
+        top: 'center',
+        feature: {
+            mark: {show: true},
+            saveAsImage: {show: true} //保存为图片
+        }
+    },
+    series: [{
+            name: '访问量',
+            type: 'map',
+            mapType: 'china',
+            roam: true, //是否开启鼠标缩放和平移
+            data: {$map_list.map}
+        }]
+});
+</script>
+</body>
+</html>

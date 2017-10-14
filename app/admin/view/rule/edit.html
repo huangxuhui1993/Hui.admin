@@ -1,0 +1,101 @@
+{include file="public/meta" /}
+
+<title>添加权限</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<article class="page-container">
+	{include file="public/redirect" /}
+	<form action="{:url('Rule/edit')}" method="post" class="form form-horizontal" id="form-authrule-edit">
+		<input type="hidden" name="id" value="{$rs.id}">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">分组：</label>
+			<div class="formControls col-xs-8 col-sm-5"> 
+				<span class="select-box radius">
+					<select name="pid" id="pid" class="select">
+						<option>请选择分组</option>
+						<option value="0">≡ 顶级权限 ≡</option>
+	                    {volist name="list" id="vo"}
+						<option value="{$vo.id}">{$vo.title}</option>
+	                    {/volist}
+					</select>
+				</span> 
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">名称：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.title}" placeholder="" id="title" name="title">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">规则：</label>
+			<div class="formControls col-xs-8 col-sm-5">
+				<input type="text" class="input-text radius" value="{$rs.name}" placeholder="" id="name" name="name">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">状态：</label>
+			<div class="formControls col-xs-8 col-sm-5 skin-minimal">
+				<div class="radio-box">
+				    <input type="radio" id="status" name="status" value="1" {eq name="rs.status" value="1"}checked{/eq}>
+				    <label for="status">启用</label>
+				</div>
+				<div class="radio-box">
+				    <input type="radio" id="status" name="status" value="0" {eq name="rs.status" value="0"}checked{/eq}>
+				    <label for="status">禁用</label>
+				</div>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存提交</button>
+				<button onClick="window.location.href='{:url('Rule/lis')}'" class="btn btn-default radius" type="button"><i class="Hui-iconfont">&#xe66b;</i> 取消</button>
+			</div>
+		</div>
+	</form>
+</article>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+{tag:validatejs /}
+<script type="text/javascript">
+$(function(){
+	$("#pid").val('{$rs.pid}');
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+	// 表单验证
+	$("#form-authrule-edit").validate({
+		rules:{
+			id:{required:true},
+			pid:{required:true},
+			title:{required:true},
+			name:{required:true},
+		},
+		messages:{
+			id: {
+		    	required: "参数错误"
+		  	},
+		  	pid: {
+		    	required: "请选择权限分组"
+		  	},
+		  	title: {
+		    	required: "请输入权限名称"
+		  	},
+		  	name: {
+		    	required: "请输入权限规则"
+		  	},
+		}
+	});
+});
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

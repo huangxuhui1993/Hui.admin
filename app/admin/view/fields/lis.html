@@ -1,0 +1,71 @@
+{include file="public/meta" /}
+<title>模型字段列表</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+	<div class="cl pd-5 bg-1 bk-gray">
+		<span class="l">
+			<a class="btn btn-primary radius" href="{:url('Fields/add',['mid'=>$mid])}" >
+				<i class="Hui-iconfont">&#xe600;</i> 添加字段
+			</a>
+			<button class="btn btn-primary radius" type="button" onClick="javascript:window.location.href = '{:url('models/lis')}'">
+				<i class="Hui-iconfont">&#xe66b;</i> 返回管理
+			</button>
+		</span>
+		<span class="r">共 <span class="badge badge-default radius">{$count}</span> 条数据</span>
+	</div>
+	<div class="mt-20">
+		{include file="public/redirect" /}
+		<table class="table table-border table-bordered table-hover table-bg table-sort">
+			<thead>
+				<tr class="text-c">
+                   	<th>ID</th>
+                    <th>表单提示文字</th>
+                    <th>字段名称</th>
+                    <th>字段类型</th>
+                    <th>是否必填</th>
+                    <th>排序</th>
+                    <th>更新时间</th>
+                    <th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+			{volist name="list" id="vo" empty="$empty_str"}
+				<tr class="text-c">
+                    <td>{$vo.id}</td>
+                    <td>{$vo.cname}</td>
+                    <td>
+						<span class="label label-success radius">{$vo.ename}</span>
+                    </td>
+                    <td>{$vo.type}</td>
+                    <td>{$vo.isneed}</td>
+                    <td>{$vo.sorting}</td>
+                    <td>{$vo.update_time}</td>
+                    <td class="f-14">
+						<a title="编辑" href="{:url('Fields/edit',['mid'=>$mid,'id'=>$vo['id']])}" class="ml-15" data-toggle="tooltip" data-placement="top">
+							<i class="Hui-iconfont">&#xe6df;</i>
+						</a>
+						<a title="删除" href="javascript:;" onclick="delete_info('{:url('Fields/del',['mid'=>$mid,'id'=>$vo['id']])}','字段，灾难操作！')" class="ml-15" data-toggle="tooltip" data-placement="top">
+							<i class="Hui-iconfont">&#xe6e2;</i>
+						</a>
+					</td>
+				</tr>
+			{/volist}
+			</tbody>
+		</table>
+		<div class="f-r">
+			{:$list->render()}
+		</div>
+	</div>
+</div>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+
+</body>
+</html>
