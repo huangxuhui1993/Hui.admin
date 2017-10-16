@@ -23,3 +23,6 @@
 
 	站点统计小地球
 	申请地址：http://www.revolvermaps.com/
+
+	Git命令
+	提交更新命令：1,git add -A 2,git commit -m'test' 3,git push
