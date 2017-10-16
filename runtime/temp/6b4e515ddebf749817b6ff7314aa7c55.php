@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:61:"F:\phpStudy\WWW\Hui\public/../app/admin\view\index\index.html";i:1501422074;s:61:"F:\phpStudy\WWW\Hui\public/../app/admin\view\public\meta.html";i:1501424099;s:63:"F:\phpStudy\WWW\Hui\public/../app/admin\view\public\header.html";i:1507528235;s:61:"F:\phpStudy\WWW\Hui\public/../app/admin\view\public\menu.html";i:1507622054;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\index\index.html";i:1501422074;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1501424099;s:69:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\header.html";i:1507528235;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\menu.html";i:1507622054;}*/ ?>
 ﻿<!DOCTYPE HTML>
 <html>
 <head>

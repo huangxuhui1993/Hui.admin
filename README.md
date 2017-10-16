@@ -94,8 +94,8 @@ www  WEB部署目录（或者子目录）
 ### 数据表和字段
 *   数据表和字段采用小写加下划线方式命名，并注意字段名不要以下划线开头，例如 `think_user` 表和 `user_name`字段，不建议使用驼峰和中文作为数据表字段命名。
 
-## 参与开发
-请参阅 [Hui.admin 核心框架包](https://www.kancloud.cn/cyclingman/hui-admin)。
+## 参与开发：
+辉哥，邮箱地址：952612251@qq.com
 
 ## 版权信息
 

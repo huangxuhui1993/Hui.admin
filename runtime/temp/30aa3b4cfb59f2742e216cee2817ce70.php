@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:63:"F:\phpStudy\WWW\Hui\public/../app/admin\view\index\welcome.html";i:1500999028;s:61:"F:\phpStudy\WWW\Hui\public/../app/admin\view\public\meta.html";i:1501424099;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:69:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\index\welcome.html";i:1500999028;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1501424099;}*/ ?>
 ﻿<!DOCTYPE HTML>
 <html>
 <head>
