@@ -1,8 +1,8 @@
 <?php
  // Hui.admin v1.0 系统生成网站配置文件
  return [
-	'keywords' => 'Hui.admin社区',
-	'describle' => 'Hui.admin社区',
+	'keywords' => 'Hui.admin',
+	'describle' => 'Hui.admin',
 	'status' => 1,
 	'stopinfo' => '网站系统正在努力建设中，请稍后访问......',
 	'siteurl' => 'http://127.0.0.4',
@@ -20,7 +20,7 @@
 	'mailer_from_name' => 'Hui.admin系统邮件',
 	'mailer_reply_email' => '952612251@qq.com',
 	'mailer_reply_name' => 'Hui.admin系统邮件',
-	'sitename' => 'Hui.admin社区',
+	'sitename' => 'Hui.admin',
 	'codelength' => 3,
 	'is_upload' => 1,
 	'photodir' => 'images',
