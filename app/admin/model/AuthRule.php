@@ -12,7 +12,7 @@ class AuthRule extends Model{
         return $status[$value];
     }
 
-	//自动完成
+	// 自动完成
 	protected $auto = ['type'];
 
     protected function setTypeAttr(){

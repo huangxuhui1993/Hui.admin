@@ -3,7 +3,8 @@ namespace app\admin\validate;
 use think\Validate;
 
 class Document extends Validate{
-	//验证规则
+
+	// 验证规则
 	protected $rule = [
 		['cid','require','请选择栏目分类！'],
 		['table','require','自定义表名为空！'],

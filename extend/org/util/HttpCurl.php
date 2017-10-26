@@ -1,8 +1,7 @@
 <?php
 namespace org\util;
 
-class HttpCurl
-{
+class HttpCurl{
 	/**
      * @brief                  get请求
      * @param $url             请求的url
@@ -14,8 +13,7 @@ class HttpCurl
      * @param string $format    格式
      * @return mixed
      */
-    public static function get($url, $param = array(), $header = array(), $timeout = 3, $followAction = 0, $gzip = 0, $format = 'html')
-    {
+    public static function get($url, $param = array(), $header = array(), $timeout = 3, $followAction = 0, $gzip = 0, $format = 'html'){
         $ch = curl_init();
         if (is_array($param)) {
             $url = $url . '?' . http_build_query($param);
@@ -52,8 +50,7 @@ class HttpCurl
      * @param string $format    返回的格式
      * @return mixed
      */
-    public static function post($url, $param = array(), $header = array(), $ssl = 0, $format = 'json')
-    {
+    public static function post($url, $param = array(), $header = array(), $ssl = 0, $format = 'json'){
         $ch = curl_init();
         if (is_array($param)) {
             $urlparam = http_build_query($param);

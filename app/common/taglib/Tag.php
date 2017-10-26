@@ -3,13 +3,14 @@ namespace app\common\taglib;
 use think\template\TagLib;
 
 class Tag extends TagLib{
+
     # 定义标签列表
     protected $tags   =  [
         // 标签定义： attr 属性列表 close 是否闭合（0 或者1 默认1） alias 标签别名 level 嵌套层次
         'adminjs'    => ['close' => 0],
         'validatejs' => ['close' => 0],
         'ueditor'    => ['close' => 0],
-        'echarts'    => ['close' => 0],
+        'echarts'    => ['close' => 0]
     ];
 
     # admin 公共js文件

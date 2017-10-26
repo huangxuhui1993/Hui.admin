@@ -5,7 +5,8 @@ use think\Validate;
 use app\admin\model\Fields as FieldsModel;
 
 class Fields extends Validate{
-    //验证规则
+
+    // 验证规则
     protected $rule = [
         'mid'       => ['require'],
         'cname'     => ['require'],
@@ -17,7 +18,7 @@ class Fields extends Validate{
         'sorting'   => ['require','number'],
     ];
 
-    //提示
+    // 提示
  	protected $message  =   [
         'mid.require'               => '抱歉，参数错误！',
         'cname.require'             => '请输入提示文字！',
@@ -33,7 +34,7 @@ class Fields extends Validate{
         'sorting.number'            => '排序必须为数字！',
     ];
 
-    //验证字段名是否为系统字段
+    // 验证字段名是否为系统字段
     protected function checkSystemField($value){
         if(preg_match('/('.Config::get('fields_list').')$/i',$value)){
             return false;

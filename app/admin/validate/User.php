@@ -4,6 +4,7 @@ use think\Validate;
 use app\admin\model\User as UserModel;
 
 class User extends Validate{
+
     // 验证规则
     protected $rule = [
         ['username','require|unique:user|min:5','请输入管理账号！|抱歉，该账号已存在！|账号最少五位！'],
@@ -12,4 +13,5 @@ class User extends Validate{
         ['group_id','require','请选择管理组！'],
         ['state','require','请选择账号状态！']
     ];
+
 }

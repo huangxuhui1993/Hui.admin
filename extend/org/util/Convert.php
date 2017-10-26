@@ -18,29 +18,25 @@ use \COM as COM;
  *   php/ext/php_com_dotnet.dll
  */
 
-class Convert
-{
+class Convert{
 	
 	private $osm;
 	
 	// 构造函数，启用OpenOffice的COM组件
-	public function __construct()
-    {
+	public function __construct(){
         // 设置运行时间
         ini_set("magic_quotes_runtime",0);
 		$this->osm = new COM("com.sun.star.ServiceManager")or die("Please be sure that OpenOffice.org is installed.n");
 	}
 	
-	private function MakePropertyValue($name,$value)
-    {
+	private function MakePropertyValue($name,$value){
 		$oStruct = $this->osm->Bridge_GetStruct("com.sun.star.beans.PropertyValue");
 		$oStruct->Name = $name;
 		$oStruct->Value = $value;
 		return $oStruct;
 	}
 	
-	private function transform($input_url, $output_url)
-    {
+	private function transform($input_url, $output_url){
 		$args = array($this->MakePropertyValue("Hidden",true));
 
 		$oDesktop = $this->osm->createInstance("com.sun.star.frame.Desktop");
@@ -60,8 +56,7 @@ class Convert
 	 * @param  [string] $path [文件路径]
 	 * @return int
 	 */
-	private function getPdfPages($path)
-    {
+	private function getPdfPages($path){
 		if(!file_exists($path)) return 0;
 		if(!is_readable($path)) return 0;
 		// 打开文件
@@ -89,8 +84,7 @@ class Convert
 	 * @param  string $output 转换后的pdf文件
 	 * @return return string 页数
 	 */
-	public function run($input,$output)
-    {
+	public function run($input,$output){
 		$input = "file:///" . str_replace("\\","/",$input);
 		$output = "file:///" . str_replace("\\","/",$output);
 		return $this->transform($input, $output);
@@ -102,8 +96,7 @@ class Convert
 	 * @param  string $attach_dir 保存文件地址
 	 * @return return array
 	 */
-	public function pdf2swf($word_file,$attach_dir)
-    {
+	public function pdf2swf($word_file,$attach_dir){
         // PDF文件绝对路径
 		$file_name = uniqid();
         $pdf_file = $attach_dir.$file_name.".pdf";

@@ -4,8 +4,8 @@ use think\Config;
 use think\Db;
 use \Exception;
 
-class ModelClass
-{
+class ModelClass{
+
     static private $prefix;
 
     function __construct(){

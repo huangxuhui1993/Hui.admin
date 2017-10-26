@@ -14,9 +14,10 @@ use app\admin\model\Models;
 use app\admin\model\Channel;
 
 /**
- * 删除文档自定义数据
- * @param integer $cid 栏目ID
- * @param integer $id 文档ID
+ * [delete_model_data 删除文档自定义数据]
+ * @param  [integer] $cid [栏目ID]
+ * @param  [integer] $id  [文档ID]
+ * @return [boolean]
  */
 function delete_model_data($cid,$id){
     $result = Channel::get($cid);
@@ -32,9 +33,9 @@ function delete_model_data($cid,$id){
 }
 
 /**
- * 删除文件
- * @param integer $id 文件id
- * @return bool
+ * [delete_file 删除文件]
+ * @param  [integer] $id [文件ID]
+ * @return [boolean]
  */
 function delete_file($id){
     $db = Attach::get($id);
@@ -54,20 +55,15 @@ function delete_file($id){
             }
         }
         // 删除文件数据
-        if($db->delete()){
-            return true;
-        }else{
-            return false;
-        }
+        $result = $db->delete();
+        return $result ? true : false;
     }
 }
 
 /**
- * 删除转换文件
- * @Author   Hui
- * @DateTime 2017-07-22T00:32:56+0800
- * @param    int $id 文件id
- * @return   bool
+ * [delete_conversion 删除转换文件]
+ * @param  [integer] $id [文件ID]
+ * @return [boolean]
  */
 function delete_conversion($id){
     $db = Convert::get($id);
@@ -78,20 +74,15 @@ function delete_conversion($id){
             chmod($url,0777);
             unlink($url);
         }
-        if($db->delete()){
-            return true;
-        }else{
-            return false;
-        }
+        $result = $db->delete();
+        return $result ? true : false;
     }
 }
 
 /**
- * 删除导出文件
- * @Author   Hui
- * @DateTime 2017-07-22T00:32:56+0800
- * @param    int $id 文件id
- * @return   bool
+ * [delete_export 删除导出文件]
+ * @param  [integer] $id [文件ID]
+ * @return [boolean]
  */
 function delete_export($id){
     $db = Export::get($id);
@@ -102,34 +93,25 @@ function delete_export($id){
             chmod($url,0777);
             unlink($url);
         }
-        if($db->delete()){
-            return true;
-        }else{
-            return false;
-        }
+        $result = $db->delete();
+        return $result ? true : false;
     }
 }
 
 /**
- * 获取管理员账号
- * @param integer $uid 用户id
- * @return string
+ * [get_username 获取管理员账号]
+ * @param  [integer] $uid [用户ID]
+ * @return [string]
  */
 function get_username($uid){
 	$result = User::get($uid);
-	if($result){ 
-		return $result['username']; 
-	}else{ 
-		return "未知"; 
-	}
+    return $result ? $result['username'] : '未知';
 }
 
 /**
- * 获取管理员角色
- * @Author   Hui
- * @DateTime 2017-06-29T00:01:05+0800
- * @param    string   $uid 管理员ID
- * @return   string
+ * [get_user_role 获取管理员角色]
+ * @param  [string] $uid [管理员ID]
+ * @return [string]
  */
 function get_user_role($uid = ''){
     if(!empty($uid)){
@@ -142,41 +124,34 @@ function get_user_role($uid = ''){
 }
 
 /**
- * 记录系统日志
- * @param  string $operate    操作
- * @param  string $username 管理员
- * @param  int 	  $status   状态 0失败 1成功
- * @return bool
+ * [system_logs 记录系统日志]
+ * @param  [string] $operate  [操作]
+ * @param  [string] $username [管理员]
+ * @param  [integer] $status   [状态 0失败 1成功]
+ * @return [boolean]
  */
 function system_logs($operate,$username,$status){
 	if(Config::get('websetup.logs') == 1){
-		$data = [
-			'username' => $username,
-			'ip'       => Request::instance()->ip(),
-			'operate'  => $operate,
-			'status'   => $status,
-			'time'     => time()
-		];
-		$rs = Db::name('logs')->insert($data);
-		if(!$rs){ 
-			return false;	
-		}else{ 
-			return true;
-		}
-	}else{
-        return true;
-    }
+		Db::name('logs')->insert([
+            'username' => $username,
+            'ip'       => Request::instance()->ip(),
+            'operate'  => $operate,
+            'status'   => $status,
+            'time'     => time()
+        ]);
+	}
+    return true;
 }
 
 /**
- * 分析枚举类型配置值 格式 a:名称1,b:名称2
+ * [parse_config_attr 分析枚举类型配置值 格式 a:名称1,b:名称2]
  * @param  [string] $string [字符串]
- * @return [array]          [数组]
+ * @return [array]         [数组]
  */
 function parse_config_attr($string){
     $array = preg_split('/[,;\r\n]+/', trim($string, ",;\r\n"));
     if(strpos($string,':')){
-        $value  =   array();
+        $value  =   [];
         foreach ($array as $val) {
             list($k, $v) = explode(':', $val);
             $value[$k]   = $v;
@@ -188,9 +163,9 @@ function parse_config_attr($string){
 }
 
 /**
- * 生成面包屑函数
- * @param  array $arr 面包屑参数
- * @return string 面包屑
+ * [breadcrumb 生成面包屑函数]
+ * @param  [array] $arr [面包屑参数]
+ * @return [string]      [面包屑]
  */
 function breadcrumb($arr){
     $str = '<a onClick="removeIframe();" href="javascript:;"><i class="Hui-iconfont">&#xe67f;</i> 首页</a>';
@@ -201,10 +176,8 @@ function breadcrumb($arr){
 }
 
 /**
- * 检测登录状态
- * @Author   Hui
- * @DateTime 2017-06-30T20:18:46+0800
- * @return   boolean
+ * [is_login 检测登录状态]
+ * @return [boolean]
  */
 function is_login(){
     if(Session::has('uid') && Session::has('uname')){
@@ -215,27 +188,22 @@ function is_login(){
 }
 
 /**
- * 获取模型名称
- * 
- * @param integer $mid 模型ID
- * @return string 模型名称
+ * [get_model_name 获取模型名称]
+ * @param  [integer] $mid [模型ID]
+ * @return [string]      [模型名称]
  */
 function get_model_name($mid){
     if($mid == -1){
         return "外部导航";
     }
     $result = Models::get($mid);
-    if($result){ 
-        return $result['name']; 
-    }else{ 
-        return "未知"; 
-    }   
+    return $result ? $result['name'] : '未知';  
 }
 
 /**
- * 根据栏目ID获取模型名称
- * @param integer $mid 模型id
- * @return string 模型名称
+ * [get_channel_model_name 根据栏目ID获取模型名称]
+ * @param  [integer] $cid [模型ID]
+ * @return [string]      [模型名称]
  */
 function get_channel_model_name($cid){
     $channel = Channel::get($cid);
@@ -243,20 +211,15 @@ function get_channel_model_name($cid){
         return "外部导航";
     }else{
         $result = get_model_name($channel['model']);
-        if($result){ 
-            return $result; 
-        }else{ 
-            return "未知"; 
-        }   
+        return $result ? $result : '未知';
     }
-
 }
 
 /**
- * 获取无限极栏目信息
- * @param integer $pid 主栏目ID
- * @param string  $path路径符号
- * @return array array()
+ * [get_channel 获取无限极栏目信息]
+ * @param  [integer] $pid  [主栏目ID]
+ * @param  [string] $path [路径符号]
+ * @return [array]
  */
 function get_channel($pid,$path){
     global $c_arr;

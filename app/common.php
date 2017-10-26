@@ -13,21 +13,21 @@ if(!is_dir(HUI_FILES)){
 }
 
 /**
- * 网站运行时间
- * @return integer 运行时间
+ * [site_run_time 网站运行时间]
+ * @return [integer] [运行时间]
  */
 function site_run_time(){
-	$sitestart = strtotime(Config::get('websetup.sitetime'));//获取特定时间戳
-	$sitenow = time();//获取服务器当前时间戳
-	$sitetime = $sitenow - $sitestart;//时间戳相减
-	return (int)($sitetime / 86400);//转换为天数	
+	$sitestart = strtotime(Config::get('websetup.sitetime')); // 获取特定时间戳
+	$sitenow = time(); // 获取服务器当前时间戳
+	$sitetime = $sitenow - $sitestart; // 时间戳相减
+	return (int)($sitetime / 86400); // 转换为天数	
 }
 
 /**
- * 格式化字节大小
- * @param  number $size      字节数
- * @param  string $delimiter 数字和单位分隔符
- * @return string            格式化后的带单位的大小
+ * [truesize 格式化字节大小]
+ * @param  [integer] $size      [字节数]
+ * @param  [string] $delimiter [数字和单位分隔符]
+ * @return [string]            [格式化后的带单位的大小]
  */
 function truesize($size, $delimiter = ''){
     $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
@@ -36,31 +36,27 @@ function truesize($size, $delimiter = ''){
 }
 
 /**
- * 字符处理
- * @param string $str 内容
+ * [encode 字符处理]
+ * @param  [string] $str [内容]
+ * @return [string]
  */
 function encode($str){
-	if(isset($str)){
-		$str = preg_replace("/\\\'/","'",$str);
-	}
-	return $str;
+	return isset($str) ? preg_replace("/\\\'/","'",$str) : $str;
 }
 
 /**
- * 字符串截取，支持中文和其他编码
- * @static
- * @access public
- * @param string $str 需要转换的字符串
- * @param int $start 开始位置
- * @param int $length 截取长度
- * @param string $charset 编码格式
- * @param bool   $suffix 截断显示字符
- * @return string
+ * [msubstr 字符串截取，支持中文和其他编码]
+ * @param  [string]  $str     [需要转换的字符串]
+ * @param  [integer] $start   [开始位置]
+ * @param  [integer]  $length  [截取长度]
+ * @param  [string]  $charset [编码格式]
+ * @param  [boolean] $suffix  [截断显示字符]
+ * @return [string]
  */
 function msubstr($str, $start = 0, $length, $charset = "utf-8", $suffix = true) {
-    if(function_exists("mb_substr"))
+    if(function_exists("mb_substr")){
         $slice = mb_substr($str, $start, $length, $charset);
-    elseif(function_exists('iconv_substr')) {
+    }elseif(function_exists('iconv_substr')){
         $slice = iconv_substr($str,$start,$length,$charset);
         if(false === $slice) {
             $slice = '';
@@ -77,11 +73,11 @@ function msubstr($str, $start = 0, $length, $charset = "utf-8", $suffix = true) 
 }
 
 /**
- * 系统加密方法
- * @param string $data 要加密的字符串
- * @param string $key  加密密钥
- * @param int $expire  过期时间 单位 秒
- * @return string
+ * [hui_encrypt 系统加密方法]
+ * @param  [string]  $data   [要加密的字符串]
+ * @param  [string]  $key    [加密密钥]
+ * @param  [integer] $expire [过期时间 单位 秒]
+ * @return [string]
  */
 function hui_encrypt($data, $key = '', $expire = 0) {
     $key  = md5(empty($key) ? Config::get('data_auth_key') : $key);
@@ -90,15 +86,12 @@ function hui_encrypt($data, $key = '', $expire = 0) {
     $len  = strlen($data);
     $l    = strlen($key);
     $char = '';
-
     for ($i = 0; $i < $len; $i++) {
         if ($x == $l) $x = 0;
         $char .= substr($key, $x, 1);
         $x++;
     }
-
     $str = sprintf('%010d', $expire ? $expire + time():0);
-
     for ($i = 0; $i < $len; $i++) {
         $str .= chr(ord(substr($data, $i, 1)) + (ord(substr($char, $i, 1))) % 256);
     }
@@ -106,10 +99,10 @@ function hui_encrypt($data, $key = '', $expire = 0) {
 }
 
 /**
- * 系统解密方法
- * @param  string $data 要解密的字符串 （必须是think_encrypt方法加密的字符串）
- * @param  string $key  加密密钥
- * @return string
+ * [hui_decrypt 系统解密方法]
+ * @param  [string] $data [要解密的字符串（必须是think_encrypt方法加密的字符串）]
+ * @param  [string] $key  [加密密钥]
+ * @return [string]
  */
 function hui_decrypt($data, $key = ''){
     $key    = md5(empty($key) ? Config::get('data_auth_key') : $key);
@@ -121,7 +114,6 @@ function hui_decrypt($data, $key = ''){
     $data   = base64_decode($data);
     $expire = substr($data,0,10);
     $data   = substr($data,10);
-
     if($expire > 0 && $expire < time()) {
         return '';
     }
@@ -129,13 +121,11 @@ function hui_decrypt($data, $key = ''){
     $len    = strlen($data);
     $l      = strlen($key);
     $char   = $str = '';
-
     for ($i = 0; $i < $len; $i++) {
         if ($x == $l) $x = 0;
         $char .= substr($key, $x, 1);
         $x++;
     }
-
     for ($i = 0; $i < $len; $i++) {
         if (ord(substr($data, $i, 1)) < ord(substr($char, $i, 1))) {
             $str .= chr((ord(substr($data, $i, 1)) + 256) - ord(substr($char, $i, 1)));
@@ -147,14 +137,14 @@ function hui_decrypt($data, $key = ''){
 }
 
 /**
- * 邮件发送函数
- * @param  array 
+ * [send_mailer 邮件发送函数]
+ * @param  [array] $data [邮件数据]
  * $data = [
  *		'title'=>'标题',
  *		'content'=>'内容',
  *		'email'=>'收件邮箱'
  *	]
- * @return [type]
+ * @return [bool]
  */
 function send_mailer($data){
 	if(is_array($data)){
@@ -167,20 +157,20 @@ function send_mailer($data){
 		}else{
 			ini_set("magic_quotes_runtime",0);
 			$mail  = new PHPMailer();
-			$mail->CharSet    = Config::get('websetup.mailer_char');                 								//设定邮件编码，默认ISO-8859-1，如果发中文此项必须设置为 UTF-8
-			$mail->IsSMTP();                            														// 设定使用SMTP服务
-			$mail->SMTPAuth   = true;                   														// 启用 SMTP 验证功能
-			$mail->SMTPSecure = Config::get('websetup.mailer_secure');                  							// SMTP 安全协议
-			$mail->Host       = Config::get('websetup.mailer_host');       											// SMTP 服务器
-			$mail->Port       = Config::get('websetup.mailer_port');                    							// SMTP服务器的端口号
-			$mail->Username   = Config::get('websetup.mailer_username');  											// SMTP服务器用户名
-			$mail->Password   = Config::get('websetup.mailer_password');        									// SMTP服务器密码
+			$mail->CharSet    = Config::get('websetup.mailer_char');                 									// 设定邮件编码，默认ISO-8859-1，如果发中文此项必须设置为 UTF-8
+			$mail->IsSMTP();                            																// 设定使用SMTP服务
+			$mail->SMTPAuth   = true;                   																// 启用 SMTP 验证功能
+			$mail->SMTPSecure = Config::get('websetup.mailer_secure');                  								// SMTP 安全协议
+			$mail->Host       = Config::get('websetup.mailer_host');       												// SMTP 服务器
+			$mail->Port       = Config::get('websetup.mailer_port');                    								// SMTP服务器的端口号
+			$mail->Username   = Config::get('websetup.mailer_username');  												// SMTP服务器用户名
+			$mail->Password   = Config::get('websetup.mailer_password');        										// SMTP服务器密码
 			$mail->SetFrom(Config::get('websetup.mailer_from_email'),Config::get('websetup.mailer_from_name')); 		// 设置发件人地址和名称
 			$mail->AddReplyTo(Config::get('websetup.mailer_reply_email'),Config::get('websetup.mailer_reply_name'));  	// 设置邮件回复人地址和名称
 			
-			$mail->Subject    = $data['title'];                     			// 设置邮件标题
-			$mail->AltBody    = "查看该邮件，请切换到支持 HTML 的邮件客户端";  	    // 可选项，向下兼容考虑
-			$mail->MsgHTML($data['content']);      								// 设置邮件内容
+			$mail->Subject    = $data['title'];                     													// 设置邮件标题
+			$mail->AltBody    = "查看该邮件，请切换到支持 HTML 的邮件客户端";  	    									// 可选项，向下兼容考虑
+			$mail->MsgHTML($data['content']);      																		// 设置邮件内容
             $email = $data['email'];
             // 检测是否为群发
             if(is_array($email)){
@@ -205,8 +195,8 @@ function send_mailer($data){
 }
 
 /**
- * 检测数据库大小
- * @return string 数据库大小
+ * [mysql_db_size 检测数据库大小]
+ * @return [string] [数据库大小]
  */
 function mysql_db_size(){
     $sql = "SHOW TABLE STATUS FROM ".Config::get('database.database');
@@ -223,9 +213,9 @@ function mysql_db_size(){
 }
 
 /**
- * 系统非常规MD5加密方法
- * @param  string $str 要加密的字符串
- * @return string
+ * [user_md5 系统非常规MD5加密方法]
+ * @param  [string] $str [要加密的字符串]
+ * @return [string]      [加码后字符串]
  */
 function user_md5($str){
 	$key = Config::get('data_auth_key');
@@ -233,26 +223,22 @@ function user_md5($str){
 }
 
 /**
- * 过滤网站敏感词
- * @param  string $text 需要过滤的内容
- * @return [type]       [description]
+ * [clean_sensitive_words 过滤网站敏感词]
+ * @param  [string] $text [需要过滤的内容]
+ * @return [string]       [处理后内容]
  */
 function clean_sensitive_words($text){
 	if(!empty($text)){
 		$sensitive_words = Config::get('websetup.sensitive_words');
-		if(isset($sensitive_words)){
-			return preg_replace("/{$sensitive_words}/i", '**', $text);
-		}else{
-			return false;
-		}
+		return isset($sensitive_words) ? preg_replace("/{$sensitive_words}/i", '**', $text) : false;
 	}else{
 		return false;
 	}
 }
 
 /**
- * 获取访客浏览器语言
- * @return string
+ * [get_browser_lang 获取访客浏览器语言]
+ * @return [string] [语言信息]
  */
 function get_browser_lang(){
 	$language = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
@@ -272,8 +258,8 @@ function get_browser_lang(){
 }
 
 /**
- * 获取访客操作系统
- * @return string
+ * [get_os 获取访客操作系统]
+ * @return [string] [系统类型]
  */
 function get_os(){
 	$agent = $_SERVER['HTTP_USER_AGENT'];
@@ -298,8 +284,8 @@ function get_os(){
 }
 
 /**
- * 获取真实ip
- * @return string
+ * [get_real_ip 获取真实IP]
+ * @return [type] [IP地址]
  */
 function get_real_ip(){
 	$ip_json = file_get_contents('http://ip.taobao.com/service/getIpInfo.php?ip=myip');
@@ -310,83 +296,60 @@ function get_real_ip(){
 }
 
 /**
- * 时间提醒函数
- * @return string
+ * [time_tips 时间提醒函数]
+ * @return [string] [提醒信息]
  */
 function time_tips(){
 	date_default_timezone_set('Asia/Shanghai');
 	$str = "";
-	$hour = date("H");
-	if ($hour >= 6 && $hour <= 11){
+	$hour = date('H');
+	$week = date('D');
+	if($hour >= 6 && $hour <= 11){
 		$str .= "上午好，";
-	}elseif($hour>=12 && $hour <= 13){
+	}elseif($hour >= 12 && $hour <= 13){
 		$str .= "中午好，";
-	}elseif($hour>= 14 && $hour <= 18){
+	}elseif($hour >= 14 && $hour <= 18){
 		$str .= "下午好，";
 	}elseif($hour >= 19 && $hour <= 23){
 		$str .= "晚上好，";
 	}elseif($hour >= 0 && $hour <= 5){
 		$str .= "凌晨好，";
-	}	
-	$str .= "今天 ";
-	$week = date("D");
-	switch ($week){
-		case "Mon":
-			$str .= "星期一，祝您工作愉快！";
-			break;
-		case "Tue":
-			$str .= "星期二，祝您工作愉快！";
-			break;
-		case "Wed":
-			$str .= "星期三，祝您工作愉快！";
-			break;
-		case "Thu":
-			$str .= "星期四，祝您工作愉快！";
-			break;
-		case "Fri":
-			$str .= "星期五，祝您工作愉快！";
-			break;
-		case "Sat":
-			$str .= "星期六，祝您周末愉快！";
-			break;
-		case "Sun":
-			$str .= "星期日，祝您周末愉快！";
-			break;
 	}
+	$str .= "今天 ";
+	$arr = [
+		'Mon' => '星期一，祝您工作愉快！',
+		'Tue' => '星期二，祝您工作愉快！',
+		'Wed' => '星期三，祝您工作愉快！',
+		'Thu' => '星期四，祝您工作愉快！',
+		'Fri' => '星期五，祝您工作愉快！',
+		'Sat' => '星期六，祝您周末愉快！',
+		'Sun' => '星期日，祝您周末愉快！'
+	];
+	$str .= $arr[$week];
 	return $str;
 }
 
 /**
- * 获取文件类型文字提示
- * @param string $type
- * @return string
+ * [get_file_type 获取文件类型文字提示]
+ * @param  [string] $type [类型]
+ * @return [string]       [类型信息]
  */
 function get_file_type($type){
-    switch($type){
-        case 'photo':
-            return '图片文件';
-            break;
-        case 'office':
-            return 'Office文件';
-            break;
-        case 'attach':
-            return '附件文件';
-            break;
-        case 'video':
-            return '视频文件';
-            break;
-        default:
-            return '未知类型';
-            break;
-    }
+	$array = [
+		'photo'  => '图片文件',
+		'office' => 'Office文件',
+		'attach' => '附件文件',
+		'video'  => '视频文件'
+	];
+    return $array[$type];
 }
 
 /**
- * 获取文件存储路径
- * @param integer $val 文件id
- * @param string $picUrl 默认图片
- * @param  bool $thumb 是否使用缩略图
- * @return string 文件路径
+ * [get_file_url 获取文件存储路径]
+ * @param  [integer]  $val    [文件id]
+ * @param  [string]  $picUrl [默认图片]
+ * @param  boolean $thumb  [是否使用缩略图]
+ * @return [string]          [文件路径]
  */
 function get_file_url($val,$picUrl,$thumb = false){
     $attUrl = $picUrl;
@@ -413,15 +376,11 @@ function get_file_url($val,$picUrl,$thumb = false){
 }
 
 /**
- * 获取栏目名称
- * @param integer $cid 栏目id
- * @return string 栏目名称
+ * [get_channel_name 获取栏目名称]
+ * @param  [integer] $cid [栏目id]
+ * @return [string]      [栏目名称]
  */
 function get_channel_name($cid){
 	$result = Channel::get($cid);
-	if($result){ 
-		return $result['cname']; 
-	}else{ 
-		return "未知"; 
-	}
+	return $result ? $result['cname'] : '未知';
 }

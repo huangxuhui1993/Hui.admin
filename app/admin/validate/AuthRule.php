@@ -4,7 +4,7 @@ use think\Validate;
 
 class AuthRule extends Validate{
 
-	//验证规则
+	// 验证规则
 	protected $rule = [
 		['pid','require','请选择权限分组！'],
 		['title','require','请输入权限名称！'],

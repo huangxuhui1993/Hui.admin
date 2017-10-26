@@ -5,14 +5,15 @@ use think\Validate;
 use app\admin\model\Models as ModelsModel;
 
 class Models extends Validate{
-    //验证规则
+
+    // 验证规则
     protected $rule = [
         'name'      => ['require'],
         'table'     => ['require','alpha','unique:models','checkSystemTable'],
         'sorting'   => ['require','number'],
     ];
 
-    //提示
+    // 提示
  	protected $message  =   [
         'name.require'              => '请输入模型名称！',
         'table.require'             => '请输入数据表名称！',
@@ -23,7 +24,7 @@ class Models extends Validate{
         'sorting.number'            => '排序必须为数字！',
     ];
 
-    //验证数据表名是否为系统表
+    // 验证数据表名是否为系统表
     protected function checkSystemTable($value){
         if(preg_match('/('.Config::get('tables_list').')$/i',$value)){
             return false;

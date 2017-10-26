@@ -15,7 +15,7 @@ class Channel extends Model{
         ];
     }
 
-	//自动完成
+	// 自动完成
 	protected $auto = ['mname','update_time'];
 
     protected function setUpdateTimeAttr(){
