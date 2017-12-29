@@ -42,10 +42,10 @@ class Common extends Base{
 				$this->redirect('Common/userSetup','',302,['code' => 'error','msg' => $validate->getError()]);
 			}else{
 				if($user->allowField(true)->save($data,['id'=>$id])){
-					system_logs('账号设置',session('uname'),1);
+					add_logs('账号设置', 1);
 					$this->redirect('Common/userSetup','',302,['code' => 'success','msg' => '设置成功！']);
 				}else{
-					system_logs('账号设置',session('uname'),0);
+					add_logs('账号设置', 0);
 					$this->redirect('Common/userSetup','',302,['code' => 'error','msg' => '设置失败！']);
 				}
 			}
@@ -67,12 +67,10 @@ class Common extends Base{
             $att_id = $request->param('id/d');
             if(!empty($att_id) && isset($att_id)){
                 if(delete_file($att_id)){
-                    // 记录日志
-                    system_logs('清除上传文件',session('uname'),1);
+                    add_logs('清除上传文件', 1);
                     return json(['error' => 0]);
                 }else{
-                    // 记录日志
-                    system_logs('清除上传文件',session('uname'),0);
+                    add_logs('清除上传文件', 0);
                     return json(['error' => 1]);
                 }
             }
@@ -86,7 +84,7 @@ class Common extends Base{
      */
 	public function codemirror(Request $request){
 		$path = $request->param('path');
-		$file = ROOT_PATH.$path;
+		$file = ROOT_PATH . $path;
 		if(!is_file($file)){
 			$code = '文件不存在!';
 		}elseif(!is_readable($file)){
@@ -96,9 +94,9 @@ class Common extends Base{
 			$str = file_get_contents($file);
 			$code = htmlentities($str);
 		}
-		system_logs('查看源代码'.$file,session('uname'),1);
-		$this->assign('code',$code);
-		$this->assign('file',str_replace('\\','/',$file));
+		add_logs('查看源代码' . $file, 1);
+		$this->assign('code', $code);
+		$this->assign('file', str_replace('\\', '/', $file));
 		return $this->fetch('public/codemirror');
 	}
 
@@ -112,31 +110,31 @@ class Common extends Base{
 			$data = $request->post();
 			// 验证数据
 			$validate = new Validate([
-				['file','require','文件路径为空!'],
-				['code','require','代码内容为空!'],
+				['file', 'require', '文件路径为空!'],
+				['code', 'require', '代码内容为空!'],
 			]);
 			if(!$validate->check($data)) {
-				return json(['error' => 1,'msg' => $validate->getError()]);
+				return json(['error' => 1, 'msg' => $validate->getError()]);
 			}else{
 				$file = $data['file'];
 				if(!is_file($file)){
-					return json(['error' => 1,'msg' => '文件不存在!']);
+					return json(['error' => 1, 'msg' => '文件不存在!']);
 				}elseif(!is_writable($file)){
-                    return json(['error' => 1,'msg' => '文件不可写!']);
+                    return json(['error' => 1, 'msg' => '文件不可写!']);
                 }else{
 					// 内容写入文件
 					if(file_put_contents($file,$data['code'])){
-						system_logs('修改源代码'.$file,session('uname'),1);
-						return json(['error' => 0,'msg' => '代码修改成功']);
+						add_logs('修改源代码' . $file, 1);
+						return json(['error' => 0, 'msg' => '代码修改成功']);
 					}else{
-                        system_logs('修改源代码'.$file,session('uname'),0);
-                        return json(['error' => 0,'msg' => '代码修改失败']);
+                        add_logs('修改源代码' . $file, 0);
+                        return json(['error' => 0, 'msg' => '代码修改失败']);
                     }
 				}	
 			}
 		}else{
-			system_logs('修改源代码，非法操作！',session('uname'),0);
-			return json(['error' => 1,'msg' => '非法操作!']);
+			add_logs('修改源代码，非法操作！', 0);
+			return json(['error' => 1, 'msg' => '非法操作!']);
 		}
 	}
 
@@ -150,15 +148,15 @@ class Common extends Base{
             $data = $request->post();
             // 验证数据
             $validate = new Validate([
-                ['huitags','require','邮件地址为空!'],
-                ['title','require','邮件标题为空!'],
-                ['content','require','邮件内容为空!'],
+                ['huitags', 'require', '邮件地址为空!'],
+                ['title', 'require', '邮件标题为空!'],
+                ['content', 'require', '邮件内容为空!'],
             ]);
             if(!$validate->check($data)) {
-                return json(['error' => 1,'msg' => $validate->getError()]);
+                return json(['error' => 1, 'msg' => $validate->getError()]);
             }else{
             	if(isset($data['aid']) && !empty($data['aid'])){
-            		$file = '.'.get_file_url($data['aid'],'',false);
+            		$file = '.' . get_file_url($data['aid'],'',false);
             	}else{
             		$file = null;
             	}
@@ -170,11 +168,11 @@ class Common extends Base{
                  ];
                  try{
                   	send_mailer($data);
-                  	system_logs('发送邮件',session('uname'),1);
+                  	add_logs('发送邮件', 1);
                   	return json(['error' => 0]);
                  }catch(Exception $e) {
-                     system_logs('发送邮件：'.$e->getMessage(),session('uname'),0);
-                     return json(['error' => 1,'msg' => $e->getMessage()]);
+                    add_logs('发送邮件：' . $e->getMessage(), 0);
+                    return json(['error' => 1, 'msg' => $e->getMessage()]);
                  }
             }
         }else{
@@ -197,10 +195,10 @@ class Common extends Base{
 				rmdir(TEMP_PATH);
 			}
 	    	if($cache && $temp){
-	    		system_logs('清除缓存',session('uname'),1);
+	    		add_logs('清除缓存', 1);
 	    		return json(['error' => 0]);
 	    	}else{
-                system_logs('清除缓存',session('uname'),0);
+                add_logs('清除缓存', 0);
 	    		return json(['error' => 1]);
 	    	}
 		}

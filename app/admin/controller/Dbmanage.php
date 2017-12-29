@@ -51,17 +51,17 @@ class Dbmanage extends Base{
 			$data = $request->post();
 
 			if(!isset($data['name']) || !is_array($data['name']) || empty($data) || empty($data['name'])){
-				$this->redirect('dbmanage/lis','',302,['code' => 'error','msg' => '请选择要优化的数据表！']);
+				$this->redirect('dbmanage/lis', '', 302, ['code' => 'error', 'msg' => '请选择要优化的数据表！']);
 			}else{
 				$name = $data['name'];
-				$db = implode(",",$name);
+				$db = implode(",", $name);
 				$sql = "OPTIMIZE TABLE $db";
 				$result = Db::query($sql);
-				system_logs('数据表优化',session('uname'),1);
+				add_logs('数据表优化', 1);
 				// 面包屑
-				$this->assign('bread',breadcrumb([$this->bread,'优化详情']));
+				$this->assign('bread', breadcrumb([$this->bread, '优化详情']));
 
-				$this->assign('list',$result);
+				$this->assign('list', $result);
 				return $this->fetch('result');
 			}
 		}
@@ -256,7 +256,7 @@ class Dbmanage extends Base{
      * @return array
      */
 	public function backupOperation(Request $request){
-		ini_set("magic_quotes_runtime",0);
+		ini_set("magic_quotes_runtime", 0);
 
 		if($request->isAjax()){
 			$db = new DbBackup();
@@ -273,14 +273,14 @@ class Dbmanage extends Base{
 			}
 			$result = $db->backup('',$back_path,$size);
 			if($result['code'] == 1){
-				system_logs('备份数据库',session('uname'),1);
+				add_logs('备份数据库', 1);
 				return ['error' => 0];
 			}else{
-				system_logs('备份数据库',session('uname'),0);
+				add_logs('备份数据库', 0);
 				return ['error' => 1];
 			}
 		}else{
-			system_logs('备份数据库，非法操作！',session('uname'),0);
+			add_logs('备份数据库，非法操作！', 0);
 			die('非法操作！');
 		}
 
@@ -337,18 +337,18 @@ class Dbmanage extends Base{
 			            }
 
 			            if($db->where('id',$id)->delete()) {
-			            	system_logs('删除备份文件',session('uname'),1);
-							$this->redirect('dbmanage/backlist','',302,['code' => 'success','msg' => '备份文件删除成功！']);
+			            	add_logs('删除备份文件', 1);
+							$this->redirect('dbmanage/backlist', '', 302, ['code' => 'success', 'msg' => '备份文件删除成功！']);
 			            }
 			        }
 
 				}else{
-					$this->redirect('dbmanage/backlist','',302,['code' => 'error','msg' => '数据不存在！']);
+					$this->redirect('dbmanage/backlist', '', 302, ['code' => 'error', 'msg' => '数据不存在！']);
 				}
 
 			}
 		}else{
-			system_logs('删除备份文件，非法操作！',session('uname'),0);
+			add_logs('删除备份文件，非法操作！', 0);
 			die('非法操作！');
 		}
 	}

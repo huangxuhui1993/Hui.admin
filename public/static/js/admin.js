@@ -15,6 +15,14 @@ $(function(){
     }
 });
 
+// SystemTimer 系统定时器
+function SystemTimer(){
+
+    fnDate();
+
+    window.setTimeout('SystemTimer()', 1000);
+}
+
 // 消息
 function message(){
     alert('消息');

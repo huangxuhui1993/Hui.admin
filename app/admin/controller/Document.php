@@ -396,13 +396,13 @@ class Document extends Base{
 			}else{
 				$document = DocumentModel::get($id);
 				if($document){
-					$data['status'] = $status == 0 ? 1:0;
-					$msg = $status == 0 ? '审核':'隐藏';
+					$data['status'] = $status == 0 ? 1 : 0;
+					$msg = $status == 0 ? '审核' : '隐藏';
 					if($document->save($data)) {
-						system_logs('文档状态设置'.$msg,session('uname'),1);
+						add_logs('文档状态设置' . $msg, 1);
 						$this->redirect('document/lis','',302,['code' => 'success','msg' => "文档{$msg}成功！"]);
 					}else{
-						system_logs('文档状态设置'.$msg,session('uname'),0);
+						add_logs('文档状态设置' . $msg, 0);
 						$this->redirect('document/lis','',302,['code' => 'error','msg' => "文档{$msg}失败！"]);
 					}
 				}else{

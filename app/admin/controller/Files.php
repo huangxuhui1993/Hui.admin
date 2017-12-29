@@ -70,7 +70,7 @@ class Files extends Base{
             }
         }
         # 记录日志
-        system_logs('清理未使用上传文件',session('uname'),1);
+        add_logs('清理未使用上传文件', 1);
         $this->redirect('Files/uploadFile','',302,['code' => 'success','msg' => '清理未使用上传文件成功！']);
     }
 
@@ -109,10 +109,10 @@ class Files extends Base{
                 $this->redirect('Files/conversionFile','',302,['code' => 'error','msg' => '参数错误！']);
             }else{
                 if(delete_conversion($id)){
-                    system_logs('删除转换文件',session('uname'),1);
+                    add_logs('删除转换文件', 1);
                     $this->redirect('Files/conversionFile','',302,['code' => 'success','msg' => '转换文件删除成功！']);
                 }else{
-                    system_logs('删除转换文件',session('uname'),0);
+                    add_logs('删除转换文件', 0);
                     $this->redirect('Files/conversionFile','',302,['code' => 'error','msg' => '转换文件删除失败！']);
                 }
             }
@@ -126,7 +126,7 @@ class Files extends Base{
                         delete_conversion($value);
                     } 
                 }
-                system_logs('批量删除转换文件',session('uname'),1);
+                add_logs('批量删除转换文件', 1);
                 $this->redirect('Files/conversionFile','',302,['code' => 'success','msg' => '批量删除转换文件成功！']);
             }else{
                 $this->redirect('Files/conversionFile','',302,['code' => 'error','msg' => '请选择要删除的文件！']);
@@ -174,10 +174,10 @@ class Files extends Base{
                 $this->redirect('Files/exportFile','',302,['code' => 'error','msg' => '参数错误！']);
             }else{
                 if(delete_export($id)){
-                    system_logs('删除导出文件',session('uname'),1);
+                    add_logs('删除导出文件', 1);
                     $this->redirect('Files/exportFile','',302,['code' => 'success','msg' => '导出文件删除成功！']);
                 }else{
-                    system_logs('删除导出文件',session('uname'),0);
+                    add_logs('删除导出文件', 0);
                     $this->redirect('Files/exportFile','',302,['code' => 'error','msg' => '导出文件删除失败！']);
                 }
             }
@@ -191,7 +191,7 @@ class Files extends Base{
                         delete_export($value);
                     }
                 }
-                system_logs('批量删除导出文件',session('uname'),1);
+                add_logs('批量删除导出文件', 1);
                 $this->redirect('Files/exportFile','',302,['code' => 'success','msg' => '批量删除导出文件成功！']);
             }else{
                 $this->redirect('Files/exportFile','',302,['code' => 'error','msg' => '请选择要删除的文件！']);

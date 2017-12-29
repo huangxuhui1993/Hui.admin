@@ -51,15 +51,15 @@ class System extends Base{
 			// 数据验证
             $result = $this->validate($data,'Config');
             if(true !== $result){
-		        system_logs($result,session('uname'),0);
+		        add_logs($result, 0);
                 $this->redirect('system/add','',302,['code' => 'error','msg' => $result,'data' => $data]);
             }else{
             	$db = new ConfigModel();
 				if($db->allowField(true)->save($data)){
-			        system_logs('添加配置项',session('uname'),1);
+			        add_logs('添加配置项', 1);
 					$this->redirect('system/config','',302,['code' => 'success','msg' => '添加配置项成功！']);
 				}else{
-					system_logs('添加配置项',session('uname'),0);
+					add_logs('添加配置项', 0);
 					$this->redirect('system/config','',302,['code' => 'error','msg' => '添加配置项失败！']);
 				}
             }
@@ -89,10 +89,10 @@ class System extends Base{
                 $this->redirect('system/edit',['id' => $id],302,['code' => 'error','msg' => $result]);
             }else{
 				if($db->allowField(true)->save($data,['id' => $id])){
-					system_logs('编辑配置项',session('uname'),1);
+					add_logs('编辑配置项', 1);
 					$this->redirect('system/config','',302,['code' => 'success','msg' => '配置项编辑成功！']);
 				}else{
-					system_logs('编辑配置项',session('uname'),0);
+					add_logs('编辑配置项', 0);
 					$this->redirect('system/config','',302,['code' => 'error','msg' => '配置项编辑失败！']);
 				}
             }
@@ -117,10 +117,10 @@ class System extends Base{
 				$db = ConfigModel::get($id);
 				if($db){
 					if($db->delete()){
-						system_logs('删除配置项',session('uname'),1);
+						add_logs('删除配置项', 1);
 						$this->redirect('system/config','',302,['code' => 'success','msg' => '配置项删除成功！']);
 					}else{
-						system_logs('删除配置项',session('uname'),0);
+						add_logs('删除配置项', 0);
 						$this->redirect('system/config','',302,['code' => 'error','msg' => '配置项删除失败！']);
 					}
 				}else{
@@ -130,7 +130,7 @@ class System extends Base{
 				$this->redirect('system/config','',302,['code' => 'error','msg' => '参数错误！']);
 			}
 		}else{
-			system_logs('删除配置项，非法操作',session('uname'),0);
+			add_logs('删除配置项，非法操作', 0);
 			$this->redirect('system/config','',302,['code' => 'error','msg' => '请您正常操作！']);
 		}
 	}
@@ -166,10 +166,10 @@ class System extends Base{
         	}
 
 			if(self::updateConfig()){
-				system_logs($title[$group].'更新',session('uname'),1);
+				add_logs($title[$group] . '更新', 1);
 				$this->redirect('system/websetup',['group' => $group],302,['code' => 'success','msg' => $title[$group].'更新成功！']);
 			}else{
-				system_logs($title[$group].'更新',session('uname'),0);
+				add_logs($title[$group] . '更新', 0);
 				$this->redirect('system/websetup',['group' => $group],302,['code' => 'error','msg' => $title[$group].'更新失败！']);
 			}
             return;
@@ -227,12 +227,12 @@ class System extends Base{
 					if($db){
 						$db->delete();
 					}else{
-						system_logs('批量删除日志',session('uname'),0);
+						add_logs('批量删除日志', 0);
 						$this->redirect('system/logs','',302,['code' => 'error','msg' => '批量删除失败！']);
 						die();
 					}
 				}
-				system_logs('批量删除日志',session('uname'),1);
+				add_logs('批量删除日志', 1);
 				$this->redirect('system/logs','',302,['code' => 'success','msg' => '批量删除成功！']);
 			}
 		}else{
@@ -243,10 +243,10 @@ class System extends Base{
 				$db = LogsModel::get($id);
 				if($db){
 					if($db->delete()){
-						system_logs('删除日志',session('uname'),1);
+						add_logs('删除日志', 1);
 						$this->redirect('system/logs','',302,['code' => 'success','msg' => '删除成功！']);
 					}else{
-						system_logs('删除日志',session('uname'),0);
+						add_logs('删除日志', 0);
 						$this->redirect('system/logs','',302,['code' => 'error','msg' => '删除失败！']);
 					}
 				}else{
@@ -302,9 +302,9 @@ class System extends Base{
 			$str = file_get_contents($file);
 			$code = htmlentities($str);
 		}
-		system_logs('查看配置文件',session('uname'),1);
-		$this->assign('code',$code);
-		$this->assign('file',str_replace('\\','/',$file));
+		add_logs('查看配置文件', 1);
+		$this->assign('code', $code);
+		$this->assign('file', str_replace('\\', '/', $file));
 		return $this->fetch('public/codemirror');
 	}
 

@@ -86,14 +86,14 @@ class Fields extends Base{
                         $message = $e->getMessage();
                     }
                     if(empty($message)){
-                    	system_logs('字段添加',session('uname'),1);
+                    	add_logs('字段添加', 1);
                         $this->redirect('fields/lis',['mid' => $this->mid],302,['code' => 'success','msg' => '字段添加成功！']);
                     }else{
-                    	system_logs('字段添加：'.$message,session('uname'),0);
+                    	add_logs('字段添加：' . $message, 0);
                         $this->redirect('fields/add',['mid' => $this->mid], 302, ['code' => 'error', 'msg' => $message, 'data' => $data]);
                     }
 				}else{
-					system_logs('字段信息添加',session('uname'),0);
+					add_logs('字段信息添加', 0);
 					$this->redirect('fields/lis',['mid' => $this->mid],302,['code' => 'error','msg' => '字段信息添加失败！']);
 				}
             }
@@ -147,14 +147,14 @@ class Fields extends Base{
                         $message = $e->getMessage();
                     }
                     if(empty($message)){
-                    	system_logs('字段编辑',session('uname'),1);
+                    	add_logs('字段编辑', 1);
                         $this->redirect('fields/lis',['mid' => $this->mid],302,['code' => 'success','msg' => '字段编辑成功！']);
                     }else{
-                    	system_logs('字段编辑：'.$message,session('uname'),0);
+                    	add_logs('字段编辑：' . $message, 0);
                         $this->redirect('fields/edit',['mid' => $this->mid,'id' => $id], 302, ['code' => 'error', 'msg' => $message]);
                     }
 				}else{
-					system_logs('字段信息编辑',session('uname'),0);
+					add_logs('字段信息编辑', 0);
 					$this->redirect('fields/lis',['mid' => $this->mid],302,['code' => 'error','msg' => '字段信息编辑失败！']);
 				}
             }
@@ -195,14 +195,14 @@ class Fields extends Base{
                     $message = $e->getMessage();
                 }
                 if(empty($message)){
-                	system_logs('字段【'.$db->ename.'】删除',session('uname'),1);
+                	add_logs('字段【' . $db->ename . '】删除', 1);
                     $this->redirect('fields/lis',['mid' => $this->mid],302,['code' => 'success','msg' => '字段【'.$db->ename.'】删除成功！']);
                 }else{
-                	system_logs('字段删除：'.$message,session('uname'),0);
+                	add_logs('字段删除：' . $message, 0);
                     $this->redirect('fields/lis',['mid' => $this->mid], 302, ['code' => 'error', 'msg' => $message]);
                 }
 			}else{
-				system_logs('字段信息删除',session('uname'),0);
+				add_logs('字段信息删除', 0);
 				$this->redirect('fields/lis',['mid' => $this->mid],302,['code' => 'error','msg' => '字段信息删除失败！']);
 			}
 		}

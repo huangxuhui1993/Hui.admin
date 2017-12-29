@@ -56,11 +56,7 @@ class User extends Base{
             $result = $this->validate($data,'User');
 
 			if(true !== $result){
-				$this->redirect('User/add','',302,[
-					'code' => 'error',
-					'msg'  => $result,
-					'data' => $data
-	            ]);
+				$this->redirect('User/add','',302,['code' => 'error', 'msg'  => $result, 'data' => $data]);
 			}else{
 				# 注册时间
 				$data['regtime'] = time();
@@ -70,10 +66,10 @@ class User extends Base{
 						'uid' => $user->id,
 						'group_id' => $data['group_id']
 					]);
-					system_logs('添加管理员',session('uname'),1);
+					add_logs('添加管理员', 1);
 					$this->redirect('User/lis','',302,['code' => 'success','msg' => '管理员添加成功！']);
 				}else{
-					system_logs('添加管理员',session('uname'),0);
+					add_logs('添加管理员', 0);
 					$this->redirect('User/lis','',302,['code' => 'error','msg' => '管理员添加失败！']);
 				}
 			}
@@ -131,12 +127,12 @@ class User extends Base{
 					# 修改用户组
 					$aga->save(['group_id' => $data['group_id']],['uid' => $id]);
 					
-					system_logs('编辑管理员',session('uname'),1);
+					add_logs('编辑管理员', 1);
 					$this->redirect('User/lis','',302,['code' => 'success','msg' => '管理员编辑成功！']);
 
 				}else{
 
-					system_logs('编辑管理员',session('uname'),0);
+					add_logs('编辑管理员', 0);
 					$this->redirect('User/lis','',302,['code' => 'error','msg' => '管理员编辑失败！']);
 					
 				}
@@ -184,18 +180,18 @@ class User extends Base{
 				if($user->delete()){
 					if($aga->where(['uid' => $user->id])->delete()){
 						
-						system_logs('删除管理员',session('uname'),1);
+						add_logs('删除管理员', 1);
 						$this->redirect('User/lis','',302,[
 							'code' => 'success',
 							'msg' => '管理员【'.$user->username.'】删除成功！'
 						]);
 
 					}else{
-						system_logs('删除管理组',session('uname'),0);
+						add_logs('删除管理组', 0);
 						$this->redirect('User/lis','',302,['code' => 'error','msg' => '管理组删除失败！']);
 					}
 				}else{
-					system_logs('删除管理员',session('uname'),0);
+					add_logs('删除管理员', 0);
 					$this->redirect('User/lis','',302,['code' => 'error','msg' => '管理员信息删除失败！']);
 				}
 			}else{
@@ -213,34 +209,34 @@ class User extends Base{
 		if($request->isGet()){
 			$id = $request->param('id/d');
 			$state = $request->param('state/d');
-			if(!isset($id) || !isset($state)){
-				$this->redirect('User/lis','',302,['code' => 'error','msg' => '参数错误！']);
+			if(empty($id) || !is_numeric($id) || !is_numeric($state)){
+				$this->redirect('User/lis', '', 302, ['code' => 'error', 'msg' => '参数错误！']);
 			}else{
 				$user = UserModel::get($id);
 				if($user){
-					$data['state'] = $state == 0 ? 1:0;
-					$msg = $state == 0 ? '启用':'禁用';
+					$data['state'] = $state == 0 ? 1 : 0;
+					$msg = $state == 0 ? '启用' : '禁用';
 					if($user->save($data)) {
 
-						system_logs('管理员【'.$user->username.'】'.$msg,session('uname'),1);
+						add_logs('管理员【' . $user->username. '】' . $msg, 1);
 
 						$this->redirect('User/lis','',302,[
 							'code' => 'success',
-							'msg' => '管理员【'.$user->username.'】'.$msg.'成功！'
+							'msg' => '管理员【' . $user->username . '】' . $msg . '成功！'
 						]);
 
 					}else{
 
-						system_logs('管理员【'.$user->username.'】'.$msg,session('uname'),0);
+						add_logs('管理员【' . $user->username . '】' . $msg, 0);
 
-						$this->redirect('User/lis','',302,[
+						$this->redirect('User/lis', '', 302, [
 							'code' => 'error',
-							'msg' => '管理员【'.$user->username.'】'.$msg.'失败！'
+							'msg' => '管理员【' . $user->username . '】' . $msg . '失败！'
 						]);
 
 					}
 				}else{
-					$this->redirect('User/lis','',302,['code' => 'error','msg' => '数据不存在！']);
+					$this->redirect('User/lis', '', 302, ['code' => 'error', 'msg' => '数据不存在！']);
 				}
 			}
 		}

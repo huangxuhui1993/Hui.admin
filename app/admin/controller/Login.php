@@ -27,10 +27,10 @@ class Login extends Controller{
             
             $data = $request->post();
             // 数据验证
-            $result = $this->validate($data,'Login');
+            $result = $this->validate($data, 'Login');
             
             if(true !== $result){
-                return json(['info'=>$result]);
+                return json(['info' => $result]);
             }else{
                 
                 // 检测验证码
@@ -39,19 +39,18 @@ class Login extends Controller{
                 }
                 $user = Db::name('user')->where(['username' => $data['name']])->find();
                 // 设置session
-                Session::set('uid',$user['id']);
-                Session::set('uname',$user['username']);
-                Session::set('loginip',$user['loginip']);
-                Session::set('logintime',$user['logintime']);
+                Session::set('uid', $user['id']);
+                Session::set('uname', $user['username']);
+                Session::set('loginip', $user['loginip']);
+                Session::set('logintime', $user['logintime']);
                 // 登录修改
                 UserModel::where('id',$user['id'])->update([
                     'loginnumber' => $user['loginnumber'] + 1,
                     'logintime'   => time(),
                     'loginip'     => $request->ip(),
                 ]);
-                // 记录日志
-                system_logs('登录系统',$user['username'],1);
-                return json(['status' => 1,'url' => url('index/index')]);
+                add_logs('登录系统', 1);
+                return json(['status' => 1, 'url' => url('index/index')]);
             }
         }else{
             die('非法操作！');
@@ -74,8 +73,7 @@ class Login extends Controller{
     // 退出系统
     public function logout(){
         if(Session::has('uid') && Session::has('uname')){
-            // 记录日志
-            system_logs('退出系统',Session::get('uname'),1);
+            add_logs('退出系统', 1);
             Session::delete('uid');
             Session::delete('uname');
             Session::clear();

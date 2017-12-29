@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2017-10-16 11:01:54
+Date: 2017-12-15 13:23:20
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -220,13 +220,13 @@ CREATE TABLE `hui_config` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_name` (`name`),
   KEY `group` (`group`)
-) ENGINE=MyISAM AUTO_INCREMENT=42 DEFAULT CHARSET=utf8 COMMENT='配置项表';
+) ENGINE=MyISAM AUTO_INCREMENT=45 DEFAULT CHARSET=utf8 COMMENT='配置项表';
 
 -- ----------------------------
 -- Records of hui_config
 -- ----------------------------
-INSERT INTO `hui_config` VALUES ('2', '2', 'Snoop博客', 'keywords', '网站关键词', '2', '', '1497971834', '1498990515', '1', 'Hui.admin社区', '2');
-INSERT INTO `hui_config` VALUES ('3', '2', 'Snoop博客', 'describle', '网站描述', '2', '', '1497971887', '1498988874', '1', 'Hui.admin社区', '3');
+INSERT INTO `hui_config` VALUES ('2', '2', 'Snoop博客', 'keywords', '网站关键词', '2', '', '1497971834', '1498990515', '1', 'Hui.admin', '2');
+INSERT INTO `hui_config` VALUES ('3', '2', 'Snoop博客', 'describle', '网站描述', '2', '', '1497971887', '1498988874', '1', 'Hui.admin', '3');
 INSERT INTO `hui_config` VALUES ('4', '4', '1:开启,0:关闭', 'status', '是否关闭网站', '2', '', '1497971996', '1498319842', '1', '1', '4');
 INSERT INTO `hui_config` VALUES ('5', '3', '网站系统正在努力建设中，请稍后访问......', 'stopinfo', '暂停原因', '2', '', '1497972982', '1497972982', '1', '网站系统正在努力建设中，请稍后访问......', '5');
 INSERT INTO `hui_config` VALUES ('6', '2', 'http://127.0.0.4', 'siteurl', '网站域名', '2', '', '1497973052', '1497973052', '1', 'http://127.0.0.4', '6');
@@ -244,7 +244,7 @@ INSERT INTO `hui_config` VALUES ('19', '2', '', 'mailer_from_email', '发件人�
 INSERT INTO `hui_config` VALUES ('20', '2', '', 'mailer_from_name', '发件人名称', '3', '', '1498142553', '1498142553', '1', 'Hui.admin系统邮件', '8');
 INSERT INTO `hui_config` VALUES ('21', '2', '', 'mailer_reply_email', '收件人邮箱', '3', '', '1498142613', '1498142613', '1', '952612251@qq.com', '9');
 INSERT INTO `hui_config` VALUES ('22', '2', '', 'mailer_reply_name', '收件人名称', '3', '', '1498177729', '1498177729', '1', 'Hui.admin系统邮件', '10');
-INSERT INTO `hui_config` VALUES ('23', '2', '', 'sitename', '网站名称', '2', '', '1498318324', '1498318324', '1', 'Hui.admin社区', '1');
+INSERT INTO `hui_config` VALUES ('23', '2', '', 'sitename', '网站名称', '2', '', '1498318324', '1498318324', '1', 'Hui.admin', '1');
 INSERT INTO `hui_config` VALUES ('24', '2', '', 'codelength', '验证码长度', '2', '', '1498318412', '1498318412', '1', '3', '11');
 INSERT INTO `hui_config` VALUES ('26', '4', '1:开启,0:关闭', 'is_upload', '开启上传功能', '4', '', '1498319517', '1498319859', '1', '1', '1');
 INSERT INTO `hui_config` VALUES ('27', '2', '', 'photodir', '图片存放位置', '4', '', '1498319602', '1498319602', '1', 'images', '2');
@@ -259,6 +259,9 @@ INSERT INTO `hui_config` VALUES ('35', '2', '', 'office_dir', 'Office上传目�
 INSERT INTO `hui_config` VALUES ('36', '2', '', 'photo_dir', '图片上传目录', '4', '', '1498828439', '1498828439', '1', 'images', '10');
 INSERT INTO `hui_config` VALUES ('37', '2', '', 'video_dir', '视频上传目录', '4', '', '1498828486', '1498828486', '1', 'video', '12');
 INSERT INTO `hui_config` VALUES ('38', '2', '', 'attach_dir', '附件上传目录', '4', '', '1498828517', '1498828517', '1', 'attach', '13');
+INSERT INTO `hui_config` VALUES ('42', '2', '', 'wechat_appid', '微信公众号-开发者ID(AppID)', '3', '', '1512385999', '1512386208', '1', 'wx8ac4d4f726859e80', '10');
+INSERT INTO `hui_config` VALUES ('43', '2', '', 'wechat_appsercert', '微信公众号-开发者密码(AppSecret)', '3', '', '1512386051', '1512386239', '1', '3577d39564ddb1c8a0d91afcdac99aa0', '11');
+INSERT INTO `hui_config` VALUES ('44', '2', '', 'wechat_token', '微信公众号-令牌(Token)', '3', '', '1512386107', '1512386257', '1', 'EBEFDCvE5raTCu6An7Gd', '12');
 
 -- ----------------------------
 -- Table structure for `hui_convert`
@@ -429,7 +432,7 @@ CREATE TABLE `hui_logs` (
   `status` int(1) NOT NULL,
   `time` int(14) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=578 DEFAULT CHARSET=utf8 COMMENT='系统日志表';
+) ENGINE=InnoDB AUTO_INCREMENT=622 DEFAULT CHARSET=utf8 COMMENT='系统日志表';
 
 -- ----------------------------
 -- Records of hui_logs
@@ -980,6 +983,50 @@ INSERT INTO `hui_logs` VALUES ('574', 'admin', '127.0.0.1', '修改源代码F:/p
 INSERT INTO `hui_logs` VALUES ('575', 'admin', '127.0.0.1', '修改源代码F:/phpStudy/WWW/Hui.admin/public/static/notepad.txt', '1', '1508122010');
 INSERT INTO `hui_logs` VALUES ('576', 'admin', '127.0.0.1', '修改源代码F:/phpStudy/WWW/Hui.admin/public/static/notepad.txt', '1', '1508122400');
 INSERT INTO `hui_logs` VALUES ('577', 'admin', '127.0.0.1', '修改源代码F:/phpStudy/WWW/Hui.admin/public/static/notepad.txt', '1', '1508122549');
+INSERT INTO `hui_logs` VALUES ('578', 'admin', '127.0.0.1', '修改源代码F:/phpStudy/WWW/Hui.admin/public/static/notepad.txt', '1', '1508123262');
+INSERT INTO `hui_logs` VALUES ('579', 'admin', '127.0.0.1', '查看源代码F:\\phpStudy\\WWW\\Hui.admin\\public/static/notepad.txt', '1', '1508135876');
+INSERT INTO `hui_logs` VALUES ('580', 'admin', '127.0.0.1', '修改源代码F:/phpStudy/WWW/Hui.admin/public/static/notepad.txt', '1', '1508142220');
+INSERT INTO `hui_logs` VALUES ('581', 'admin', '127.0.0.1', '修改源代码F:/phpStudy/WWW/Hui.admin/public/static/notepad.txt', '1', '1508142222');
+INSERT INTO `hui_logs` VALUES ('582', 'admin', '127.0.0.1', '修改源代码F:/phpStudy/WWW/Hui.admin/public/static/notepad.txt', '1', '1508142223');
+INSERT INTO `hui_logs` VALUES ('583', 'admin', '127.0.0.1', '查看源代码F:\\phpStudy\\WWW\\Hui.admin\\public/static/notepad.txt', '1', '1508142228');
+INSERT INTO `hui_logs` VALUES ('584', 'admin', '127.0.0.1', '查看源代码F:\\phpStudy\\WWW\\Hui.admin\\public/static/notepad.txt', '1', '1508142290');
+INSERT INTO `hui_logs` VALUES ('585', 'admin', '127.0.0.1', '查看源代码F:\\phpStudy\\WWW\\Hui.admin\\public/static/notepad.txt', '1', '1508146952');
+INSERT INTO `hui_logs` VALUES ('586', 'admin', '127.0.0.1', '登录系统', '1', '1508202921');
+INSERT INTO `hui_logs` VALUES ('587', 'admin', '127.0.0.1', '查看源代码F:\\phpStudy\\WWW\\Hui.admin\\public/static/notepad.txt', '1', '1508214457');
+INSERT INTO `hui_logs` VALUES ('588', 'admin', '127.0.0.1', '登录系统', '1', '1508910755');
+INSERT INTO `hui_logs` VALUES ('589', 'admin', '127.0.0.1', '清除缓存', '1', '1508910770');
+INSERT INTO `hui_logs` VALUES ('590', 'admin', '127.0.0.1', '网站配置更新', '1', '1508917725');
+INSERT INTO `hui_logs` VALUES ('591', 'admin', '127.0.0.1', '查看源代码F:\\phpStudy\\WWW\\Hui.admin\\public/static/notepad.txt', '1', '1508918262');
+INSERT INTO `hui_logs` VALUES ('592', 'admin', '127.0.0.1', '登录系统', '1', '1508927612');
+INSERT INTO `hui_logs` VALUES ('593', 'admin', '127.0.0.1', '清除缓存', '1', '1508927691');
+INSERT INTO `hui_logs` VALUES ('594', 'admin', '127.0.0.1', '清除缓存', '0', '1508927693');
+INSERT INTO `hui_logs` VALUES ('595', 'admin', '127.0.0.1', '查看源代码F:\\phpStudy\\WWW\\Hui.admin\\public/static/notepad.txt', '1', '1508927699');
+INSERT INTO `hui_logs` VALUES ('596', 'admin', '127.0.0.1', '登录系统', '1', '1509000054');
+INSERT INTO `hui_logs` VALUES ('597', 'admin', '127.0.0.1', '清除缓存', '1', '1509004821');
+INSERT INTO `hui_logs` VALUES ('598', 'admin', '127.0.0.1', '查看源代码F:\\phpStudy\\WWW\\Hui.admin\\public/static/notepad.txt', '1', '1509004893');
+INSERT INTO `hui_logs` VALUES ('599', 'admin', '127.0.0.1', '清除缓存', '1', '1509005191');
+INSERT INTO `hui_logs` VALUES ('600', 'admin', '127.0.0.1', '清除缓存', '0', '1509005192');
+INSERT INTO `hui_logs` VALUES ('601', 'admin', '127.0.0.1', '清除缓存', '0', '1509005193');
+INSERT INTO `hui_logs` VALUES ('602', 'admin', '127.0.0.1', '登录系统', '1', '1509008301');
+INSERT INTO `hui_logs` VALUES ('603', 'admin', '127.0.0.1', '登录系统', '1', '1512385907');
+INSERT INTO `hui_logs` VALUES ('604', 'admin', '127.0.0.1', '添加配置项', '1', '1512385999');
+INSERT INTO `hui_logs` VALUES ('605', 'admin', '127.0.0.1', '添加配置项', '1', '1512386051');
+INSERT INTO `hui_logs` VALUES ('606', 'admin', '127.0.0.1', '添加配置项', '1', '1512386107');
+INSERT INTO `hui_logs` VALUES ('607', 'admin', '127.0.0.1', '接口配置更新', '1', '1512386141');
+INSERT INTO `hui_logs` VALUES ('608', 'admin', '127.0.0.1', '接口配置更新', '1', '1512386144');
+INSERT INTO `hui_logs` VALUES ('609', 'admin', '127.0.0.1', '查看配置文件', '1', '1512386148');
+INSERT INTO `hui_logs` VALUES ('610', 'admin', '127.0.0.1', '编辑配置项', '1', '1512386208');
+INSERT INTO `hui_logs` VALUES ('611', 'admin', '127.0.0.1', '编辑配置项', '1', '1512386239');
+INSERT INTO `hui_logs` VALUES ('612', 'admin', '127.0.0.1', '编辑配置项', '1', '1512386257');
+INSERT INTO `hui_logs` VALUES ('613', 'admin', '127.0.0.1', '接口配置更新', '1', '1512386262');
+INSERT INTO `hui_logs` VALUES ('614', 'admin', '127.0.0.1', '查看配置文件', '1', '1512386273');
+INSERT INTO `hui_logs` VALUES ('615', 'admin', '127.0.0.1', '查看配置文件', '1', '1512386573');
+INSERT INTO `hui_logs` VALUES ('616', 'admin', '127.0.0.1', '登录系统', '1', '1512386904');
+INSERT INTO `hui_logs` VALUES ('617', 'admin', '127.0.0.1', '接口配置更新', '1', '1512387116');
+INSERT INTO `hui_logs` VALUES ('618', 'admin', '127.0.0.1', '接口配置更新', '1', '1512387117');
+INSERT INTO `hui_logs` VALUES ('619', 'admin', '127.0.0.1', '登录系统', '1', '1512646080');
+INSERT INTO `hui_logs` VALUES ('620', 'admin', '127.0.0.1', '接口配置更新', '1', '1512646095');
+INSERT INTO `hui_logs` VALUES ('621', 'admin', '127.0.0.1', '登录系统', '1', '1513304081');
 
 -- ----------------------------
 -- Table structure for `hui_map_statistics`
@@ -1075,4 +1122,4 @@ CREATE TABLE `hui_user` (
 -- Records of hui_user
 -- ----------------------------
 INSERT INTO `hui_user` VALUES ('1', 'snoop', '195e3ea51a813d3806a37eb4ae4e8671', '0', '952612251@qq.com', '18710366574', '1487319295', '1500536010', '122', '127.0.0.1', '1', '1507615715');
-INSERT INTO `hui_user` VALUES ('27', 'admin', '195e3ea51a813d3806a37eb4ae4e8671', '0', '2412842937@qq.com', '187103665746', '1498665763', '1508121976', '90', '127.0.0.1', '1', '1507627772');
+INSERT INTO `hui_user` VALUES ('27', 'admin', '195e3ea51a813d3806a37eb4ae4e8671', '0', '2412842937@qq.com', '187103665746', '1498665763', '1513304081', '99', '127.0.0.1', '1', '1507627772');

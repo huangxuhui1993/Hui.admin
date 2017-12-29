@@ -114,7 +114,7 @@ class Upload extends Base{
             // 移动文件
             $info = $file->validate($where)->move(HUI_FILES.$url);
             if($info){
-                $file_url = $url.'/'.str_replace('\\','/',$info->getSaveName());
+                $file_url = $url . '/' . str_replace('\\', '/', $info->getSaveName());
                 // 数据库存储上传文件数据
                 $db = new AttachModel();
                 $data = [
@@ -131,7 +131,7 @@ class Upload extends Base{
                 ];
                 $db->save($data);
                 // 记录日志
-                system_logs('上传文件'.$info->getFilename(),session('uname'),1);
+                add_logs('上传文件' . $info->getFilename(), 1);
                 // 上传成功 获取上传文件信息
                 $result = ['message' => '上传成功！','error' => 0, 'id' => $db->id,'ext' => $info->getExtension()];
             }else{

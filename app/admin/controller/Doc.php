@@ -26,21 +26,21 @@ class Doc extends Base{
 			$db = new DocModel();
 			$data = $request->post();
         	// 数据验证
-            $result = $this->validate($data,'Doc');
+            $result = $this->validate($data, 'Doc');
             if(true !== $result){
-                $this->redirect('doc/add','',302,['code' => 'error','msg' => $result,'data' => $data]);
+                $this->redirect('doc/add', '', 302, ['code' => 'error', 'msg' => $result, 'data' => $data]);
             }else{
 				if($db->allowField(true)->save($data)){
-					system_logs('文档属性添加',session('uname'),1);
-					$this->redirect('doc/lis','',302,['code' => 'success','msg' => '文档属性添加成功！']);
+					add_logs('文档属性添加', 1);
+					$this->redirect('doc/lis', '', 302, ['code' => 'success', 'msg' => '文档属性添加成功！']);
 				}else{
-					system_logs('文档属性添加',session('uname'),0);
-					$this->redirect('doc/lis','',302,['code' => 'error','msg' => '文档属性添加失败！']);
+					add_logs('文档属性添加', 0);
+					$this->redirect('doc/lis', '', 302, ['code' => 'error', 'msg' => '文档属性添加失败！']);
 				}
             }
             return;
 		}
-		$this->assign('bread',breadcrumb([$this->bread,'添加属性']));
+		$this->assign('bread', breadcrumb([$this->bread, '添加属性']));
 		return $this->fetch();
 	}
 
@@ -60,10 +60,10 @@ class Doc extends Base{
                 $this->redirect('doc/edit',['id'=>$id],302,['code' => 'error','msg' => $result]);
             }else{
 				if($db->save($data,['id' => $data['id']])){
-					system_logs('文档属性编辑',session('uname'),1);
+					add_logs('文档属性编辑', 1);
 					$this->redirect('doc/lis','',302,['code' => 'success','msg' => '文档属性编辑成功！']);
 				}else{
-					system_logs('文档属性编辑',session('uname'),0);
+					add_logs('文档属性编辑', 0);
 					$this->redirect('doc/lis','',302,['code' => 'error','msg' => '文档属性编辑失败！']);
 				}
             }
@@ -71,8 +71,8 @@ class Doc extends Base{
 		}
 		// 获取全部原始数据
 		$det_rs = DocModel::get($id)->getData();
-		$this->assign('rs',$det_rs);
-		$this->assign('bread',breadcrumb([$this->bread,'编辑属性']));
+		$this->assign('rs', $det_rs);
+		$this->assign('bread', breadcrumb([$this->bread, '编辑属性']));
 		return $this->fetch();
 	}
 
@@ -84,10 +84,10 @@ class Doc extends Base{
 				$db = DocModel::get($id);
 				if($db){
 					if($db->delete()){
-						system_logs('文档属性删除',session('uname'),1);
+						add_logs('文档属性删除', 1);
 						$this->redirect('doc/lis','',302,['code' => 'success','msg' => '文档属性删除成功！']);
 					}else{
-						system_logs('文档属性删除',session('uname'),0);
+						add_logs('文档属性删除', 0);
 						$this->redirect('doc/lis','',302,['code' => 'error','msg' => '文档属性删除失败！']);
 					}
 				}else{
@@ -118,13 +118,13 @@ class Doc extends Base{
 			}else{
 				$doc = DocModel::get($id);
 				if($doc){
-					$data['status'] = $status == 0 ? 1:0;
-					$msg = $status == 0 ? '启用':'禁用';
+					$data['status'] = $status == 0 ? 1 : 0;
+					$msg = $status == 0 ? '启用' : '禁用';
 					if($doc->save($data)) {
-						system_logs('文档属性状态设置'.$msg,session('uname'),1);
+						add_logs('文档属性状态设置' . $msg, 1);
 						$this->redirect('doc/lis','',302,['code' => 'success','msg' => "文档属性{$msg}成功！"]);
 					}else{
-						system_logs('文档属性状态设置'.$msg,session('uname'),0);
+						add_logs('文档属性状态设置' . $msg, 0);
 						$this->redirect('doc/lis','',302,['code' => 'error','msg' => "文档属性{$msg}失败！"]);
 					}
 				}else{

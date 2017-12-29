@@ -171,10 +171,10 @@ class Channel extends Base{
 				}else{
 					$db = ChannelModel::get($id);
 					if($db->delete()){
-						system_logs('栏目【'.$db->cname.'】删除',session('uname'),1);
-						$this->redirect('channel/lis','',302,['code' => 'success','msg' => '栏目【'.$db->cname.'】删除成功！']);
+						add_logs('栏目【' . $db->cname . '】删除', 1);
+						$this->redirect('channel/lis','',302,['code' => 'success','msg' => '栏目【' . $db->cname . '】删除成功！']);
 					}else{
-						system_logs('栏目删除',session('uname'),0);
+						add_logs('栏目删除', 0);
 						$this->redirect('channel/lis','',302,['code' => 'error','msg' => '栏目删除失败！']);
 					}
 				}
@@ -203,11 +203,11 @@ class Channel extends Base{
 					$data['status'] = $status == 0 ? 1:0;
 					$msg = $status == 0 ? '启用':'禁用';
 					if($channel->save($data)) {
-						system_logs('栏目状态设置'.$msg,session('uname'),1);
-						$this->redirect('channel/lis','',302,['code' => 'success','msg' => "栏目【".$channel->cname."】{$msg}成功！"]);
+						add_logs('栏目状态设置' . $msg, 1);
+						$this->redirect('channel/lis','',302,['code' => 'success','msg' => "栏目【" . $channel->cname . "】{$msg}成功！"]);
 					}else{
-						system_logs('栏目状态设置'.$msg,session('uname'),0);
-						$this->redirect('channel/lis','',302,['code' => 'error','msg' => "栏目【".$channel->cname."】{$msg}失败！"]);
+						add_logs('栏目状态设置' . $msg, 0);
+						$this->redirect('channel/lis','',302,['code' => 'error','msg' => "栏目【" . $channel->cname . "】{$msg}失败！"]);
 					}
 				}else{
 					$this->redirect('channel/lis','',302,['code' => 'error','msg' => '数据不存在！']);

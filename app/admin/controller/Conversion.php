@@ -59,24 +59,24 @@ class Conversion extends Base{
         if($request->isGet()){
             $id = $request->param('id/d');
             if(!isset($id) || empty($id)){
-                $this->redirect('conversion/lis','',302,['code' => 'error','msg' => '参数错误！']);
+                $this->redirect('conversion/lis', '', 302, ['code' => 'error', 'msg' => '参数错误！']);
             }else{
                 $db = ConvertModel::get($id);
                 if($db){
                     if($db->delete()){
                         // 删除文件
-                        $url = HUI_FILES.$db->url;
+                        $url = HUI_FILES . $db->url;
                         if(is_file($url)){
                             unlink($url);
                         }
-                        system_logs('删除转换文件',session('uname'),1);
-                        $this->redirect('conversion/lis','',302,['code' => 'success','msg' => '转换文件删除成功！']);
+                        add_logs('删除转换文件', 1);
+                        $this->redirect('conversion/lis', '', 302, ['code' => 'success', 'msg' => '转换文件删除成功！']);
                     }else{
-                        system_logs('删除转换文件',session('uname'),0);
-                        $this->redirect('conversion/lis','',302,['code' => 'error','msg' => '转换文件删除失败！']);
+                        add_logs('删除转换文件', 0);
+                        $this->redirect('conversion/lis', '', 302, ['code' => 'error', 'msg' => '转换文件删除失败！']);
                     }
                 }else{
-                    $this->redirect('conversion/lis','',302,['code' => 'error','msg' => '数据不存在！']);
+                    $this->redirect('conversion/lis', '', 302, ['code' => 'error', 'msg' => '数据不存在！']);
                 }
             }
         }
@@ -120,38 +120,36 @@ class Conversion extends Base{
                 $result = $attach->where($where)->find();
                 if($result){
                     // Office文件绝对路径
-                    $word_file = HUI_FILES .$result['url'];
+                    $word_file = HUI_FILES . $result['url'];
 
                     // 文件保存绝对路径
-                    $convert_dir = HUI_FILES .Config::get('websetup.convert_dir').DS;
+                    $convert_dir = HUI_FILES . Config::get('websetup.convert_dir') . DS;
 
                     if(!is_dir($convert_dir)){
                         mkdir($convert_dir);
-                        chmod($convert_dir,0777); // 设置权限
+                        chmod($convert_dir, 0777); // 设置权限
                     }
 
-                    $info = self::run_conversion($word_file,$convert_dir,$data['format']);
+                    $info = self::run_conversion($word_file, $convert_dir, $data['format']);
 
                     if($info['error'] == 0){
                         // 数据库记录数据
                         $db->allowField(true)->save([
                             'uid'   => session('uid'),
                             'title' => $data['uploadfile'],
-                            'name'  => $info['file'].'.'.$info['ext'],
+                            'name'  => $info['file'] . '.' . $info['ext'],
                             'ext'   => $info['ext'],
-                            'url'   => 'convert/'.$info['file'].'.'.$info['ext'],
+                            'url'   => 'convert/' . $info['file'] . '.' . $info['ext'],
                             'page'  => $info['page']
                         ]);
-                        // 记录日志
-                        system_logs('文件转换',session('uname'),1);
+                        add_logs('文件转换', 1);
                         return json(['error' => 0]);
                     }else{
-                        // 记录日志
-                        system_logs('文件转换：'.$info['msg'],session('uname'),0);
-                        return json(['error' => 1,'msg' => $info['msg']]);
+                        add_logs('文件转换：' . $info['msg'], 0);
+                        return json(['error' => 1, 'msg' => $info['msg']]);
                     }
                 }else{
-                    return json(['error' => 1,'msg' => '上传文件不存在']);
+                    return json(['error' => 1, 'msg' => '上传文件不存在']);
                 }
 
             }

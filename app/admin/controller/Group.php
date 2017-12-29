@@ -61,10 +61,10 @@ class Group extends Base{
                 $this->redirect('Group/add','',302,['code' => 'error','msg' => $result,'data' => $data]);
             }else{
 				if($db->allowField(true)->save($data)){
-					system_logs('添加角色',session('uname'),1);
+					add_logs('添加角色', 1);
 					$this->redirect('Group/lis','',302,['code' => 'success','msg' => '角色添加成功！']);
 				}else{
-					system_logs('添加角色',session('uname'),0);
+					add_logs('添加角色', 0);
 					$this->redirect('Group/lis','',302,['code' => 'error','msg' => '角色添加失败！']);
 				} 
             }
@@ -104,10 +104,10 @@ class Group extends Base{
 	                $this->redirect('Group/edit',['id' => $id],302,['code' => 'error','msg' => $result]);
 	            }else{
 					if($db->allowField(true)->save($data,['id' => $id])){
-						system_logs('编辑角色',session('uname'),1);
+						add_logs('编辑角色', 1);
 						$this->redirect('Group/lis','',302,['code' => 'success','msg' => '角色编辑成功！']);
 					}else{
-						system_logs('编辑角色',session('uname'),0);
+						add_logs('编辑角色', 0);
 						$this->redirect('Group/edit',['id' => $id],302,['code' => 'error','msg' => '没有更新数据！']);
 					} 
 	            }
@@ -141,21 +141,21 @@ class Group extends Base{
 	public function del(Request $request){
 		if($request->isGet()){
 			$id = $request->param('id/d');
-			if(isset($id) && !empty($id)){
+			if(is_numeric($id) && !empty($id)){
 				$result = AuthGroupModel::get($id);
 				if(!$result){
-					$this->redirect('Group/lis','',302,['code' => 'error','msg' => '数据不存在！']);
+					$this->redirect('Group/lis', '', 302, ['code' => 'error', 'msg' => '数据不存在！']);
 				}else{
 					if($result->delete()){
-						system_logs('删除角色【'.$result->title.'】',session('uname'),1);
-						$this->redirect('Group/lis','',302,['code' => 'success','msg' => '角色【'.$result->title.'】删除成功！']);
+						add_logs('删除角色【' . $result->title . '】', 1);
+						$this->redirect('Group/lis', '', 302, ['code' => 'success', 'msg' => '角色【' . $result->title . '】删除成功！']);
 					}else{
-						system_logs('删除角色【'.$result->title.'】',session('uname'),0);
-						$this->redirect('Group/lis','',302,['code' => 'error','msg' => '角色删除失败！']);
+						add_logs('删除角色【' . $result->title . '】', 0);
+						$this->redirect('Group/lis', '', 302, ['code' => 'error', 'msg' => '角色删除失败！']);
 					}				
 				}
 			}else{
-				$this->redirect('Group/lis','',302,['code' => 'error','msg' => '参数错误！']);
+				$this->redirect('Group/lis', '', 302, ['code' => 'error', 'msg' => '参数错误！']);
 			}
 		}
 	}

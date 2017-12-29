@@ -40,10 +40,10 @@ class Rule extends Base{
                 $this->redirect('Rule/add','',302,['code' => 'error','msg' => $result,'data' => $data]);
             }else{
 				if($db->allowField(true)->save($data)){
-					system_logs('添加权限规则',session('uname'),1);
+					add_logs('添加权限规则', 1);
 					$this->redirect('Rule/lis','',302,['code' => 'success','msg' => '权限添加成功！']);
 				}else{
-					system_logs('添加权限规则',session('uname'),0);
+					add_logs('添加权限规则', 0);
 					$this->redirect('Rule/lis','',302,['code' => 'error','msg' => '权限添加失败！']);
 				} 
             }
@@ -73,10 +73,10 @@ class Rule extends Base{
                 	$this->redirect('Rule/edit',['id' => $id],302,['code' => 'error','msg' => $result,'data' => $data]);
 	            }else{
 					if($db->allowField(true)->save($data,['id' => $data['id']])){
-						system_logs('编辑权限规则',session('uname'),1);
+						add_logs('编辑权限规则', 1);
 						$this->redirect('Rule/lis','',302,['code' => 'success','msg' => '权限编辑成功！']);
 					}else{
-						system_logs('编辑权限规则',session('uname'),0);
+						add_logs('编辑权限规则', 0);
 						$this->redirect('Rule/lis','',302,['code' => 'error','msg' => '您没有编辑权限信息！']);
 					} 
 	            }
@@ -113,11 +113,11 @@ class Rule extends Base{
 				}else{
 					$result = AuthRuleModel::get($id);
 					if($result->delete()){
-						system_logs('删除权限规则',session('uname'),1);
-						$this->redirect('Rule/lis','',302,['code' => 'success','msg' => '权限【'.$result->title.'】删除成功！']);
+						add_logs('删除权限规则', 1);
+						$this->redirect('Rule/lis','',302,['code' => 'success','msg' => '权限【' . $result->title . '】删除成功！']);
 					}else{
-						system_logs('删除权限规则',session('uname'),0);
-						$this->redirect('Rule/lis','',302,['code' => 'error','msg' => '权限【'.$result->title.'】删除失败！']);
+						add_logs('删除权限规则', 0);
+						$this->redirect('Rule/lis','',302,['code' => 'error','msg' => '权限【' . $result->title . '】删除失败！']);
 					}
 				}
 			}else{

@@ -63,14 +63,14 @@ class Models extends Base{
                         $message = $e->getMessage();
                     }
                     if(empty($message)){
-                    	system_logs('模型添加',session('uname'),1);
+                    	add_logs('模型添加', 1);
                         $this->redirect('models/lis','',302,['code' => 'success','msg' => '模型添加成功！']);
                     }else{
-                    	system_logs('模型添加：'.$message,session('uname'),0);
+                    	add_logs('模型添加：' . $message, 0);
                         $this->redirect('models/add', '', 302, ['code' => 'error', 'msg' => $message, 'data' => $data]);
                     }
 				}else{
-					system_logs('模型信息添加',session('uname'),0);
+					add_logs('模型信息添加', 0);
 					$this->redirect('models/add','',302,['code' => 'error','msg' => '模型信息添加失败！','data' => $data]);
 				}
             }
@@ -117,14 +117,14 @@ class Models extends Base{
                         $message = $e->getMessage();
                     }
                     if(empty($message)){
-                    	system_logs('模型编辑',session('uname'),1);
+                    	add_logs('模型编辑', 1);
                         $this->redirect('models/lis','',302,['code' => 'success','msg' => '模型编辑成功！']);
                     }else{
-                    	system_logs('模型编辑：'.$message,session('uname'),0);
+                    	add_logs('模型编辑：' . $message, 0);
                         $this->redirect('models/edit',['id'=>$id],302,['code' => 'error','msg' => $message]);
                     }
 				}else{
-					system_logs('模型信息编辑',session('uname'),0);
+					add_logs('模型信息编辑', 0);
 					$this->redirect('models/lis','',302,['code' => 'error','msg' => '模型信息编辑失败！']);
 				}
             }
@@ -175,14 +175,14 @@ class Models extends Base{
                     $message = $e->getMessage();
                 }
                 if(empty($message)){
-                	system_logs('模型【'.$db->name.'】删除',session('uname'),1);
+                	add_logs('模型【' . $db->name . '】删除', 1);
                     $this->redirect('models/lis','',302,['code' => 'success','msg' => '模型【'.$db->name.'】删除成功！']);
                 }else{
-                	system_logs('模型删除：'.$message,session('uname'),0);
+                	add_logs('模型删除：' . $message, 0);
                     $this->redirect('models/lis','',302,['code' => 'error','msg' => $message]);
                 }
 			}else{
-				system_logs('模型信息删除',session('uname'),0);
+				add_logs('模型信息删除', 0);
 				$this->redirect('models/lis','',302,['code' => 'error','msg' => '模型信息删除失败！']);
 			}
 		}else{
