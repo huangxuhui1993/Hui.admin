@@ -5,7 +5,11 @@ use org\util\WeChat;
 
 class Index{
 
-	public function demo(){
+	public function speed(){
+		dump(network_speed());
+	}
+
+	public function shortcut(){
 		$url = 'http://127.0.0.2';
 		$icon = 'http://127.0.0.2/favicon.ico';
 		download_shortcut('Hui.url', $url, $icon);

@@ -36,6 +36,8 @@
 	</ul>
 </div>
 
+<div class="hide" id="network-speed"></div>
+
 {tag:adminjs /}
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="__ADMIN__/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
@@ -51,9 +53,20 @@ $(function(){
 		className:"current",
 		index:0,
 	});
-	// SystemTimer();
 });
 
+network_speed();
+function network_speed(){
+    var st = new Date();
+    $("#network-speed").load("/static/cs.txt", {}, function(){
+    	var et = new Date();
+	    var fs = 1.498 * 1024;  // 图片文件大小(KB)
+		alltime = fs * 1000 / (et - st);
+	    Lnum = Math.pow(10, 2);
+	    calcspeed = Math.round(alltime * Lnum) / Lnum;
+		dump("您的下载速度为：" + calcspeed + " (KB/秒) 约" + Math.round(calcspeed / 128 * Lnum) / Lnum  + "(MB/秒)")
+    });
+}
 </script>
 </body>
 </html>

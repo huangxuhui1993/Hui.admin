@@ -8,9 +8,10 @@
 </nav>
 <div class="page-container">
 	<div class="text-c">
-		<form action="{:url('System/logs')}" method="post" id="search">
+		<form id="search">
+			<input type="hidden" name="apage" id="apage" value="1">
 			<input type="text" name="keywords" id="keywords" value="{$keywords}" placeholder="请输入关键词" class="input-text radius search-input ">
-			<button class="btn btn-success radius" type="button" onclick="search()"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+			<button class="btn btn-success radius" type="button" onclick="ajaxPage(1);return;"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
 		</form>
 	</div>
 	
@@ -21,7 +22,7 @@
 		</span>
 		<span class="r">
 			<form action="{:url('System/logs')}" method="get">
-				共 <span class="badge badge-default radius">{$count}</span> 条数据
+				共 <span class="badge badge-default radius" id="count">{$count}</span> 条数据
 				<input type="text" name="page" class="page-input input-text radius ml-10" onkeyup="if(event.keyCode !=37 && event.keyCode != 39)value=value.replace(/\D/g,'')">
 				<button class="btn btn-default radius" type="submit">跳转</button>
 			</form>
@@ -45,27 +46,12 @@
 						<th class="text-c">操作</th>
 					</tr>
 				</thead>
-				<tbody>
-				{volist name="list" id="vo" empty="$empty_str"}
-					<tr>
-						<td class="text-c"><input type="checkbox" value="{$vo.id}" name="id[]"></td>
-						<td class="text-c">{$vo.id}</td>
-						<td class="text-c">{$vo.username}</td>
-						<td class="text-c">{$vo.ip}</td>
-						<td>{$vo.operate}</td>
-						<td class="text-c">{$vo.time}</td>
-						<td class="text-c">{$vo.status}</td>
-						<td class="text-c f-14">
-							<a title="删除" href="javascript:;" onclick="del_logs('{:url('System/dellog',['id'=>$vo['id']])}')" class="ml-10" data-toggle="tooltip" data-placement="top">
-								<i class="Hui-iconfont">&#xe6e2;</i>
-							</a>
-						</td>
-					</tr>
-				{/volist}
+				<tbody id="ajax_lists">
+					<tr class="text-c"><td colspan="20" class="f-14"><div></div></td></tr>
 				</tbody>
 			</table>
 		</form>
-		<div class="f-r">
+		<div class="f-r" id="page">
 			{:$list->render()}
 		</div>
 	</div>
@@ -75,6 +61,23 @@
 {tag:adminjs /}
 
 <!--请在下方写此页面业务相关的脚本-->
-
+<script type="text/javascript">
+ajaxPage(1);
+function ajaxPage(page){
+	$('#apage').val(page);
+    $.ajax({
+        url:"{:url('System/logs')}",
+        type:'POST',
+        dataType:'json',
+        data: $('#search').serialize(),
+        success:function(json){
+            dump(json)
+            $('#ajax_lists').html(json.list);
+            $('#page').html(json.page);
+            $('#count').text(json.count);
+        }
+    });
+}
+</script>
 </body>
 </html>

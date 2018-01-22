@@ -4,11 +4,13 @@ use think\Db;
 use think\Config;
 use think\Session;
 use think\Request;
+use think\Debug;
 use app\admin\model\Attach;
 use app\admin\model\Channel;
 use app\admin\model\Models;
 use app\common\model\Document;
 use app\home\model\Member;
+
 
 // 上传导出文件路径常量
 define('HUI_FILES', ROOT_PATH . 'public' . DS . Config::get('hui_files_path') . DS);
@@ -171,7 +173,7 @@ function second_to_time($time = 0){
  * @return string            格式化后的带单位的大小
  */
 function truesize($size = 0, $delimiter = ''){
-    if(is_numeric($size) && !empty($delimiter)){
+    if(is_numeric($size)){
         $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
         for ($i = 0; $size >= 1024 && $i < 5; $i++) $size /= 1024;
         return round($size, 2) . $delimiter . $units[$i];

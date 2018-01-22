@@ -1,8 +1,9 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\login\index.html";i:1516178630;}*/ ?>
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{:config('websetup.sitename')}</title>
+    <title><?php echo config('websetup.sitename'); ?></title>
     <link rel="stylesheet" type="text/css" href="__ADMIN__/h-ui.admin/css/login.css" media="all">
     <script type="text/javascript" src="__ADMIN__/lib/jquery/1.9.1/jquery.min.js"></script> 
 </head>
@@ -18,8 +19,8 @@
         <!-- 主体 -->
         <div class="login-body">
             <div class="login-main pr">
-                <form action="{:url('Login/checkLogin')}" method="post" class="login-form">
-                    {:token()}
+                <form action="<?php echo url('Login/checkLogin'); ?>" method="post" class="login-form">
+                    <?php echo token(); ?>
                     <h3 class="welcome"><i class="login-logo"></i>Hui.admin管理平台</h3>
                     <div id="itemBox" class="item-box">
                         <div class="item">
@@ -39,7 +40,7 @@
                         </div>
                         <span class="placeholder_copy placeholder_check">请填写验证码</span>
                         <div>
-                            <img class="verifyimg reloadverify" alt="点击切换" src="{:captcha_src()}">
+                            <img class="verifyimg reloadverify" alt="点击切换" src="<?php echo captcha_src(); ?>">
                         </div>
                     </div>
                     <div class="login_btn_panel">
@@ -53,7 +54,14 @@
             </div>
         </div>
     </div>
-{tag:adminjs /}
+    	<!-- Tag标签加载js -->
+        <script type="text/javascript" src="__ROOT__/js/layer/2.4/layer.js"></script>
+        <script type="text/javascript" src="__ROOT__/js/laydate/laydate.js"></script>
+        <script type="text/javascript" src="__ADMIN__/h-ui/js/H-ui.min.js"></script>
+        <script type="text/javascript" src="__ADMIN__/h-ui.admin/js/H-ui.admin.js"></script>
+        <script type="text/javascript" src="__ADMIN__/lib/icheck/jquery.icheck.min.js"></script>
+        <script type="text/javascript" src="__ROOT__/js/toastr/toastr.js"></script>
+        <script type="text/javascript" src="__ROOT__/js/admin.js"></script>
 <script type="text/javascript">
 	// 登陆表单获取焦点变色
 	$(".login-form").on("focus", "input", function(){

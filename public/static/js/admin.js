@@ -15,12 +15,8 @@ $(function(){
     }
 });
 
-// SystemTimer 系统定时器
-function SystemTimer(){
-
-    fnDate();
-
-    window.setTimeout('SystemTimer()', 1000);
+function dump(str){
+    return console.log(str);
 }
 
 // 消息
@@ -162,7 +158,8 @@ function setup_status(url,status){
 function prompt_window(msg,code){
     if(code == 'success'){
         parent.toastr.success(msg);
-    }else if(code == 'error'){
+    }
+    if(code == 'error'){
         parent.toastr.error(msg);
     }
 }

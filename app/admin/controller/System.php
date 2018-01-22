@@ -194,19 +194,33 @@ class System extends Base{
      * @return mixed
      */
 	public function logs(Request $request){
+		$page = $request->param('apage');
+		
 		$where = [];
+
 		# 关键字查询
-		$keywords = preg_replace('# #','',$request->post('keywords'));
+		$keywords = preg_replace('# #', '', $request->post('keywords'));
 		$this->assign('keywords',$keywords);
 		if(!empty($keywords)){
 			$where['username|ip|operate'] = ['like', '%'.$keywords.'%'];
 		}
 
 		$db = new LogsModel();
-		$list = $db->where($where)->order('id desc')->paginate(15);
-		$this->assign('list',$list);
+		$list = $db->where($where)->paginate(10, false, [
+			'type'     => 'Bootstrap',
+			'var_page' => 'page',
+			'page'     => $page,
+			'path'     =>'javascript:ajaxPage([PAGE]);'
+		]);
+		$this->assign('list', $list);
 
-		$this->assign('count',$db->where($where)->count());
+		$count = $db->where($where)->count();
+		$this->assign('count', $count);
+
+		// AJAX分页数据
+		if(!empty($page) && is_numeric($page)){
+			return json(['list' => $this->fetch('logslist'), 'page' => $list->render(), 'count' => $count, 'where' => $where]);
+		}
 
 		$this->assign('bread',breadcrumb([$this->bread,'系统日志']));
 		return $this->fetch();

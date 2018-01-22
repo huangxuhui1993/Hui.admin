@@ -18,7 +18,6 @@ class Tag extends TagLib{
 
 		$str = <<<EOT
     	<!-- Tag标签加载js -->
-        <script type="text/javascript" src="__ADMIN__/lib/jquery/1.9.1/jquery.min.js"></script> 
         <script type="text/javascript" src="__ROOT__/js/layer/2.4/layer.js"></script>
         <script type="text/javascript" src="__ROOT__/js/laydate/laydate.js"></script>
         <script type="text/javascript" src="__ADMIN__/h-ui/js/H-ui.min.js"></script>
