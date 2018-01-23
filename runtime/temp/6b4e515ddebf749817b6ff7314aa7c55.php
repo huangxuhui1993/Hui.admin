@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\index\index.html";i:1516608181;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1516177545;s:69:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\header.html";i:1516604515;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\menu.html";i:1507622054;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\index\index.html";i:1516611012;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1516177545;s:69:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\header.html";i:1516670989;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\menu.html";i:1507622054;}*/ ?>
 ﻿<!DOCTYPE HTML>
 <html>
 <head>
@@ -44,11 +44,6 @@
 					<li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe63c;</i>  工具 <i class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
 							<li>
-								<a href="javascript:;" onclick="clear_cache('<?php echo url('Common/clearcache'); ?>')">
-								<i class="Hui-iconfont">&#xe609;</i> 清除缓存
-								</a>
-							</li>
-							<li>
 								<a href="javascript:;" onclick="send_mailer_window('<?php echo url('Common/email'); ?>','发送邮件')">
 									<i class="Hui-iconfont">&#xe68a;</i> 发送邮件
 								</a>
@@ -65,7 +60,7 @@
 							</li>
 						</ul>
 					</li>
-					<li><i class="Hui-iconfont">&#xe606;</i> <span id="js-wifi">0MS</span></li>
+					<li><i class="Hui-iconfont">&#xe606;</i> <span id="js-wifi">0M/S</span></li>
 				</ul>
 			</nav>
 			<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
@@ -75,9 +70,18 @@
 					
 					<li class="dropDown dropDown_hover"> <a href="#" class="dropDown_A"><i class="Hui-iconfont f-16">&#xe60d;</i> <?php echo session('uname'); ?> <i class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
-							<li><a href="javascript:;" onclick="personal_window('<?php echo url('Common/userSetup'); ?>','账号设置')">个人信息</a></li>
-							<li><a  href="<?php echo url('home/index/index'); ?>" target="_blank">网站首页</a></li>
-							<li><a href="<?php echo url('Login/logout'); ?>">退出登录</a></li>
+							<li>
+								<a href="javascript:;" onclick="clear_cache('<?php echo url('Common/clearcache'); ?>')">清除缓存</a>
+							</li>
+							<li>
+								<a href="javascript:;" onclick="personal_window('<?php echo url('Common/userSetup'); ?>','账号设置')">个人信息</a>
+							</li>
+							<li>
+								<a href="<?php echo url('home/index/index'); ?>" target="_blank">网站首页</a>
+							</li>
+							<li>
+								<a href="<?php echo url('Login/logout'); ?>">退出登录</a>
+							</li>
 						</ul>
 					</li>
 					<li id="Hui-msg"> <a href="javascript:;" onclick="message()" title="消息"><span class="badge badge-danger">1</span><i class="Hui-iconfont f-16">&#xe62f;</i></a> </li>
@@ -235,7 +239,7 @@ function network_speed(){
 		alltime = fs * 1000 / (et - st);
 	    Lnum = Math.pow(10, 2);
 	    calcspeed = Math.round(alltime * Lnum) / Lnum;
-		dump("您的下载速度为：" + calcspeed + " (KB/秒) 约" + Math.round(calcspeed / 128 * Lnum) / Lnum  + "(MB/秒)")
+		$('#js-wifi').text(Math.round(calcspeed / 128 * Lnum) / Lnum + 'M/S');
     });
 }
 </script>

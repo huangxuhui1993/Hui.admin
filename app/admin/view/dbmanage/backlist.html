@@ -40,14 +40,18 @@
 			{volist name="list" id="vo" empty="$empty_str"}
 				<tr class="text-c">
                     <td>{$i}</td>
-                    <td>{$vo.filename}</td>
+                    <td>
+						<a title="查看" href="javascript:;" onclick="get_sql_file('{:url('Common/codemirror')}', 'public/uploads/{$backup_dir}/{$vo.filename}')" class="f-14" data-toggle="tooltip" data-placement="top">
+							<span class="label label-success radius"><i class="Hui-iconfont">&#xe709;</i> {$vo.filename}</span>
+						</a>
+                    </td>
                     <td>{:get_username($vo.uid)}</td>
                     <td align="center">{:date('Y-m-d H:i:s',$vo['create_time'])}</td>
                     <td class="f-14">
                         <a title="恢复备份" href="" data-toggle="tooltip" data-placement="top">
 	                    	<i class="Hui-iconfont">&#xe645;</i>
 	                    </a>
-	                    <a title="删除备份" href="javascript:;" onclick="delete_info('{:url('Dbmanage/delSql',['id'=>$vo['id']])}','备份文件')" class="ml-15" data-toggle="tooltip" data-placement="top">
+	                    <a title="删除备份" href="javascript:;" onclick="delete_info('{:url('Dbmanage/delSql', ['id' => $vo['id']])}','备份文件')" class="ml-15" data-toggle="tooltip" data-placement="top">
 	                    	<i class="Hui-iconfont">&#xe6e2;</i>
 	                    </a>
                     </td>

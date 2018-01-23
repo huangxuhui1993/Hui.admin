@@ -10,14 +10,9 @@
 <body>
 <article class="page-container">
 	<form class="form form-horizontal" id="form-email-send">
-		<div class="row cl" style="margin-top: 0px;">
+		<div class="row cl">
 			<p class="pl-15">邮箱地址</p>
 			<div class="formControls col-xs-12 col-sm-12" id="mailers"></div>
-<!-- 			<div class="formControls col-xs-12 col-sm-12">
-				<button type="button" class="btn btn-secondary radius size-M">
-					<i class="Hui-iconfont">&#xe600;</i> 添加邮箱
-				</button>
-			</div> -->
 		</div>
 		<div class="row cl">
 			<div class="formControls col-xs-12 col-sm-12">
@@ -86,7 +81,7 @@ $(document).ready(function(){
 	var uploader = WebUploader.create({
 		auto: true,													// 选完文件后，是否自动上传
 		swf: '__ROOT__/js/webuploader/Uploader.swf', 				// 加载swf文件
-		server: "{:url('upload/fileUpload',['type'=>'attach'])}",	// 文件接收服务端
+		server: "{:url('upload/fileUpload',['type' => 'attach'])}",	// 文件接收服务端
 		pick: '#filePicker',										// 选择文件的按钮，可选
 	});
     
@@ -188,7 +183,7 @@ function delete_file(id){
         success: function(result){
             if(result.error == 0){
             	$("#aid").val("");
-            	$(".attlist"+id).remove();
+            	$(".attlist" + id).remove();
                 $(".uploader-thum-container").show();
                 parent.layer.msg('附件删除成功！', {icon:1,shade: 0.04,time:1000});
             }else{

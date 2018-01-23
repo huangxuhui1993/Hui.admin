@@ -24,6 +24,19 @@ function message(){
     alert('消息');
 }
 
+// 数据表详情
+function table_details(title, url){
+    parent.layer.open({
+        type: 2,
+        title: title,
+        shadeClose: true,
+        shade: false,
+        maxmin: true, // 开启最大化最小化按钮
+        area: ['850px', '600px'],
+        content: url
+    });
+}
+
 // 刷新之后显示当前页面
 function initialize_page(){
     var data = $.cookie("Huimenu");
@@ -249,13 +262,20 @@ function backup_db(url,style){
     });
 }
 
+// 查看数据库备份sql文件
+function get_sql_file(url, sql_path){
+    var str = encodeURIComponent(sql_path);
+    var file_path = url + '?path=' + str;
+    window.parent.code_window(file_path, '源代码：www/' + sql_path, 1);
+}
+
 // 源代码文件路径
 function code_path(url){
     layer.prompt({title: '请输入源代码路径',value: 'public/static/notepad.txt',offset: '100px'}, function(file, index){
         layer.close(index);
         var str = encodeURIComponent(file);
-        var file_path = url+'?path='+str;
-        code_window(file_path,'源代码：www/'+file,1);
+        var file_path = url + '?path=' + str;
+        code_window(file_path, '源代码：www/' + file, 1);
     });
 }
 

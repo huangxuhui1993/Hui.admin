@@ -50,7 +50,7 @@
                     <td>{$vo.Comment}</td>
                     <td>{$vo.Create_time}</td>
                     <td class="f-14">
-	                    <a title="预览" href="{:url('Dbmanage/details',['name'=>$vo['Name']])}" data-toggle="tooltip" data-placement="top">
+	                    <a title="预览" href="javascript:;" onclick="table_details('{$vo.Name}','{:url('Dbmanage/details', ['name' => $vo['Name']])}')" data-toggle="tooltip" data-placement="top">
 	                    	<i class="Hui-iconfont">&#xe695;</i>
 	                    </a>
                     </td>

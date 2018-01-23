@@ -83,18 +83,22 @@ class Common extends Base{
      * @return mixed
      */
 	public function codemirror(Request $request){
-		$path = $request->param('path');
-		$file = ROOT_PATH . $path;
-		if(!is_file($file)){
-			$code = '文件不存在!';
-		}elseif(!is_readable($file)){
-            $code = '文件不可读!';
-        }else{
-			# 读取文件内容
-			$str = file_get_contents($file);
-			$code = htmlentities($str);
+		$path = remove_spaces($request->param('path'));
+		if(!empty($path)){
+			$file = ROOT_PATH . $path;
+			if(!is_file($file)){
+				$code = '文件不存在！';
+			}elseif(!is_readable($file)){
+	            $code = '文件不可读！';
+	        }else{
+				# 读取文件内容
+				$str = file_get_contents($file);
+				$code = htmlentities($str);
+			}
+		}else{
+			$code = '文件路径为空！';
 		}
-		add_logs('查看源代码' . $file, 1);
+		add_logs("查看源代码{$file}", 1);
 		$this->assign('code', $code);
 		$this->assign('file', str_replace('\\', '/', $file));
 		return $this->fetch('public/codemirror');
@@ -110,38 +114,38 @@ class Common extends Base{
 			$data = $request->post();
 			// 验证数据
 			$validate = new Validate([
-				['file', 'require', '文件路径为空!'],
-				['code', 'require', '代码内容为空!'],
+				['file', 'require', '文件路径为空！'],
+				['code', 'require', '代码内容为空！'],
 			]);
 			if(!$validate->check($data)) {
 				return json(['error' => 1, 'msg' => $validate->getError()]);
 			}else{
 				$file = $data['file'];
 				if(!is_file($file)){
-					return json(['error' => 1, 'msg' => '文件不存在!']);
+					return json(['error' => 1, 'msg' => '文件不存在！']);
 				}elseif(!is_writable($file)){
-                    return json(['error' => 1, 'msg' => '文件不可写!']);
+                    return json(['error' => 1, 'msg' => '文件不可写！']);
                 }else{
-					// 内容写入文件
-					if(file_put_contents($file,$data['code'])){
-						add_logs('修改源代码' . $file, 1);
-						return json(['error' => 0, 'msg' => '代码修改成功']);
+					# 内容写入文件
+					if(file_put_contents($file, $data['code'])){
+						add_logs("修改源代码{$file}", 1);
+						return json(['error' => 0, 'msg' => '代码修改成功！']);
 					}else{
-                        add_logs('修改源代码' . $file, 0);
-                        return json(['error' => 0, 'msg' => '代码修改失败']);
+                        add_logs("修改源代码{$file}", 0);
+                        return json(['error' => 0, 'msg' => '代码修改失败！']);
                     }
 				}	
 			}
 		}else{
 			add_logs('修改源代码，非法操作！', 0);
-			return json(['error' => 1, 'msg' => '非法操作!']);
+			return json(['error' => 1, 'msg' => '非法操作！']);
 		}
 	}
 
     /**
-     * [email 发送邮件]
-     * @param  Request $request [请求信息]
-     * @return [json]
+     * email 发送邮件
+     * @param  Request $request 请求信息
+     * @return json
      */
 	public function email(Request $request){
         if($request->isAjax()){
@@ -156,7 +160,7 @@ class Common extends Base{
                 return json(['error' => 1, 'msg' => $validate->getError()]);
             }else{
             	if(isset($data['aid']) && !empty($data['aid'])){
-            		$file = '.' . get_file_url($data['aid'],'',false);
+            		$file = '.' . get_file_url($data['aid'], '', false);
             	}else{
             		$file = null;
             	}
@@ -181,9 +185,9 @@ class Common extends Base{
 	}
 
     /**
-     * [clearcache 清除缓存]
-     * @param  Request $request [请求信息]
-     * @return [json]
+     * clearcache 清除缓存
+     * @param  Request $request 请求信息
+     * @return json
      */
 	public function clearcache(Request $request){
 		if($request->isAjax()){
@@ -205,15 +209,15 @@ class Common extends Base{
 	}
 
     /**
-     * [news 获取新闻]
-     * @param  Request $request [请求信息]
-     * @return [json]           [新闻列表]
+     * news 获取新闻
+     * @param  Request $request 请求信息
+     * @return json             新闻列表
      */
 	public function news(Request $request){
 		if($request->isAjax()){
 			$data = $request->post('type');
 			if(empty($data)){
-				return json(['message' => '参数错误！','code' => 1]);
+				return json(['message' => '参数错误！', 'code' => 1]);
 			}
 			// Ajax实时新闻
 			$curl = new HttpCurl();
@@ -223,12 +227,12 @@ class Common extends Base{
 				'page'  => 1,
 				'limit' => 8
 			];
-			$result = $curl::get($url,$data);
-			$news = json_decode($result,true);
+			$result = $curl::get($url, $data);
+			$news = json_decode($result, true);
 			$newslist = $news['list'];
 			// 截取新闻标题
 			foreach($newslist as $k => $v){
-				$newslist[$k]['title'] = msubstr($v['title'],0,15);
+				$newslist[$k]['title'] = msubstr($v['title'], 0, 15);
 			}
 			return json($newslist);
 		}else{

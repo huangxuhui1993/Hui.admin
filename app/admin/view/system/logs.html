@@ -71,7 +71,6 @@ function ajaxPage(page){
         dataType:'json',
         data: $('#search').serialize(),
         success:function(json){
-            dump(json)
             $('#ajax_lists').html(json.list);
             $('#page').html(json.page);
             $('#count').text(json.count);

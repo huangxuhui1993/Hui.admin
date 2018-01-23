@@ -10,11 +10,6 @@
 					<li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe63c;</i>  工具 <i class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
 							<li>
-								<a href="javascript:;" onclick="clear_cache('{:url('Common/clearcache')}')">
-								<i class="Hui-iconfont">&#xe609;</i> 清除缓存
-								</a>
-							</li>
-							<li>
 								<a href="javascript:;" onclick="send_mailer_window('{:url('Common/email')}','发送邮件')">
 									<i class="Hui-iconfont">&#xe68a;</i> 发送邮件
 								</a>
@@ -31,7 +26,7 @@
 							</li>
 						</ul>
 					</li>
-					<li><i class="Hui-iconfont">&#xe606;</i> <span id="js-wifi">0MS</span></li>
+					<li><i class="Hui-iconfont">&#xe606;</i> <span id="js-wifi">0M/S</span></li>
 				</ul>
 			</nav>
 			<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
@@ -41,9 +36,18 @@
 					
 					<li class="dropDown dropDown_hover"> <a href="#" class="dropDown_A"><i class="Hui-iconfont f-16">&#xe60d;</i> {:session('uname')} <i class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
-							<li><a href="javascript:;" onclick="personal_window('{:url('Common/userSetup')}','账号设置')">个人信息</a></li>
-							<li><a  href="{:url('home/index/index')}" target="_blank">网站首页</a></li>
-							<li><a href="{:url('Login/logout')}">退出登录</a></li>
+							<li>
+								<a href="javascript:;" onclick="clear_cache('{:url('Common/clearcache')}')">清除缓存</a>
+							</li>
+							<li>
+								<a href="javascript:;" onclick="personal_window('{:url('Common/userSetup')}','账号设置')">个人信息</a>
+							</li>
+							<li>
+								<a href="{:url('home/index/index')}" target="_blank">网站首页</a>
+							</li>
+							<li>
+								<a href="{:url('Login/logout')}">退出登录</a>
+							</li>
 						</ul>
 					</li>
 					<li id="Hui-msg"> <a href="javascript:;" onclick="message()" title="消息"><span class="badge badge-danger">1</span><i class="Hui-iconfont f-16">&#xe62f;</i></a> </li>

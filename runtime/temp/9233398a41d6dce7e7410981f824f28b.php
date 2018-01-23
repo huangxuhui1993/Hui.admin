@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:73:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\codemirror.html";i:1500616718;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:73:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\codemirror.html";i:1516676599;}*/ ?>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -24,6 +24,7 @@
 	<script type="text/javascript" src="__ROOT__/js/codemirror/javascript.js"></script>
 	<script type="text/javascript" src="__ROOT__/js/codemirror/clike.js"></script>
 	<script type="text/javascript" src="__ROOT__/js/codemirror/php.js"></script>
+	<script type="text/javascript" src="__ROOT__/js/codemirror/sql.js"></script>
 	<!--[if IE 6]>
 	<script type="text/javascript" src="__ADMIN__/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
 	<script>DD_belatedPNG.fix('*');</script>

@@ -64,7 +64,7 @@ function network_speed(){
 		alltime = fs * 1000 / (et - st);
 	    Lnum = Math.pow(10, 2);
 	    calcspeed = Math.round(alltime * Lnum) / Lnum;
-		dump("您的下载速度为：" + calcspeed + " (KB/秒) 约" + Math.round(calcspeed / 128 * Lnum) / Lnum  + "(MB/秒)")
+		$('#js-wifi').text(Math.round(calcspeed / 128 * Lnum) / Lnum + 'M/S');
     });
 }
 </script>

@@ -1,51 +1,39 @@
 {include file="public/meta" /}
-<title>优化详情</title>
+<title>数据表详情</title>
 </head>
 <body>
-<nav class="breadcrumb">
-	{$bread}
-	<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
-</nav>
+
 <div class="page-container">
-	<div class="cl pd-5 bg-1 bk-gray">
-		<span class="l">
-			<button class="btn btn-primary radius" type="button" onClick="javascript:window.location.href = '{:url('Dbmanage/lis')}'">
-				<i class="Hui-iconfont">&#xe66b;</i> 返回管理
-			</button>
-		</span>
-	</div>
-	<div class="mt-20">
-		<table class="table table-border table-bordered table-hover table-bg table-sort">
-			<thead>
-				<tr class="text-c">
-                    <th>序号</th>
-                    <th>字段名</th>
-                    <th>数据类型</th>
-                    <th>默认值</th>
-                    <th>允许非空</th>
-                    <th>自动递增</th>
-                    <th>主键</th>
-                    <th>字符集</th>
-                    <th>备注</th>
-				</tr>
-			</thead>
-			<tbody>
-			{volist name="list" id="vo" empty="$empty_str"}
-				<tr class="text-c">
-                    <td>{$i}</td>
-                    <td>{$vo.Field}</td>
-                    <td>{$vo.Type}</td>
-                    <td>{$vo.Default}</td>
-                    <td>{$vo.Null}</td>
-                    <td>{$vo.Extra}</td>
-                    <td>{$vo.Key}</td>
-                    <td>{$vo.Collation}</td>
-                    <td>{$vo.Comment}</td>
-				</tr>
-			{/volist}
-			</tbody>
-		</table>
-	</div>
+	<table class="table table-border table-bordered table-hover table-bg table-sort">
+		<thead>
+			<tr class="text-c">
+                <th>序号</th>
+                <th>字段名</th>
+                <th>数据类型</th>
+                <th>默认值</th>
+                <th>允许非空</th>
+                <th>自动递增</th>
+                <th>主键</th>
+                <th>字符集</th>
+                <th>备注</th>
+			</tr>
+		</thead>
+		<tbody>
+		{volist name="list" id="vo" empty="$empty_str"}
+			<tr class="text-c">
+                <td>{$i}</td>
+                <td>{$vo.Field}</td>
+                <td>{$vo.Type}</td>
+                <td>{$vo.Default}</td>
+                <td>{$vo.Null}</td>
+                <td>{$vo.Extra}</td>
+                <td>{$vo.Key}</td>
+                <td>{$vo.Collation}</td>
+                <td>{$vo.Comment}</td>
+			</tr>
+		{/volist}
+		</tbody>
+	</table>
 </div>
 
 {tag:adminjs /}

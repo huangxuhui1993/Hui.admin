@@ -23,7 +23,7 @@ class Dbmanage extends Base{
         parent::_initialize();
 
         // 数据库备份文件存储位置
-        self::$db_backup = HUI_FILES .Config::get('websetup.backup_dir').DS;
+        self::$db_backup = HUI_FILES . Config::get('websetup.backup_dir') . DS;
     }
 
     /**
@@ -244,7 +244,8 @@ class Dbmanage extends Base{
 		$list = $db->order('id desc')->paginate(15);
 		$this->assign('list',$list);
 
-		$this->assign('db_size',mysql_db_size());
+		$this->assign('db_size', mysql_db_size());
+		$this->assign('backup_dir', Config::get('websetup.backup_dir'));
 		# 面包屑
 		$this->assign('bread',breadcrumb([$this->bread,'数据库备份文件列表']));
 		return $this->fetch();
@@ -309,7 +310,7 @@ class Dbmanage extends Base{
 			if(!isset($id)){
 				$this->redirect('dbmanage/backlist','',302,['code' => 'error','msg' => '参数错误！']);
 			}else{
-				ini_set("magic_quotes_runtime",0);
+				ini_set("magic_quotes_runtime", 0);
 				$db = Db::name('backup');
 				$result = $db->where('id',$id)->find();
 				if($result){
