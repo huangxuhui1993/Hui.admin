@@ -24,6 +24,20 @@ function message(){
     alert('消息');
 }
 
+// 检测网速
+function network_speed(url){
+    var Rand = Math.random();
+    var RandNum = 1 + Math.round(Rand * 1000);
+    layer.open({
+        type: 2,
+        title: '检测网速',
+        shadeClose: true,
+        maxmin: false,
+        area: ['450px', '300px'],
+        content: url + "?rand=" + RandNum
+    });
+}
+
 // 数据表详情
 function table_details(title, url){
     parent.layer.open({
@@ -31,7 +45,7 @@ function table_details(title, url){
         title: title,
         shadeClose: true,
         shade: false,
-        maxmin: true, // 开启最大化最小化按钮
+        maxmin: true,
         area: ['850px', '600px'],
         content: url
     });

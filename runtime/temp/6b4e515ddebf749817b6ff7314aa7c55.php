@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\index\index.html";i:1516611012;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1516177545;s:69:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\header.html";i:1516670989;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\menu.html";i:1507622054;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\index\index.html";i:1516681492;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1516177545;s:69:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\header.html";i:1516690098;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\menu.html";i:1507622054;}*/ ?>
 ﻿<!DOCTYPE HTML>
 <html>
 <head>
@@ -44,6 +44,11 @@
 					<li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe63c;</i>  工具 <i class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
 							<li>
+								<a href="javascript:;" onclick="network_speed('<?php echo url('Common/networkSpeed'); ?>')">
+									<i class="Hui-iconfont">&#xe682;</i> 检测网速
+								</a>
+							</li>
+							<li>
 								<a href="javascript:;" onclick="send_mailer_window('<?php echo url('Common/email'); ?>','发送邮件')">
 									<i class="Hui-iconfont">&#xe68a;</i> 发送邮件
 								</a>
@@ -60,7 +65,7 @@
 							</li>
 						</ul>
 					</li>
-					<li><i class="Hui-iconfont">&#xe606;</i> <span id="js-wifi">0M/S</span></li>
+					<li style="display:none;" id="js-wifi"><i class="Hui-iconfont">&#xe6ce;</i> <span>0M/S</span></li>
 				</ul>
 			</nav>
 			<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
@@ -229,19 +234,6 @@ $(function(){
 		index:0,
 	});
 });
-
-network_speed();
-function network_speed(){
-    var st = new Date();
-    $("#network-speed").load("/static/cs.txt", {}, function(){
-    	var et = new Date();
-	    var fs = 1.498 * 1024;  // 图片文件大小(KB)
-		alltime = fs * 1000 / (et - st);
-	    Lnum = Math.pow(10, 2);
-	    calcspeed = Math.round(alltime * Lnum) / Lnum;
-		$('#js-wifi').text(Math.round(calcspeed / 128 * Lnum) / Lnum + 'M/S');
-    });
-}
 </script>
 </body>
 </html>

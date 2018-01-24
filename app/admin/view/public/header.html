@@ -10,6 +10,11 @@
 					<li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe63c;</i>  工具 <i class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
 							<li>
+								<a href="javascript:;" onclick="network_speed('{:url('Common/networkSpeed')}')">
+									<i class="Hui-iconfont">&#xe682;</i> 检测网速
+								</a>
+							</li>
+							<li>
 								<a href="javascript:;" onclick="send_mailer_window('{:url('Common/email')}','发送邮件')">
 									<i class="Hui-iconfont">&#xe68a;</i> 发送邮件
 								</a>
@@ -26,7 +31,7 @@
 							</li>
 						</ul>
 					</li>
-					<li><i class="Hui-iconfont">&#xe606;</i> <span id="js-wifi">0M/S</span></li>
+					<li style="display:none;" id="js-wifi"><i class="Hui-iconfont">&#xe6ce;</i> <span>0M/S</span></li>
 				</ul>
 			</nav>
 			<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">

@@ -54,19 +54,6 @@ $(function(){
 		index:0,
 	});
 });
-
-network_speed();
-function network_speed(){
-    var st = new Date();
-    $("#network-speed").load("/static/cs.txt", {}, function(){
-    	var et = new Date();
-	    var fs = 1.498 * 1024;  // 图片文件大小(KB)
-		alltime = fs * 1000 / (et - st);
-	    Lnum = Math.pow(10, 2);
-	    calcspeed = Math.round(alltime * Lnum) / Lnum;
-		$('#js-wifi').text(Math.round(calcspeed / 128 * Lnum) / Lnum + 'M/S');
-    });
-}
 </script>
 </body>
 </html>

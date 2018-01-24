@@ -22,6 +22,15 @@ class Common extends Base{
     }
 
     /**
+     * networkSpeed 检测网速页面
+     * @param  Request $request
+     */
+    public function networkSpeed(Request $request){
+    	header("Cache-Control: no-cache, must-revalidate"); // 清除页面缓存
+    	return $this->fetch('network_speed');
+    }
+
+    /**
      * 账号设置
      * @param  Request $request
      * @return 
@@ -54,7 +63,7 @@ class Common extends Base{
 		# 获取全部原始数据
 		$det_rs = User::get($id)->getData();
 		$this->assign('rs',$det_rs);
-		return $this->fetch();
+		return $this->fetch('user_setup');
     }
 
     /**
