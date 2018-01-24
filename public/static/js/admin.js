@@ -15,27 +15,40 @@ $(function(){
     }
 });
 
-function dump(str){
-    return console.log(str);
+// log js打印日志
+function log(str){
+    try{  
+        console.log(str);  
+    }catch(exception){  
+        return;  
+    }
 }
 
-// 消息
-function message(){
-    alert('消息');
+/**
+ * open_window 打开window窗口
+ * @param  {string}  u 页面路径
+ * @param  {integer} w 窗口宽
+ * @param  {integer} h 窗口高
+ * @param  {integer} r 窗口偏移
+ */
+function open_window(u, w, h, r){
+    var l = (screen.width - w) / 2 - r,
+    t = (screen.height - h) / 2 - r,
+    e = window.open(u, "_blank", "width=" + w + ",height=" + h + ",toolbars=0,resizable=1,left=" + l + ",top=" + t);
+    e.focus();
+    return e;
+}
+
+// 地图定位
+function map_location(url){
+    open_window(url, 600, 580, 0);
 }
 
 // 检测网速
 function network_speed(url){
-    var Rand = Math.random();
-    var RandNum = 1 + Math.round(Rand * 1000);
-    layer.open({
-        type: 2,
-        title: '检测网速',
-        shadeClose: true,
-        maxmin: false,
-        area: ['450px', '300px'],
-        content: url + "?rand=" + RandNum
-    });
+    var Rand = Math.random(),
+    RandNum = 1 + Math.round(Rand * 1000);
+    open_window(url + "?rand=" + RandNum, 450, 250, 0);
 }
 
 // 数据表详情
@@ -49,17 +62,6 @@ function table_details(title, url){
         area: ['850px', '600px'],
         content: url
     });
-}
-
-// 刷新之后显示当前页面
-function initialize_page(){
-    var data = $.cookie("Huimenu");
-    if (data != undefined && data != 'null'){
-        var dataObj = eval("("+data+")");
-        creatIframe(dataObj.href, dataObj.title);
-        min_titleList(); 
-    }
-
 }
 
 // 查看图片
@@ -428,51 +430,13 @@ function code_window(url,title,flag){
         toastr.error("打开窗口参数缺失！");
         return false;
     }else{
-        layer.open({
-            title: title,
-            type: 2,
-            area: ['900px', '550px'],
-            fixed: true, //不固定
-            maxmin: false,
-            scrollbar: false,
-            content: url
-        });
+        open_window(url, 900, 510, 0);
     }
 }
 
 // 发送邮件窗口
 function send_mailer_window(url,title){
-    layer.open({
-        title: '发送邮件',
-        type: 2,
-        area: ['700px', '770px'],
-        fixed: true, //不固定
-        maxmin: false,
-        scrollbar: false,
-        content: url
-    });
-}
-
-// 获取新闻
-function getNews($val,$url){
-    var type = $val;
-    $.post($url,{type:type},function(result){
-            var str = '';
-            $.each(result,function(n,value){
-                str += '<div class="col-sm-3" style="height:209px;">';
-                str += '<div class="thumbnail">';
-                str += '<a href="'+value.docurl+'" target="_blank">';
-                str += '<img src="'+value.imgurl+'" alt="" style="height:85px;">';
-                str += '</a>';
-                str += '<div class="caption">';
-                str += '<p>'+value.title+'</p>';
-                str += '</div>';
-                str += '</div>';
-                str += '</div>';
-            });
-            $("#newslist").html('');
-            $("#newslist").append(str);
-    });
+    open_window(url, 700, 750, 0);
 }
 
 // 检测搜索内容
@@ -582,4 +546,14 @@ function fnW(str){
     var num;
     str>=10?num=str:num="0"+str;
     return num;
-} 
+}
+
+// 刷新之后显示当前页面
+function initialize_page(){
+    var data = $.cookie("Huimenu");
+    if (data != undefined && data != 'null'){
+        var dataObj = eval("("+data+")");
+        creatIframe(dataObj.href, dataObj.title);
+        min_titleList(); 
+    }
+}

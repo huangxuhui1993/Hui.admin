@@ -22,6 +22,14 @@ class Common extends Base{
     }
 
     /**
+     * positioning 地图定位
+     * @param  Request $request
+     */
+    public function positioning(Request $request){
+    	return $this->fetch();
+    }
+
+    /**
      * networkSpeed 检测网速页面
      * @param  Request $request
      */

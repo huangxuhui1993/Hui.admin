@@ -5,10 +5,6 @@ use org\util\WeChat;
 
 class Index{
 
-	public function speed(){
-		dump(network_speed());
-	}
-
 	public function shortcut(){
 		$url = 'http://127.0.0.2';
 		$icon = 'http://127.0.0.2/favicon.ico';
