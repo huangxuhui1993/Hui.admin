@@ -24,6 +24,16 @@ function log(str){
     }
 }
 
+// 数据加载层
+function loading(msg, flag){
+    var config = {icon:16, area:'auto', shade:0.4, shadeClose:false, time:0};
+    if(flag == undefined || flag == ''){
+        return window.layer.msg(msg, config);
+    }else{
+        return window.parent.layer.msg(msg, config);
+    }
+}
+
 /**
  * open_window 打开window窗口
  * @param  {string}  u 页面路径
@@ -39,16 +49,41 @@ function open_window(u, w, h, r){
     return e;
 }
 
-// 地图定位
-function map_location(url){
-    open_window(url, 600, 580, 0);
+// 关闭window窗口
+function close_window(){
+    window.opener = null;
+    window.open('', '_self');
+    window.close();
 }
 
-// 检测网速
-function network_speed(url){
-    var Rand = Math.random(),
-    RandNum = 1 + Math.round(Rand * 1000);
-    open_window(url + "?rand=" + RandNum, 450, 250, 0);
+// 确认选择邮箱
+function confirm_email(){
+    var emails = $('#emails').val();
+    if(emails != ''){
+        window.opener.document.getElementById('emails').value = emails;
+        window.opener.document.getElementById('emails-text').innerHTML = 'ID:(' + emails + ')';
+        close_window();
+    }else{
+        toastr.warning('请选择邮箱！');
+    }
+}
+
+// 修改邮箱
+function email_edit(url, id){
+    if(url != '' && id != ''){
+        var email = $('#email' + id).val();
+        var remarks = $('#remarks' + id).val();
+        $.post(url, {id:id, email:email, remarks:remarks}, function(data){
+            log(data);
+            if(data.state == 1){
+                toastr.success(data.msg);
+            }else{
+                toastr.warning(data.msg);
+            }
+        });
+    }else{
+        toastr.warning('参数缺失！');
+    }
 }
 
 // 数据表详情
@@ -98,14 +133,7 @@ function export_data(url,title,type){
         url:url,
         data:"type="+type,
         beforeSend: function(){
-            index = parent.layer.msg('正在导出数据......',{
-                icon: 16,
-                offset: '100px',
-                area: 'auto',
-                shade: 0.4,
-                shadeClose: false,
-                time: 0
-            });
+            index = loading('正在导出数据......', 1);
         },
         success: function(result){
             window.onbeforeunload = '';
@@ -129,7 +157,7 @@ function export_data(url,title,type){
 
 // 回收站操作
 function recyclebin_operation(style,msg){
-    parent.layer.msg('确定要'+msg+'！', {
+    parent.layer.msg('确定要' + msg + '！', {
         time: 0,
         offset: '100px',
         btn: ['确定', '取消'],
@@ -144,7 +172,7 @@ function recyclebin_operation(style,msg){
 
 // 文档操作
 function document_operation(style,msg){
-    parent.layer.msg('确定要'+msg+'！', {
+    parent.layer.msg('确定要' + msg + '！', {
         time: 0,
         offset: '100px',
         btn: ['确定', '取消'],
@@ -222,14 +250,7 @@ function clear_cache(url){
         url: url,
         data: {'flag':1},
         beforeSend:function(){
-            index = layer.msg('正在清除缓存...',{
-                icon: 16,
-                offset: '100px',
-                area: 'auto',
-                shade: 0.4,
-                shadeClose: false,
-                time: 0
-            });
+            index = loading('正在清除缓存...');
         },
         success: function(result){
             layer.close(index); // 关闭加载层
@@ -252,14 +273,7 @@ function backup_db(url,style){
         url: url,
         data:{'style':style},
         beforeSend:function(){
-            index = parent.layer.msg('正在备份...',{
-                icon: 16,
-                offset: '100px',
-                area: 'auto',
-                shade: 0.04,
-                shadeClose: false,
-                time: 0
-            });
+            index = loading('正在备份...', 1);
         },
         success: function(result){
             window.onbeforeunload = '';
@@ -282,7 +296,7 @@ function backup_db(url,style){
 function get_sql_file(url, sql_path){
     var str = encodeURIComponent(sql_path);
     var file_path = url + '?path=' + str;
-    window.parent.code_window(file_path, '源代码：www/' + sql_path, 1);
+    code_window(file_path, '源代码：www/' + sql_path, 1);
 }
 
 // 源代码文件路径
@@ -358,38 +372,6 @@ function conversion_del(){
     });
 }
 
-// 转换文件预览
-function preview_file(url,title){
-    // 获取窗口索引
-    var index = parent.layer.getFrameIndex(window.name);
-    parent.layer.open({
-        title: title,
-        type: 2,
-        area: ['900px', '720px'],
-        fixed: true, //不固定
-        maxmin: false,
-        scrollbar: false,
-        content: url
-    });
-    parent.layer.close(index);
-}
-
-// 转换文件列表
-function conversion_list(url,title){
-    // 获取窗口索引
-    var index = parent.layer.getFrameIndex(window.name);
-    parent.layer.open({
-        title: title,
-        type: 2,
-        area: ['80%', '720px'],
-        fixed: true, //不固定
-        maxmin: true,
-        scrollbar: false,
-        content: url
-    });
-    parent.layer.close(index);
-}
-
 // 个人设置窗口
 function personal_window(url,title){
     layer.open({
@@ -397,20 +379,6 @@ function personal_window(url,title){
         offset: '100px',
         type: 2,
         area: ['400px', '310px'],
-        fixed: true, //不固定
-        maxmin: false,
-        scrollbar: false,
-        content: url
-    });
-}
-
-// 文件转换器窗口
-function conversion_window(url,title){
-    layer.open({
-        title: '文档转换器',
-        offset: '100px',
-        type: 2,
-        area: ['850px', '380px'],
         fixed: true, //不固定
         maxmin: false,
         scrollbar: false,
@@ -432,11 +400,6 @@ function code_window(url,title,flag){
     }else{
         open_window(url, 900, 510, 0);
     }
-}
-
-// 发送邮件窗口
-function send_mailer_window(url,title){
-    open_window(url, 700, 750, 0);
 }
 
 // 检测搜索内容

@@ -2,11 +2,12 @@
 <link href="__ROOT__/js/webuploader/webuploader.css" rel="stylesheet" type="text/css" />
 <title>文档转换器</title>
 </head>
-<body>
+
+<body onbeforeunload="return '真的要关闭或刷新此窗口吗？请保存数据！'">
 <div class="page-container">
 
 	<form class="form form-horizontal" id="form-conversion">
-		<div class="panel panel-default">
+		<div class="panel panel-default mt-10">
 			<div class="panel-header"><i class="Hui-iconfont">&#xe647;</i> 完善表单内容</div>
 			<div class="panel-body">
 
@@ -47,7 +48,7 @@
 			<button class="btn btn-primary radius" type="submit">
 				<i class="Hui-iconfont">&#xe726;</i> 转换文件
 			</button>
-			<button class="btn btn-default radius ml-40" onclick="conversion_list('{:url('Conversion/lis')}','文件列表')" type="button">
+			<button class="btn btn-default radius ml-40" onclick="open_window('{:url('Conversion/lis')}', 1024, 720, 0);" type="button">
 				<i class="Hui-iconfont">&#xe667;</i> 文件列表
 			</button>
 		</div>

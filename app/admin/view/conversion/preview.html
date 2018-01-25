@@ -7,8 +7,8 @@
 <div class="page-container">
 	<div class="cl pd-5 bg-1 bk-gray">
 		<span class="l">
-			<a class="btn btn-success radius" href="javascript:;" onclick="conversion_list('{:url('Conversion/lis')}','文件列表')">
-				<i class="Hui-iconfont">&#xe66b;</i> 返回列表
+			<a class="btn btn-success radius" href="javascript:;" onclick="close_window();">
+				<i class="Hui-iconfont">&#xe6a6;</i> 关闭
 			</a>
 		</span>
 		<a class="refresh btn btn-success radius r" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
@@ -16,35 +16,34 @@
 
 	<div class="cl mt-10">
 		{eq name="rs.ext" value="swf"}
-			<div id="viewerPlaceHolder" style="width:860px;height:580px;">Document loading..</div>
+			<div id="viewerPlaceHolder" style="width:860px;height:600px;">Document loading..</div>
 			<script type="text/javascript">                
-				var fp = new FlexPaperViewer(
-					'FlexPaperViewer',
-					'viewerPlaceHolder',{config:{
-						SwfFile :'/{:config('hui_files_path')}/{$rs.url}',
-						Scale :1,
-						ZoomTransition : 'easeOut',
-						ZoomTime : 0.5,
-						ZoomInterval : 0.2,
-						FitPageOnLoad : true,
-						FitWidthOnLoad : true,
-						FullScreenAsMaxWindow : false,
-						ProgressiveLoading : false,
-						MinZoomSize : 0.2,
-						MaxZoomSize : 5,
-						SearchMatchAll : false,
-						InitViewMode : 'Portrait',
-						RenderingOrder : 'flash',
-						PrintPaperAsBitmap : false,
-						ViewModeToolsVisible : true,
-						ZoomToolsVisible : true,
-						NavToolsVisible : true,
-						CursorToolsVisible : true,
-						SearchToolsVisible : true,                        
-						localeChain: 'zh_CN',
-						WMode : 'window'
-					}}
-				);  
+				var fp = new FlexPaperViewer('FlexPaperViewer', 'viewerPlaceHolder', {
+						config:{
+							SwfFile :'/{:config('hui_files_path')}/{$rs.url}',
+							Scale :1,
+							ZoomTransition : 'easeOut',
+							ZoomTime : 0.5,
+							ZoomInterval : 0.2,
+							FitPageOnLoad : true,
+							FitWidthOnLoad : true,
+							FullScreenAsMaxWindow : false,
+							ProgressiveLoading : false,
+							MinZoomSize : 0.2,
+							MaxZoomSize : 5,
+							SearchMatchAll : false,
+							InitViewMode : 'Portrait',
+							RenderingOrder : 'flash',
+							PrintPaperAsBitmap : false,
+							ViewModeToolsVisible : true,
+							ZoomToolsVisible : true,
+							NavToolsVisible : true,
+							CursorToolsVisible : true,
+							SearchToolsVisible : true,                        
+							localeChain: 'zh_CN',
+							WMode : 'window'
+						}
+					});  
 			</script>
 		{else /}
 			<p>PDF文件预览正在开发中...</p>
@@ -56,13 +55,6 @@
 {tag:adminjs /}
 
 <!--请在下方写此页面业务相关的脚本-->
-<script type="text/javascript">
-// 打開頁面自動刷新
-window.onload=function(){
-  	if(location.href.indexOf("?random=")<0){
- 		location.href=location.href+"?random="+Math.random();
- 	}
-}
-</script>
+
 </body>
 </html>

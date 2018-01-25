@@ -5,6 +5,7 @@ use org\util\HttpCurl;
 use think\Request;
 use think\Validate;
 use think\Cache;
+use think\Db;
 use app\admin\model\User;
 use app\admin\model\AuthGroupAccess;
 use app\admin\model\AuthGroup;
@@ -157,48 +158,6 @@ class Common extends Base{
 			add_logs('修改源代码，非法操作！', 0);
 			return json(['error' => 1, 'msg' => '非法操作！']);
 		}
-	}
-
-    /**
-     * email 发送邮件
-     * @param  Request $request 请求信息
-     * @return json
-     */
-	public function email(Request $request){
-        if($request->isAjax()){
-            $data = $request->post();
-            // 验证数据
-            $validate = new Validate([
-                ['huitags', 'require', '邮件地址为空!'],
-                ['title', 'require', '邮件标题为空!'],
-                ['content', 'require', '邮件内容为空!'],
-            ]);
-            if(!$validate->check($data)) {
-                return json(['error' => 1, 'msg' => $validate->getError()]);
-            }else{
-            	if(isset($data['aid']) && !empty($data['aid'])){
-            		$file = '.' . get_file_url($data['aid'], '', false);
-            	}else{
-            		$file = null;
-            	}
-                 $data = [
-					'title'   => $data['title'],
-					'content' => $data['content'],
-					'email'   => explode(',', $data['huitags']),
-					'file'    => $file
-                 ];
-                 try{
-                  	send_mailer($data);
-                  	add_logs('发送邮件', 1);
-                  	return json(['error' => 0]);
-                 }catch(Exception $e) {
-                    add_logs('发送邮件：' . $e->getMessage(), 0);
-                    return json(['error' => 1, 'msg' => $e->getMessage()]);
-                 }
-            }
-        }else{
-            return $this->fetch();
-        }
 	}
 
     /**

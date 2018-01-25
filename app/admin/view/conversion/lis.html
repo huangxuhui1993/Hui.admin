@@ -7,8 +7,8 @@
 <div class="page-container">
 	<div class="cl pd-5 bg-1 bk-gray">
 		<span class="l">
-			<a class="btn btn-success radius" href="javascript:;" onclick="open_conversion_window('{:url('Conversion/index')}')">
-				<i class="Hui-iconfont">&#xe6ab;</i> 文档转换
+			<a class="btn btn-success radius" href="javascript:;" onclick="close_window();">
+				<i class="Hui-iconfont">&#xe6a6;</i> 关闭
 			</a>
 		</span>
 		<span class="r">共 <span class="badge badge-default radius">{$count}</span> 条数据</span>
@@ -37,10 +37,10 @@
 					<td class="text-c">{$vo.ext}</td>
 					<td class="text-c">{$vo.create_time}</td>
 					<td class="text-c f-14">
-						<a title="预览" href="javascript:;" onclick="preview_file('{:url('Conversion/preview',['id'=>$vo['id']])}','预览文件：{$vo.title} 【 {$vo.name} 】')" data-toggle="tooltip" data-placement="top">
+						<a title="预览" href="javascript:;" onclick="open_window('{:url('Conversion/preview', ['id' => $vo['id']])}', 900, 700, 0);" data-toggle="tooltip" data-placement="top">
 							<i class="Hui-iconfont">&#xe695;</i>
 						</a>
-						<a title="删除" href="javascript:;" onclick="delete_info('{:url('Conversion/del',['id'=>$vo['id']])}','转换文件')" class="ml-15" data-toggle="tooltip" data-placement="top">
+						<a title="删除" href="javascript:;" onclick="delete_info('{:url('Conversion/del', ['id' => $vo['id']])}', '转换文件')" class="ml-15" data-toggle="tooltip" data-placement="top">
 							<i class="Hui-iconfont">&#xe6e2;</i>
 						</a>
 					</td>
@@ -71,14 +71,6 @@
             window.open('https://www.adobe.com/go/getflash?spm=a2h0j.8191423.movie_player.5~5~5~8~A');
         },function(){
         });
-	}
-
-	// 打开文件转换窗口
-	function open_conversion_window(url){
-		// 获取窗口索引
-		var index = parent.layer.getFrameIndex(window.name);
-		parent.conversion_window(url,"文档转换器");
-		parent.layer.close(index);
 	}
 </script>
 </body>

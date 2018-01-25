@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\index\index.html";i:1516681492;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1516177545;s:69:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\header.html";i:1516788366;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\menu.html";i:1507622054;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\index\index.html";i:1516681492;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1516177545;s:69:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\header.html";i:1516870155;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\menu.html";i:1507622054;}*/ ?>
 ﻿<!DOCTYPE HTML>
 <html>
 <head>
@@ -44,12 +44,12 @@
 					<li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe63c;</i>  工具 <i class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
 							<li>
-								<a href="javascript:;" onclick="send_mailer_window('<?php echo url('Common/email'); ?>','发送邮件')">
+								<a href="javascript:;" onclick="open_window('<?php echo url('Email/send'); ?>', 900, 650, 0);">
 									<i class="Hui-iconfont">&#xe68a;</i> 发送邮件
 								</a>
 							</li>
 							<li>
-								<a href="javascript:;" onclick="conversion_window('<?php echo url('Conversion/index'); ?>','文档转换器')">
+								<a href="javascript:;" onclick="open_window('<?php echo url('Conversion/index'); ?>', 850, 350, 0);">
 									<i class="Hui-iconfont">&#xe6ab;</i> 文档转换
 								</a>
 							</li>
@@ -59,12 +59,12 @@
 								</a>
 							</li>
 							<li>
-								<a href="javascript:;" onclick="network_speed('<?php echo url('Common/networkSpeed'); ?>')">
+								<a href="javascript:;" onclick="open_window('<?php echo url('Common/networkSpeed'); ?>', 450, 250, 0);">
 									<i class="Hui-iconfont">&#xe682;</i> 检测网速
 								</a>
 							</li>
 							<li>
-								<a href="javascript:;" onclick="map_location('<?php echo url('Common/positioning'); ?>')">
+								<a href="javascript:;" onclick="open_window('<?php echo url('Common/positioning'); ?>', 600, 580, 0);">
 									<i class="Hui-iconfont">&#xe671;</i> 地图定位
 								</a>
 							</li>

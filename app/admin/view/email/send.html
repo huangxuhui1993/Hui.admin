@@ -1,26 +1,34 @@
 {include file="public/meta" /}
+
 <link href="__ROOT__/js/webuploader/webuploader.css" rel="stylesheet" type="text/css" />
 
 <title>发送邮件</title>
-{tag:adminjs /}
-
-{tag:ueditor /}
 
 </head>
-<body>
+<body onbeforeunload="return '真的要关闭或刷新此窗口吗？请保存数据！'">
 <article class="page-container">
 	<form class="form form-horizontal" id="form-email-send">
 		<div class="row cl">
-			<p class="pl-15">邮箱地址</p>
-			<div class="formControls col-xs-12 col-sm-12" id="mailers"></div>
+			<label class="form-label col-xs-2">选择邮箱：</label>
+			<div class="formControls col-xs-10">
+				<a href="javascript:;" onclick="open_window('{:url('Email/lis')}', 900, 500, 0);" class="btn btn-success radius size-M">
+					<i class="Hui-iconfont">&#xe667;</i> 邮箱列表
+				</a>
+				<input type="hidden" name="emails" id="emails">
+				<span class="label label-default radius" id="emails-text"></span>
+			</div>
 		</div>
+
 		<div class="row cl">
-			<div class="formControls col-xs-12 col-sm-12">
+			<label class="form-label col-xs-2">邮件标题：</label>
+			<div class="formControls col-xs-9">
 				<input type="text" class="input-text radius" value="" placeholder="请输入邮件标题" id="title" name="title">
 			</div>
 		</div>
+
 		<div class="row cl">
-			<div class="formControls col-xs-12 col-sm-12">
+			<label class="form-label col-xs-2">上传附件：</label>
+			<div class="formControls col-xs-10">
 				<div id="Attach"></div>
 				<div class="uploader-thum-container">
 					<div id="filePicker">
@@ -30,14 +38,17 @@
 				<input type="hidden" name="aid" id="aid">
 			</div>
 		</div>
+
 		<div class="row cl">
-			<div class="formControls col-xs-12 col-sm-12">
+			<label class="form-label col-xs-2">邮件内容：</label>
+			<div class="formControls col-xs-10">
 				<textarea id="content" name="content" class="size-MINI" style="border:0px;"></textarea>
 			</div>
 		</div>
+
 		<div class="row cl">
-			<div class="col-xs-12 col-sm-12 text-c">
-				<button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe603;</i> 发送邮件</button>
+			<div class="col-xs-12 text-c">
+				<button class="btn btn-primary radius size-M" type="submit"><i class="Hui-iconfont">&#xe603;</i> 发送邮件</button>
 			</div>
 		</div>
 	</form>
@@ -51,32 +62,25 @@
 				<p class="text-c">
 					<span class="badge badge-default radius" id="percentage"></span>
 				</p>
-				
 				<div class="progress radius" style="margin:20px auto;">
 					<div class="progress-bar progress-bar-success">
 						<span class="sr-only"></span>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>
 </div>
 
 <!--请在下方写此页面业务相关的脚本-->
+{tag:adminjs /}
+{tag:ueditor /}
 {tag:validatejs /}
 
 <script type="text/javascript" src="__ROOT__/js/webuploader/webuploader.js"></script>
 
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function(){
-	$("#mailers").Huitags({											// 添加邮箱
-		value:"",
-		maxlength : 20,
-		number : 10,
-		tagsDefault : [""],
-	});
-
 	var $progressbar = $("#progress-bar"); 							// 上传进度条
 	var uploader = WebUploader.create({
 		auto: true,													// 选完文件后，是否自动上传
@@ -94,9 +98,9 @@ $(document).ready(function(){
 	uploader.on('uploadSuccess', function(file,response){			// 文件上传成功
 		console.log(response);
 		if(response.error == 1){
-            parent.layer.msg(response.message);
+            layer.msg(response.message);
         }else{
-        	parent.layer.msg(response.message);
+        	layer.msg(response.message);
 	        $("#aid").val(response.id);
         	$(".uploader-thum-container").hide();
 	    	var afterHtml = '';
@@ -113,7 +117,7 @@ $(document).ready(function(){
 	});
 	
 	uploader.on('uploadError',function(file){						// 文件上传失败
-		parent.layer.msg('服务器错误!');
+		layer.msg('服务器错误!');
 	});
    
     uploader.on('uploadComplete',function(file){					// 完成上传不论成功或失败，删除进度条
@@ -140,32 +144,26 @@ $(document).ready(function(){
     });
 
     // 邮件信息ajax提交
-	$("#form-email-send").validate({
+	$("form").validate({
 		submitHandler:function(form){
 			$(form).ajaxSubmit({
 				type: 'post',
-				url: "{:url('Common/email')}",
+				url: "{:url('Email/send')}",
                 beforeSend:function(){
-                    index = parent.layer.msg('邮件正在发送中......',{
-                        icon: 16,
-                        area: 'auto',
-                        shade: 0.04,
-                        shadeClose: false,
-						time: 0
-                    });
+                    index = loading('邮件正在发送中......');
                 },
 				success: function(result){
-                    parent.layer.close(index); // 关闭加载层
-				    if(result.error == 0){
-                        parent.layer.msg('邮件发送成功!');
-                        $("#title").val("");
-                        Ueditor.setContent('');
+                    layer.close(index); // 关闭加载层
+					if(result.error == 0){
+						layer.msg('邮件发送成功!');
+						$("#title").val("");
+						Ueditor.setContent('');
 					}else{
-                        parent.layer.msg(result.msg);
-                    }
+						layer.msg(result.msg);
+					}
 				},
                 error: function(XmlHttpRequest, textStatus, errorThrown){
-					parent.layer.msg('error!');
+					layer.msg('error!');
 				}
 			});
 		}
@@ -176,7 +174,7 @@ $(document).ready(function(){
 // 清除文件
 function delete_file(id){
     if(id.length == 0){
-        parent.layer.msg('没有文件可以删除', {icon:0,shade: 0.04,time:1000});
+        layer.msg('没有文件可以删除', {icon:0,shade: 0.04,time:1000});
         return false;
 	}
     $.ajax({type:'post', url:"{:url('common/deleteFile')}",data:{'id':id},
@@ -185,9 +183,9 @@ function delete_file(id){
             	$("#aid").val("");
             	$(".attlist" + id).remove();
                 $(".uploader-thum-container").show();
-                parent.layer.msg('附件删除成功！', {icon:1,shade: 0.04,time:1000});
+                layer.msg('附件删除成功！', {icon:1,shade: 0.04,time:1000});
             }else{
-                parent.layer.msg('删除失败！', {icon:0,shade: 0.04,time:1000});
+                layer.msg('删除失败！', {icon:0,shade: 0.04,time:1000});
             }
         }
     });

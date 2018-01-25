@@ -121,7 +121,24 @@ function download_shortcut($filename = '', $url = '', $icon = ''){
 function remove_spaces($str = ''){
     $spaces = [" ", "　", "\t", "\n", "\r"];
     $replace = ["", "", "", "", ""];
-    return empty($str) ? false : str_replace($spaces, $replace, $str);
+    return empty($str) ? null : str_replace($spaces, $replace, $str);
+}
+
+/**
+ * remove_array_spaces 删除数组-值的空格
+ * @param  array  $arr 数组
+ * @return array
+ */
+function remove_array_spaces($arr = []){
+    if(is_array($arr) && !empty($arr)){
+        $data = [];
+        foreach($arr as $key => $value){
+            $data[$key] = remove_spaces($value);
+        }
+        return $data;
+    }else{
+        return [];
+    }
 }
 
 /**

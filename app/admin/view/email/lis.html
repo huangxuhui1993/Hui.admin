@@ -1,0 +1,77 @@
+{include file="public/meta" /}
+
+<title>邮箱地址列表</title>
+</head>
+
+<body>
+<div class="page-container">
+	{include file="public/redirect" /}
+	<div class="text-c">
+		<form action="{:url('Email/add')}" method="post" id="for">
+			<input type="text" name="email" id="email" placeholder="请输入邮箱地址" value="{$Think.session.data.email}" class="search-input input-text radius">
+			<input type="text" name="remarks" id="remarks" placeholder="备注" value="{$Think.session.data.remarks}" class="search-input input-text radius">
+			<button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 添加邮箱</button>
+		</form>
+	</div>
+	<table class="table table-border table-bordered table-bg mt-10">
+		<thead>
+			<tr class="text-c">
+				<th><input type="checkbox" class="email_id checkAllCurrent"></th>
+				<th width="40">ID</th>
+				<th>邮箱</th>
+				<th>备注</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			{volist name="list" id="vo" empty="$empty_str"}
+				<tr class="text-c">
+					<td><input type="checkbox" value="{$vo.id}"  class="email_id checkItem"></td>
+					<td>{$vo.id}</td>
+					<td>
+						<input type="text" id="email{$vo.id}" value="{$vo.email}" placeholder="请输入邮箱地址" class="input-text radius">
+					</td>
+					<td>
+						<input type="text" id="remarks{$vo.id}" value="{$vo.remarks}" class="input-text radius">
+					</td>
+					<td>
+						<a title="编辑" href="javascript:;" onclick="email_edit('{:url('Email/edit')}', '{$vo.id}')" class="ml-20" data-toggle="tooltip" data-placement="top">
+							<i class="Hui-iconfont">&#xe6df;</i>
+						</a> 
+						<a title="删除" href="javascript:;" onclick="" class="ml-20" data-toggle="tooltip" data-placement="top">
+							<i class="Hui-iconfont">&#xe6e2;</i>
+						</a>
+					</td>
+				</tr>
+			{/volist}
+		</tbody>
+	</table>
+</div>
+
+<input type="hidden" class="email_id xcheckValue" id="emails" />
+
+<div class="text-c">
+	<button class="btn btn-primary radius size-M" onclick="confirm_email();"><i class="Hui-iconfont">&#xe676;</i> 确认选择</button>
+</div>
+
+{tag:adminjs /}
+
+{tag:validatejs /}
+
+<script type="text/javascript" src="__ROOT__/js/XCheck.js"></script>
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+$(function(){
+	// 多选
+    $.XCheck({groupClass: ".email_id"});
+
+	// 表单验证
+	$("#for").validate({
+		rules:{email: {required: true}},
+		messages:{email: {required: ""}}
+	});
+});
+</script>
+</body>
+</html>
