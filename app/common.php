@@ -5,6 +5,7 @@ use think\Config;
 use think\Session;
 use think\Request;
 use think\Debug;
+use org\util\HttpCurl;
 use app\admin\model\Attach;
 use app\admin\model\Channel;
 use app\admin\model\Models;
@@ -17,6 +18,24 @@ define('HUI_FILES', ROOT_PATH . 'public' . DS . Config::get('hui_files_path') . 
 if(!is_dir(HUI_FILES)){
     mkdir(HUI_FILES);
     chmod(HUI_FILES, 0777); // 设置权限
+}
+
+// 获取IP地址信息
+function get_ip_address($ip = ''){
+    if(!empty($ip)){
+        $url = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php';
+        $data = ['format' => 'json', 'ip'=>$ip];
+        $result = $curl::get($url, $data);
+        $IPinfo = json_decode($result, true);
+        if($IPinfo != -2){
+            $array = [
+                'state' => 0,
+                'address' => "IP：".$ip."<br />地区：".$IPinfo["country"].'-'.$IPinfo["province"].'-'.$IPinfo["city"].$IPinfo["district"].$IPinfo["isp"]
+            ];
+        }else{
+            $array = ['state' => 1, 'msg' => 'IP地址错误，无法查询！'];
+        }
+    }
 }
 
 /**

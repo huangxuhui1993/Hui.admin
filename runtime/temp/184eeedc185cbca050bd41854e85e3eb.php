@@ -1,3 +1,4 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:74:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\common\positioning.html";i:1516950487;}*/ ?>
 
 <!DOCTYPE html>
 <html>

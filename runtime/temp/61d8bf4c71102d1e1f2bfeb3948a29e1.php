@@ -1,4 +1,30 @@
-{include file="public/meta" /}
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:72:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\conversion\index.html";i:1516929818;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1516177545;}*/ ?>
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="Bookmark" href="/favicon.ico" >
+<link rel="Shortcut Icon" href="/favicon.ico" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="__ADMIN__/lib/html5shiv.js"></script>
+<script type="text/javascript" src="__ADMIN__/lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="__ADMIN__/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="__ADMIN__/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="__ADMIN__/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="__ADMIN__/h-ui.admin/skin/<?php echo (isset($Huiskin) && ($Huiskin !== '')?$Huiskin:'default'); ?>/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="__ROOT__/css/admin.css" />
+<link rel="stylesheet" type="text/css" href="__ADMIN__/lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css" href="__ROOT__/js/toastr/toastr.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="__ADMIN__/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<script type="text/javascript" src="__ADMIN__/lib/jquery/1.9.1/jquery.min.js"></script> 
 
 <link href="__ROOT__/js/webuploader/webuploader.css" rel="stylesheet" type="text/css" />
 <title>文档转换</title>
@@ -49,7 +75,7 @@
 			<button class="btn btn-primary radius" type="submit">
 				<i class="Hui-iconfont">&#xe726;</i> 转换文件
 			</button>
-			<button class="btn btn-default radius ml-40" onclick="open_window('{:url('Conversion/lis')}', 1024, 720, 0);" type="button">
+			<button class="btn btn-default radius ml-40" onclick="open_window('<?php echo url('Conversion/lis'); ?>', 1024, 720, 0);" type="button">
 				<i class="Hui-iconfont">&#xe667;</i> 文件列表
 			</button>
 		</div>
@@ -79,11 +105,20 @@
 	</div>
 </div>
 
-{tag:adminjs /}
+    	<!-- Tag标签加载js -->
+        <script type="text/javascript" src="__ROOT__/js/layer/2.4/layer.js"></script>
+        <script type="text/javascript" src="__ROOT__/js/laydate/laydate.js"></script>
+        <script type="text/javascript" src="__ADMIN__/h-ui/js/H-ui.min.js"></script>
+        <script type="text/javascript" src="__ADMIN__/h-ui.admin/js/H-ui.admin.js"></script>
+        <script type="text/javascript" src="__ADMIN__/lib/icheck/jquery.icheck.min.js"></script>
+        <script type="text/javascript" src="__ROOT__/js/toastr/toastr.js"></script>
+        <script type="text/javascript" src="__ROOT__/js/admin.js"></script>
 
 <!--请在下方写此页面业务相关的脚本-->
 
-{tag:validatejs /}
+        <script type="text/javascript" src="__ADMIN__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+        <script type="text/javascript" src="__ADMIN__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+        <script type="text/javascript" src="__ADMIN__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 
 <script type="text/javascript" src="__ROOT__/js/webuploader/webuploader.js"></script>
 <script type="text/javascript">
@@ -97,7 +132,7 @@ $(function(){
 		// swf文件路径
 		swf: '__ROOT__/js/webuploader/Uploader.swf', // 加载swf文件
 		// 文件接收服务端
-		server: "{:url('upload/fileUpload',['type'=>'office'])}",
+		server: "<?php echo url('upload/fileUpload',['type'=>'office']); ?>",
 		// 选择文件的按钮，可选
 		pick: '#filePicker',
 	});
@@ -165,7 +200,7 @@ $(function(){
 		submitHandler:function(form){
 			$(form).ajaxSubmit({
 				type: 'post',
-				url: "{:url('Conversion/fileConversion')}",
+				url: "<?php echo url('Conversion/fileConversion'); ?>",
                 beforeSend:function(){
                     index = layer.msg('正在转换文件，请耐心等待...',{
                         icon: 16,
@@ -207,7 +242,7 @@ function delete_file(){
         layer.msg('没有文件可以清除', {icon:0,shade: 0.04,time:1000});
         return false;
 	}
-    $.ajax({type:'post', url:"{:url('Common/deleteFile')}", data:{'id':id},
+    $.ajax({type:'post', url:"<?php echo url('Common/deleteFile'); ?>", data:{'id':id},
         success: function(result){
             if(result.error == 0){
                 $("#id").val('');
