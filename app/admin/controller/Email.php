@@ -4,6 +4,7 @@ use app\admin\controller\Base;
 use think\Request;
 use think\Validate;
 use think\Db;
+use think\Config;
 use \Exception;
 
 class Email extends Base{
@@ -127,6 +128,11 @@ class Email extends Base{
             	}
             }
         }else{
+        	$config = Config::get('websetup'); // 获取上传配置信息
+        	$ext = isset($config['attach_ext']) ? $config['attach_ext'] : 'rar,tar,7z,zip,gz,txt,chm,xml,doc,ppt,pdf,xls,xlsx,pptx,docx';
+        	$size = isset($config['attach_size']) ? $config['attach_size'] : 104857600; // 附件上传大小限制，单位：字节(b)，默认100MB
+        	$this->assign('ext', $ext);
+        	$this->assign('size', $size);
             return $this->fetch();
         }
 	}

@@ -1,7 +1,5 @@
 	悟空资源网：www.gokuit.com/tutorial
 
-	<input type="color" name="color" value="选择颜色">
-
 	Composer命令
 
 	安装包 

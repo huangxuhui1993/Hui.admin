@@ -87,6 +87,11 @@ class Conversion extends Base{
      * @return mixed
      */
 	public function index(){
+        $config = Config::get('websetup'); // 获取上传配置信息
+        $ext = isset($config['office_ext']) ? $config['office_ext'] : 'doc,ppt,xls,docx,pptx,xlsx';
+        $size = isset($config['office_size']) ? $config['office_size'] : 52428800; // office上传大小限制，单位B，默认50MB 
+        $this->assign('ext', $ext);
+        $this->assign('size', $size);
         return $this->fetch();
 	}
 

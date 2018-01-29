@@ -10,7 +10,6 @@ use app\admin\model\Attach;
 use app\admin\model\Channel;
 use app\admin\model\Models;
 use app\common\model\Document;
-use app\home\model\Member;
 
 
 // 上传导出文件路径常量
@@ -51,12 +50,13 @@ function add_logs($operate = '', $status = 0, $type = 1){
     if($logs_switch && $condition){
         switch($type){
             case 1:
-                $data['username'] = Session::get('uname');
-                $data['ip'] = Request::instance()->ip();
-                $data['operate'] = $operate;
-                $data['status'] = $status;
-                $data['time'] = time();
-                Db::name('logs')->insert($data);
+                Db::name('logs')->insert([
+                    'username' => Session::get('uname'),
+                    'ip' => Request::instance()->ip(),
+                    'operate' => $operate,
+                    'status' => $status,
+                    'time' => time()
+                ]);
                 break;
             case 2:
                 $data = "";
@@ -70,6 +70,27 @@ function add_logs($operate = '', $status = 0, $type = 1){
         }
     }else{
         return false;
+    }
+}
+
+/**
+ * add_logs_api 记录接口日志信息
+ * @param    array                    $request  请求信息
+ * @param    array                    $response 响应信息
+ * @param    integer                  $type     接口类型
+ * @param    string                   $remarks  备注信息
+ */
+function add_logs_api($request = [], $response = [], $type = 0, $remarks = ''){
+    $logs_switch = Config::get('websetup.logs_api') == 1 ? true : false; // 是否开启日志
+    if($logs_switch && is_array($request)){
+        Db::name('logs_api')->insert([
+            'type' => $type,
+            'request' => json_encode($request, JSON_UNESCAPED_UNICODE),
+            'response' => json_encode($response, JSON_UNESCAPED_UNICODE),
+            'remarks' => $remarks,
+            'time' => time()
+        ]);
+        return true;
     }
 }
 
@@ -321,12 +342,7 @@ function hui_decrypt($data, $key = ''){
 
 /**
  * send_mailer 邮件发送函数
- * @param  array $data 邮件数据
- * $data = [
- *		'title'=>'标题',
- *		'content'=>'内容',
- *		'email'=>'收件邮箱'
- *	]
+ * @param  array $data 邮件数据 ['title'=>'标题','content'=>'内容', 'email'=>'收件邮箱(多个邮箱为数组格式)']
  * @return bool
  */
 function send_mailer($data = []){
@@ -338,21 +354,22 @@ function send_mailer($data = []){
 		}elseif(empty($data['email']) || !isset($data['email'])){
 			throw new Exception("收件人邮箱为空！");
 		}else{
-			ini_set("magic_quotes_runtime",0);
+			ini_set('magic_quotes_runtime', 0);
+            $Config = Config::get('websetup'); // 获取配置信息
 			$mail  = new PHPMailer();
-			$mail->CharSet    = Config::get('websetup.mailer_char');                 									// 设定邮件编码，默认ISO-8859-1，如果发中文此项必须设置为 UTF-8
-			$mail->IsSMTP();                            																// 设定使用SMTP服务
-			$mail->SMTPAuth   = true;                   																// 启用 SMTP 验证功能
-			$mail->SMTPSecure = Config::get('websetup.mailer_secure');                  								// SMTP 安全协议
-			$mail->Host       = Config::get('websetup.mailer_host');       												// SMTP 服务器
-			$mail->Port       = Config::get('websetup.mailer_port');                    								// SMTP服务器的端口号
-			$mail->Username   = Config::get('websetup.mailer_username');  												// SMTP服务器用户名
-			$mail->Password   = Config::get('websetup.mailer_password');        										// SMTP服务器密码
-			$mail->SetFrom(Config::get('websetup.mailer_from_email'),Config::get('websetup.mailer_from_name')); 		// 设置发件人地址和名称
-			$mail->AddReplyTo(Config::get('websetup.mailer_reply_email'),Config::get('websetup.mailer_reply_name'));  	// 设置邮件回复人地址和名称
-			$mail->Subject    = $data['title'];                     													// 设置邮件标题
-			$mail->AltBody    = "查看该邮件，请切换到支持 HTML 的邮件客户端";  	    									// 可选项，向下兼容考虑
-			$mail->MsgHTML($data['content']);      																		// 设置邮件内容
+			$mail->CharSet    = $Config['mailer_char'];                 					// 设定邮件编码，默认ISO-8859-1，如果发中文此项必须设置为 UTF-8
+			$mail->IsSMTP();                            									// 设定使用SMTP服务
+			$mail->SMTPAuth   = true;                   									// 启用 SMTP 验证功能
+			$mail->SMTPSecure = $Config['mailer_secure'];                  					// SMTP 安全协议
+			$mail->Host       = $Config['mailer_host'];       								// SMTP 服务器
+			$mail->Port       = $Config['mailer_port'];                    					// SMTP服务器的端口号
+			$mail->Username   = $Config['mailer_username'];  								// SMTP服务器用户名
+			$mail->Password   = $Config['mailer_password'];        							// SMTP服务器密码
+			$mail->SetFrom($Config['mailer_from_email'], $Config['mailer_from_name']); 		// 设置发件人地址和名称
+			$mail->AddReplyTo($Config['mailer_reply_email'], $Config['mailer_reply_name']); // 设置邮件回复人地址和名称
+			$mail->Subject    = $data['title'];                     						// 设置邮件标题
+			$mail->AltBody    = "查看该邮件，请切换到支持 HTML 的邮件客户端";  	    			// 可选项，向下兼容考虑
+			$mail->MsgHTML($data['content']);      											// 设置邮件内容
             $email = $data['email'];
             // 检测是否为群发
             if(is_array($email)){
@@ -365,10 +382,12 @@ function send_mailer($data = []){
             if(isset($data['file']) && !empty($data['file'])){
             	$mail->AddAttachment($data['file']); 					        // 附件文件 "./uploads/export/ExportLogs_5959ad222e933.xls"
 			}
-			if(!$mail->Send()){
-			    throw new Exception($mail->ErrorInfo);
+            $result = $mail->Send();
+            add_logs_api($data, $result, 1); // 记录接口日志
+			if($result){
+                return true;
 			}else{
-			    return true;
+                throw new Exception($mail->ErrorInfo);
 			}	
 		}
 	}else{
@@ -734,32 +753,4 @@ function get_channel($pid = 0, $path = ''){
         }
     }
     return $c_arr;
-}
-
-/**
- * get_member_info 获取用户信息
- * @param  integer $id 用户ID
- * @return array       用户信息
- */
-function get_member_info($id = 0){
-    if(!empty($id) && is_numeric($id)){
-        $result = Member::get($id);
-        return $result ? $result : '';
-    }else{
-        return false;
-    }
-}
-
-/**
- * get_member_vip_state 获取会员vip状态
- * @param  integer $id 用户ID
- */
-function get_member_vip_state($id = 0){
-    if(empty($id) || !is_numeric($id)) return false;
-    $result = Member::get($id);
-    if($result){
-        return $result['activation_state'] == 1 ? 'VIP会员' : '普通会员'; 
-    }else{
-        return false;
-    }
 }

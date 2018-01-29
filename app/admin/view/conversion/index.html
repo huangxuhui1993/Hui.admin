@@ -32,13 +32,16 @@
 					<div class="formControls col-xs-8 col-sm-10">
 						<div class="uploader-thum-container">
 							<input class="input-text upload-url radius f-l" type="text" name="uploadfile" id="uploadfile" readonly>
-							<div class="ml-10" id="filePicker">
+							<div class="ml-10" id="file-picker">
 								<i class="Hui-iconfont">&#xe642;</i> 浏览文件
 							</div>
-							<button class="btn btn-default btn-uploadstar radius ml-10" type="button" onclick="delete_file()" >
+							<button class="btn btn-default btn-uploadstar radius ml-10" type="button" onclick="delete_file()">
 								<i class="Hui-iconfont">&#xe6e2;</i> 清除文件
 							</button>
 						</div>
+						<input type="hidden" name="id" id="id">
+						<small class="label label-default radius">文件格式：({$ext})，大小：{:truesize($size)}</small>
+						<input type="text" class="input-text radius width-50 ml-10 hide text-c" id="percentage" disabled>
 					</div>
 				</div>
 
@@ -54,29 +57,8 @@
 			</button>
 		</div>
 
-		<input type="hidden" name="id" id="id" value="">
 	</form>
 
-</div>
-
-<!-- 上传进度条 -->
-<div id="progress-bar" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content radius">
-			<div class="modal-body ">
-				<p class="text-c">
-					<span class="badge badge-default radius" id="percentage"></span>
-				</p>
-				
-				<div class="progress radius" style="margin:20px auto;">
-					<div class="progress-bar progress-bar-success">
-						<span class="sr-only"></span>
-					</div>
-				</div>
-
-			</div>
-		</div>
-	</div>
 </div>
 
 {tag:adminjs /}
@@ -88,64 +70,64 @@
 <script type="text/javascript" src="__ROOT__/js/webuploader/webuploader.js"></script>
 <script type="text/javascript">
 $(function(){
-	var $progressbar = $("#progress-bar"); // 上传进度条
-	var $uploadfile = $("#uploadfile"); // 文件信息
+	var percentages = $("#percentage"), // 上传进度
+	uploadfile = $("#uploadfile"); 		// 文件信息
 
 	var uploader = WebUploader.create({
-		// 选完文件后，是否自动上传
-		auto: true,
-		// swf文件路径
-		swf: '__ROOT__/js/webuploader/Uploader.swf', // 加载swf文件
-		// 文件接收服务端
-		server: "{:url('upload/fileUpload',['type'=>'office'])}",
-		// 选择文件的按钮，可选
-		pick: '#filePicker',
+		auto: true,													// 选完文件后，是否自动上传
+		swf: '__ROOT__/js/webuploader/Uploader.swf', 				// 加载swf文件
+		server: "{:url('upload/fileUpload', ['type' => 'office'])}",// 文件接收服务端
+		pick: "#file-picker",										// 选择文件的按钮，可选
+		fileSingleSizeLimit: '{$size}',								// 限制 单文件大小
+		fileSizeLimit: '{$size}',									// 限制 所有文件大小
+		accept: { 													// 传入文件格式限制
+			title: 'Applications',
+			extensions: '{$ext}',
+			mimeTypes: '',
+		},
 	});
 
-    // 当文件被加入队列之前触发
-    uploader.on('beforeFileQueued',function(file){
+    uploader.on('beforeFileQueued', function(file){	// 当文件被加入队列之前触发
         var id = $("#id").val();
         if(id.length != 0){
-            layer.msg('请先清除文件', {icon:0,shade: 0.04,time:1000});
+            layer.msg('请先清除文件');
             return false;
 		}
     });
 
-	// 当有文件被添加进队列的时候
-    uploader.on('fileQueued',function(file){
-        $uploadfile.val(file.name);
+    uploader.on('fileQueued', function(file){ // 当有文件被添加进队列的时候
+        uploadfile.val(file.name);
     });
 
-	// 文件上传过程中创建进度条实时显示
-    uploader.on( 'uploadProgress',function(file,percentage){
-        $progressbar.modal("show");
-        // 进度条
-        $(".sr-only").css("width",percentage * 100 + '%');
-        // 百分比
-        $("#percentage").text(Math.round(percentage * 100) + '%');
+    uploader.on( 'uploadProgress', function(file, percentage){ // 文件上传过程中创建进度条实时显示
+        percentages.show();
+        percentages.val(Math.round(percentage * 100) + '%'); // 百分比
     });
 
-	// 文件上传成功
-	uploader.on('uploadSuccess', function(file,response){
-		console.log(response);
+	uploader.on('uploadSuccess', function(file, response){ // 文件上传成功
+		log(response);
         if(response.error == 1){
-            $uploadfile.val('');
-            layer.msg(response.message, {icon:0,shade: 0.04,time:1000});
+            uploadfile.val('');
         }else{
             $("#id").val(response.id);
-            layer.msg(response.message, {icon:1,shade: 0.04,time:1000});
         }
+        layer.msg(response.message);
 	});
 
-	// 文件上传失败
-	uploader.on('uploadError',function(file){
-        $uploadfile.val('');
+	uploader.on('error', function(res){
+		log(res)
+		if(res == 'Q_TYPE_DENIED') layer.msg('文件格式不允许!');
+		if(res == 'Q_EXCEED_SIZE_LIMIT') layer.msg('文件大小超出系统限制!');
+		if(res == 'F_EXCEED_SIZE') layer.msg('文件大小超出系统限制!');
+	});
+
+	uploader.on('uploadError',function(file){ // 文件上传失败
+        uploadfile.val('');
 		layer.msg('服务器错误!');
 	});
 
-    // 完成上传不论成功或失败，删除进度条
-    uploader.on('uploadComplete',function(file){
-        $progressbar.modal("hide");
+    uploader.on('uploadComplete',function(file){ // 完成上传不论成功或失败，删除进度条
+        percentages.hide();
     });
 
 	// 表单验证Ajax提交
@@ -167,13 +149,7 @@ $(function(){
 				type: 'post',
 				url: "{:url('Conversion/fileConversion')}",
                 beforeSend:function(){
-                    index = layer.msg('正在转换文件，请耐心等待...',{
-                        icon: 16,
-                        area: 'auto',
-                        shade: 0.04,
-                        shadeClose: false,
-						time: 0
-                    });
+                    index = loading('正在转换文件，请耐心等待......');
                 },
 				success:function(result){
 					console.log(result);
@@ -188,11 +164,11 @@ $(function(){
                             }
                         });
 					}else{
-                        layer.msg(result.msg, {icon:0,shade: 0.01,time:1000});
+                        layer.msg(result.msg);
                     }
 				},
                 error:function(XmlHttpRequest, textStatus, errorThrown){
-					layer.msg('server error!',{icon:0,time:1000});
+					layer.msg('server error!');
 				}
 			});
 		}
@@ -204,7 +180,7 @@ $(function(){
 function delete_file(){
     var id = $("#id").val();
     if(id.length == 0){
-        layer.msg('没有文件可以清除', {icon:0,shade: 0.04,time:1000});
+        layer.msg('没有文件可以清除');
         return false;
 	}
     $.ajax({type:'post', url:"{:url('Common/deleteFile')}", data:{'id':id},
@@ -213,9 +189,9 @@ function delete_file(){
                 $("#id").val('');
                 $("#format").val('');
                 $("#uploadfile").val('');
-                layer.msg('文件清除成功！', {icon:1,shade: 0.04,time:1000});
+                layer.msg('文件清除成功！');
             }else{
-                layer.msg('文件清除失败', {icon:0,shade: 0.04,time:1000});
+                layer.msg('文件清除失败');
             }
         }
     });

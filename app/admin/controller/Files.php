@@ -51,7 +51,7 @@ class Files extends Base{
 
 		# 面包屑
 		$this->assign('bread',breadcrumb([self::$bread,'上传文件']));
-		return $this->fetch();
+		return $this->fetch('upload_file');
 	}
 
     /**
@@ -94,7 +94,7 @@ class Files extends Base{
 
 		# 面包屑
 		$this->assign('bread',breadcrumb([self::$bread,'转换文件']));
-		return $this->fetch();
+		return $this->fetch('conversion_file');
 	}
 
     /**
@@ -159,7 +159,7 @@ class Files extends Base{
 
 		# 面包屑
 		$this->assign('bread',breadcrumb([self::$bread,'导出文件']));
-		return $this->fetch();
+		return $this->fetch('export_file');
     }
 
     /**

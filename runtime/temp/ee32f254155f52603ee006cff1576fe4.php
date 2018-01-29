@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:66:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\email\send.html";i:1516870403;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1516177545;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:66:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\email\send.html";i:1517204590;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1516177545;}*/ ?>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -57,11 +57,13 @@
 			<div class="formControls col-xs-10">
 				<div id="Attach"></div>
 				<div class="uploader-thum-container">
-					<div id="filePicker">
+					<div id="file-picker">
 						<i class="Hui-iconfont">&#xe642;</i> 上传附件
 					</div>
 				</div>
 				<input type="hidden" name="aid" id="aid">
+				<small class="label label-default radius">文件格式：(<?php echo $ext; ?>)，大小：<?php echo truesize($size); ?></small>
+				<input type="text" class="input-text radius width-50 ml-10 hide text-c" id="percentage" disabled>
 			</div>
 		</div>
 
@@ -79,24 +81,6 @@
 		</div>
 	</form>
 </article>
-
-<!-- 上传进度条 -->
-<div id="progress-bar" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content radius">
-			<div class="modal-body ">
-				<p class="text-c">
-					<span class="badge badge-default radius" id="percentage"></span>
-				</p>
-				<div class="progress radius" style="margin:20px auto;">
-					<div class="progress-bar progress-bar-success">
-						<span class="sr-only"></span>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
 
 <!--请在下方写此页面业务相关的脚本-->
     	<!-- Tag标签加载js -->
@@ -120,18 +104,25 @@
 
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function(){
-	var $progressbar = $("#progress-bar"); 							// 上传进度条
+	var $progressbar = $("#percentage"); 							// 上传进度
+
 	var uploader = WebUploader.create({
 		auto: true,													// 选完文件后，是否自动上传
 		swf: '__ROOT__/js/webuploader/Uploader.swf', 				// 加载swf文件
 		server: "<?php echo url('upload/fileUpload',['type' => 'attach']); ?>",	// 文件接收服务端
-		pick: '#filePicker',										// 选择文件的按钮，可选
+		pick: '#file-picker',										// 选择文件的按钮，可选
+		fileSingleSizeLimit: '<?php echo $size; ?>',								// 限制 单文件大小
+		fileSizeLimit: '<?php echo $size; ?>',									// 限制 所有文件大小
+		accept: { 													// 传入文件格式限制
+			title: 'Applications',
+			extensions: '<?php echo $ext; ?>',
+			mimeTypes: ''
+		}
 	});
     
     uploader.on( 'uploadProgress',function(file,percentage){		// 文件上传过程中创建进度条实时显示
-        $progressbar.modal("show");
-        $(".sr-only").css("width",percentage * 100 + '%');
-        $("#percentage").text(Math.round(percentage * 100) + '%');
+        $progressbar.show();
+        $progressbar.val(Math.round(percentage * 100) + '%');
     });
 	
 	uploader.on('uploadSuccess', function(file,response){			// 文件上传成功
@@ -154,13 +145,20 @@ $(document).ready(function(){
             $('#Attach').append(afterHtml);
         }
 	});
+
+	uploader.on('error', function(res){
+		log(res)
+		if(res == 'Q_TYPE_DENIED') layer.msg('文件格式不允许!');
+		if(res == 'Q_EXCEED_SIZE_LIMIT') layer.msg('文件大小超出系统限制!');
+		if(res == 'F_EXCEED_SIZE') layer.msg('文件大小超出系统限制!');
+	});
 	
-	uploader.on('uploadError',function(file){						// 文件上传失败
+	uploader.on('uploadError', function(file){						// 文件上传失败
 		layer.msg('服务器错误!');
 	});
    
-    uploader.on('uploadComplete',function(file){					// 完成上传不论成功或失败，删除进度条
-    	$progressbar.modal("hide");
+    uploader.on('uploadComplete', function(file){					// 完成上传不论成功或失败，删除进度条
+    	$progressbar.hide();
     });
 
 	// 百度编辑器

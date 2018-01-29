@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\index\index.html";i:1516681492;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1516177545;s:69:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\header.html";i:1516870155;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\menu.html";i:1507622054;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\index\index.html";i:1516681492;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1516177545;s:69:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\header.html";i:1517211524;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\menu.html";i:1507622054;}*/ ?>
 ﻿<!DOCTYPE HTML>
 <html>
 <head>
@@ -49,7 +49,7 @@
 								</a>
 							</li>
 							<li>
-								<a href="javascript:;" onclick="open_window('<?php echo url('Conversion/index'); ?>', 850, 350, 0);">
+								<a href="javascript:;" onclick="open_window('<?php echo url('Conversion/index'); ?>', 850, 400, 0);">
 									<i class="Hui-iconfont">&#xe6ab;</i> 文档转换
 								</a>
 							</li>
@@ -68,6 +68,11 @@
 									<i class="Hui-iconfont">&#xe671;</i> 地图定位
 								</a>
 							</li>
+							<li>
+								<a href="javascript:;" onclick="open_window('<?php echo url('Common/folder'); ?>', 900, 330, 0);">
+									<i class="Hui-iconfont">&#xe6f2;</i> 文件管理
+								</a>
+							</li>
 						</ul>
 					</li>
 					<li style="display:none;" id="js-wifi"><i class="Hui-iconfont">&#xe6ce;</i> <span>0M/S</span></li>
@@ -81,7 +86,7 @@
 					<li class="dropDown dropDown_hover"> <a href="#" class="dropDown_A"><i class="Hui-iconfont f-16">&#xe60d;</i> <?php echo session('uname'); ?> <i class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
 							<li>
-								<a href="javascript:;" onclick="clear_cache('<?php echo url('Common/clearcache'); ?>')">清除缓存</a>
+								<a href="javascript:;" onclick="clear_cache('<?php echo url('Ajax/clearcache'); ?>')">清除缓存</a>
 							</li>
 							<li>
 								<a href="javascript:;" onclick="personal_window('<?php echo url('Common/userSetup'); ?>','账号设置')">个人信息</a>

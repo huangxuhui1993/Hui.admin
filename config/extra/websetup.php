@@ -38,4 +38,5 @@
 	'wechat_appid' => 'wx8ac4d4f726859e80',
 	'wechat_appsercert' => '3577d39564ddb1c8a0d91afcdac99aa0',
 	'wechat_token' => 'EBEFDCvE5raTCu6An7Gd',
+	'logs_api' => 1,
 ];

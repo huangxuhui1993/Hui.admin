@@ -1,14 +1,11 @@
 <?php
 namespace app\admin\controller;
 use app\admin\controller\Base;
-use org\util\HttpCurl;
+use think\Db;
+use think\Config;
 use think\Request;
 use think\Validate;
-use think\Cache;
-use think\Db;
 use app\admin\model\User;
-use app\admin\model\AuthGroupAccess;
-use app\admin\model\AuthGroup;
 use \Exception;
 
 /**
@@ -20,6 +17,49 @@ class Common extends Base{
     
     public function _initialize(){
         parent::_initialize();
+    }
+
+    public function folder(){
+    	
+    	$hui_files_path = Config::get('hui_files_path');
+    	
+    	$list = $this->scanAll(HUI_FILES);
+    	$list = array_merge($list, [['id' => 1, 'pId' => 0, 'name' => $hui_files_path, 'open' => true]]);
+    	$this->assign('list', $list);
+    	return $this->fetch();
+    }
+
+	public function scanAll($dir, $pid = 1){
+		global $file_list;
+		if(is_dir($dir)){
+			$children = scandir($dir);
+			foreach($children as $key => $value){
+				if($value !== '.' && $value !== '..'){
+					$child = $pid == 1 ? $dir . $value : $dir . '/' . $value;
+					$id = intval($pid . $key);
+					if(is_file($child)){
+						$file_list[] = [
+							'id' => $id,
+							'pId' => $pid,
+							'name' => $value
+						];
+					}elseif(is_dir($child)){
+						$file_list[] = [
+							'id' => $id,
+							'pId' => $pid,
+							'name' => $value
+						];
+						$this->scanAll($child, $id);
+					}
+
+				}
+			}
+		}
+		return $file_list;
+	}
+
+    public function folderAdd(){
+    	return $this->fetch('folder_add');
     }
 
     /**
@@ -82,9 +122,9 @@ class Common extends Base{
      */
     public function deleteFile(Request $request){
         if($request->isAjax()) {
-            $att_id = $request->param('id/d');
-            if(!empty($att_id) && isset($att_id)){
-                if(delete_file($att_id)){
+            $id = $request->param('id/d');
+            if(!empty($id)){
+                if(delete_file($id)){
                     add_logs('清除上传文件', 1);
                     return json(['error' => 0]);
                 }else{
@@ -158,63 +198,6 @@ class Common extends Base{
 			add_logs('修改源代码，非法操作！', 0);
 			return json(['error' => 1, 'msg' => '非法操作！']);
 		}
-	}
-
-    /**
-     * clearcache 清除缓存
-     * @param  Request $request 请求信息
-     * @return json
-     */
-	public function clearcache(Request $request){
-		if($request->isAjax()){
-			# 清除cache缓存
-			$cache = Cache::clear();
-			# 清除temp缓存
-			$temp = array_map('unlink', glob(TEMP_PATH . '*.php'));
-			if(is_dir(TEMP_PATH)){
-				rmdir(TEMP_PATH);
-			}
-	    	if($cache && $temp){
-	    		add_logs('清除缓存', 1);
-	    		return json(['error' => 0]);
-	    	}else{
-                add_logs('清除缓存', 0);
-	    		return json(['error' => 1]);
-	    	}
-		}
-	}
-
-    /**
-     * news 获取新闻
-     * @param  Request $request 请求信息
-     * @return json             新闻列表
-     */
-	public function news(Request $request){
-		if($request->isAjax()){
-			$data = $request->post('type');
-			if(empty($data)){
-				return json(['message' => '参数错误！', 'code' => 1]);
-			}
-			// Ajax实时新闻
-			$curl = new HttpCurl();
-			$url = 'http://wangyi.butterfly.mopaasapp.com/news/api';
-			$data = [
-				'type'  => $data,
-				'page'  => 1,
-				'limit' => 8
-			];
-			$result = $curl::get($url, $data);
-			$news = json_decode($result, true);
-			$newslist = $news['list'];
-			// 截取新闻标题
-			foreach($newslist as $k => $v){
-				$newslist[$k]['title'] = msubstr($v['title'], 0, 15);
-			}
-			return json($newslist);
-		}else{
-			return '非法操作！';
-		}
-
 	}
 
 }

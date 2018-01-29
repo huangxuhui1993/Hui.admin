@@ -1,4 +1,15 @@
 @charset "utf-8";
+/*常用宽度*/
+.width-50{width:50px;}
+.width-100{width:100px;}
+.width-150{width:150px;}
+.width-200{width:200px;}
+.width-250{width:250px;}
+.width-300{width:300px;}
+.width-350{width:350px;}
+.width-400{width:400px;}
+.width-450{width:450px;}
+.width-500{width:500px;}
 
 .Hui-tags-list, .Huitags-list {
     padding:0px;
@@ -29,3 +40,23 @@ input.page-input{width:5pc}
 .pagination li:last-child a,.pagination li:last-child span{border-radius:0 3px 3px 0}
 .pagination-centered{text-align:center}
 .pagination-right{text-align:right}
+
+/*文件管理*/
+#treeDemo {
+    margin-bottom: 10px;
+    border: 1px solid #617775;
+    background: #f0f6e4;
+    width: 49%;
+    height: 280px;
+    overflow-y: scroll;
+    overflow-x: auto;
+    float: left;
+    padding: 5px;
+    color: #333;
+}
+#testIframe{
+    border: 1px solid #617775;
+    width: 49%;
+    height: 290px;
+    float: right;
+}
