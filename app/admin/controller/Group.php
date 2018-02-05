@@ -58,14 +58,14 @@ class Group extends Base{
         	// 数据验证
             $result = $this->validate($data,'AuthGroup');
             if(true !== $result){
-                $this->redirect('Group/add','',302,['code' => 'error','msg' => $result,'data' => $data]);
+                return hui_redirect('Group/add', ['code' => 'error','msg' => $result,'data' => $data]);
             }else{
 				if($db->allowField(true)->save($data)){
 					add_logs('添加角色', 1);
-					$this->redirect('Group/lis','',302,['code' => 'success','msg' => '角色添加成功！']);
+					return hui_redirect('Group/lis', ['code' => 'success','msg' => '角色添加成功！']);
 				}else{
 					add_logs('添加角色', 0);
-					$this->redirect('Group/lis','',302,['code' => 'error','msg' => '角色添加失败！']);
+					return hui_redirect('Group/lis', ['code' => 'error','msg' => '角色添加失败！']);
 				} 
             }
             return;
@@ -101,14 +101,18 @@ class Group extends Base{
 	        	// 数据验证
 	            $result = $this->validate($data,'AuthGroup');
 	            if(true !== $result){
-	                $this->redirect('Group/edit',['id' => $id],302,['code' => 'error','msg' => $result]);
+	            	$with = ['code' => 'error','msg' => $result];
+		        	$params = ['id' => $id];
+		            return hui_redirect('Group/edit', $with, $params);
 	            }else{
 					if($db->allowField(true)->save($data,['id' => $id])){
 						add_logs('编辑角色', 1);
-						$this->redirect('Group/lis','',302,['code' => 'success','msg' => '角色编辑成功！']);
+						return hui_redirect('Group/lis', ['code' => 'success','msg' => '角色编辑成功！']);
 					}else{
 						add_logs('编辑角色', 0);
-						$this->redirect('Group/edit',['id' => $id],302,['code' => 'error','msg' => '没有更新数据！']);
+		            	$with = ['code' => 'error','msg' => '没有更新数据！'];
+			        	$params = ['id' => $id];
+			            return hui_redirect('Group/edit', $with, $params);
 					} 
 	            }
 	            return;
@@ -130,7 +134,7 @@ class Group extends Base{
 			$this->assign('bread',breadcrumb([$this->bread,'编辑角色']));
 			return $this->fetch();
 		}else{
-			$this->redirect('Group/lis','',302,['code' => 'error','msg' => '参数错误！']);
+			return hui_redirect('Group/lis', ['code' => 'error','msg' => '参数错误！']);
 		}
 	}
 
@@ -144,18 +148,18 @@ class Group extends Base{
 			if(is_numeric($id) && !empty($id)){
 				$result = AuthGroupModel::get($id);
 				if(!$result){
-					$this->redirect('Group/lis', '', 302, ['code' => 'error', 'msg' => '数据不存在！']);
+					return hui_redirect('Group/lis', ['code' => 'error', 'msg' => '数据不存在！']);
 				}else{
 					if($result->delete()){
 						add_logs('删除角色【' . $result->title . '】', 1);
-						$this->redirect('Group/lis', '', 302, ['code' => 'success', 'msg' => '角色【' . $result->title . '】删除成功！']);
+						return hui_redirect('Group/lis', ['code' => 'success', 'msg' => '角色【' . $result->title . '】删除成功！']);
 					}else{
 						add_logs('删除角色【' . $result->title . '】', 0);
-						$this->redirect('Group/lis', '', 302, ['code' => 'error', 'msg' => '角色删除失败！']);
+						return hui_redirect('Group/lis', ['code' => 'error', 'msg' => '角色删除失败！']);
 					}				
 				}
 			}else{
-				$this->redirect('Group/lis', '', 302, ['code' => 'error', 'msg' => '参数错误！']);
+				return hui_redirect('Group/lis', ['code' => 'error', 'msg' => '参数错误！']);
 			}
 		}
 	}

@@ -1,0 +1,187 @@
+{include file="public/meta" /}
+
+<link href="__ROOT__/js/webuploader/webuploader.css" rel="stylesheet" type="text/css" />
+
+<title>{$title}上传</title>
+
+</head>
+<body id="uploader-body">
+
+    <div class="page-container">
+
+        <div class="text-c">
+            <div id="attach"></div>
+            <div class="uploader-thum-container"> <!-- 文件选择按钮 -->
+                <div id="file-picker"><i class="Hui-iconfont">&#xe642;</i> 选择{$title}</div>
+            </div>
+        </div>
+
+        <!-- 进度条 -->
+        <div class="upload-progress-bar">
+            <div class="text-c">
+                <small id="upload-info">总大小：0M，已上传：0M，上传进度：0%</small>
+            </div>
+            <div class="progress radius">
+                <div class="progress-bar progress-bar-success">
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+        </div>
+
+        <small class="label label-default radius">大小限制：{:truesize($size)}</small>
+        <small class="label label-default radius">格式限制：({$ext})</small>
+
+        <div class="row cl text-c mt-10 hide" id="confirm">
+            <button class="btn btn-secondary radius size-M" onclick="confirm_add()"><i class="Hui-iconfont">&#xe676;</i> 确认添加</button>
+        </div>
+
+    </div>
+
+<!--请在下方写此页面业务相关的脚本-->
+{tag:adminjs /}
+
+<script type="text/javascript" src="__ROOT__/js/webuploader/webuploader.min.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+window.uploadJson = ''; // 初始化上传成功信息
+$(document).ready(function(){
+    var time = 1, titleDoc = parent.$('title'), title = titleDoc.text(), int;
+    var uploader = WebUploader.create({
+        auto: true,                                                 // 选完文件后，是否自动上传
+        compress: false,                                            // 是否压缩图片文件
+        swf: '__ROOT__/js/webuploader/Uploader.swf',                // 加载swf文件
+        server: "{:url('Upload/index')}",                           // 文件接收服务端
+        pick: '#file-picker',                                       // 选择文件的按钮，可选
+        fileSingleSizeLimit: '{$size}',                             // 验证单个文件大小是否超出限制, 超出则不允许加入队列。
+        fileSizeLimit: '{$size}',                                   // 验证文件总大小是否超出限制, 超出则不允许加入队列。
+        chunked: true,                                              // 是否要分片处理大文件上传。
+        chunkSize: '{$chunked_size}',                               // 如果要分片，分多大一片？ 默认大小为100M.
+        chunkRetry: 3,                                              // 如果某个分片由于网络问题出错，允许自动重传多少次？
+        threads: 1,                                                 // 上传并发数。允许同时最大上传进程数。
+        formData: {                                                 // 文件上传请求的参数表，每次发送都会发送此对象中的参数。
+            guid: WebUploader.Base.guid(),
+            flag: '{$type}'
+        },  
+        accept: {                                                   // 传入文件格式限制
+            title: 'Applications',
+            extensions: '{$ext}',
+            mimeTypes: ''
+        }
+    });
+    
+    uploader.on('beforeFileQueued', function(file){                   // 当文件被加入队列之前触发
+        if(uploadJson != ''){
+            layer.msg('请先删除文件！');
+            return false;
+        }
+    });
+
+    uploader.on('fileQueued', function(file){                         // 当有文件被添加进队列的时候
+        $('.upload-progress-bar').show();
+        $('.uploader-thum-container').hide();
+	    window.onbeforeunload = function(event){
+	        return '关闭或刷新页面，将导致文件上传失败！';
+	    }
+        int = self.setInterval(function(){
+            titleDoc.text('正在上传' + (time++) + '秒...');
+        }, 1000);
+    });
+
+    uploader.on( 'uploadProgress', function(file, percentage){        // 文件上传过程中创建进度条实时显示
+        var percentages = Math.round(percentage * 100) + '%';       // 上传进度条
+        var file_size = render_size(file.size);                     // 文件大小
+        var uploaded_size = render_size(file.size * percentage);    // 已上传文件大小
+
+        $('.sr-only').css('width', percentages);
+        $('#upload-info').text('总大小：' + file_size + '，已上传：' + uploaded_size + '，上传进度：' + percentages);
+        
+    });
+    
+    uploader.on('uploadSuccess', function(file, data){           // 文件上传成功
+        log(data);
+        if(data.error == 1){
+        	layer.msg(data.message);
+        }else{
+            delete_chunks_file('{:url('Upload/delChunks')}', data.chunks_path);
+        	uploadJson = data;
+        	layer.msg('文件：' + file.name + '，' + data.message);
+            var afterHtml = '';
+                afterHtml += '<span class="attlist' + data.id + '"><div class="imgDiv">';
+                afterHtml += '<img src="__ROOT__/images/files/' + data.ext + '.png" class="img-responsive thumbnail" style="width:60px;height:60px;">';
+                afterHtml += '<a href="javascript:delete_file(' + data.id + ');" class="delete" title="删除">';
+                afterHtml += '<img src="__ADMIN__/h-ui.admin/images/dialog_del.gif"></a></div></span>';
+            $('#attach').append(afterHtml);
+            $('#confirm').show();
+        }
+    });
+
+    uploader.on('error', function(res){
+        if(res == 'Q_TYPE_DENIED') layer.msg('文件格式不允许！');
+        if(res == 'Q_EXCEED_SIZE_LIMIT') layer.msg('文件大小超出系统限制！');
+        if(res == 'F_EXCEED_SIZE') layer.msg('文件大小超出系统限制！');
+    });
+    
+    uploader.on('uploadError', function(file){                      // 文件上传失败
+        layer.msg('服务器错误！');
+    });
+   
+    uploader.on('uploadComplete', function(file){                   // 完成上传不论成功或失败，删除进度条
+        $('.upload-progress-bar').hide();
+        self.clearInterval(int);
+        titleDoc.text(title);
+    });
+
+});
+
+// 删除分片文件
+function delete_chunks_file(url, chunks_path){
+    if(chunks_path != ''){
+        $.post(url, {chunks_path: chunks_path}, function(data){
+            log(data);
+        });
+    }
+}
+
+// 删除上传文件
+function delete_file(id){
+    if(id.length != 0){
+        $.ajax({
+            type:'post',
+            url:"{:url('common/deleteFile')}",
+            data:{'id':id},
+            success: function(result){
+                if(result.error == 0){
+                    uploadJson = '';
+                    $('.attlist' + id).remove();
+                    $('.uploader-thum-container').show();
+                    $('#confirm').hide();
+                    window.onbeforeunload = '';
+                    window.location.reload(true);
+                    layer.msg('文件删除成功！');
+                }else{
+                    layer.msg('文件删除失败！');
+                }
+            }
+        });
+    }else{
+        layer.msg('没有文件可以删除！');
+        return false;
+    }
+}
+
+// 确认添加文件
+function confirm_add(){
+    if(uploadJson != ''){
+    	window.onbeforeunload = '';
+        window.opener.document.getElementById('{$tag}').value = uploadJson.id;
+        window.opener.layer.msg('文件：' + uploadJson.name + '，已添加！', {icon:1, time:2500, shade: 0.03});
+        close_window();
+    }else{
+        toastr.warning('请上传文件！');
+    }
+}
+</script> 
+<!--/请在上方写此页面业务相关的脚本-->
+
+</body>
+</html>

@@ -56,7 +56,7 @@ class User extends Base{
             $result = $this->validate($data,'User');
 
 			if(true !== $result){
-				$this->redirect('User/add','',302,['code' => 'error', 'msg'  => $result, 'data' => $data]);
+				return hui_redirect('User/add', ['code' => 'error', 'msg'  => $result, 'data' => $data]);
 			}else{
 				# 注册时间
 				$data['regtime'] = time();
@@ -67,10 +67,10 @@ class User extends Base{
 						'group_id' => $data['group_id']
 					]);
 					add_logs('添加管理员', 1);
-					$this->redirect('User/lis','',302,['code' => 'success','msg' => '管理员添加成功！']);
+					return hui_redirect('User/lis', ['code' => 'success','msg' => '管理员添加成功！']);
 				}else{
 					add_logs('添加管理员', 0);
-					$this->redirect('User/lis','',302,['code' => 'error','msg' => '管理员添加失败！']);
+					return hui_redirect('User/lis', ['code' => 'error','msg' => '管理员添加失败！']);
 				}
 			}
 
@@ -118,22 +118,21 @@ class User extends Base{
 			]);
 
 			if(!$validate->check($data)) {
-				$this->redirect('User/edit',['id' => $id],302,[
-                	'code' => 'error',
-                	'msg' => $validate->getError()
-	            ]);
+            	$with = ['code' => 'error', 'msg' => $validate->getError()];
+	        	$params = ['id' => $id];
+	            return hui_redirect('User/edit', $with, $params);
 			}else{
 				if($user->allowField(true)->save($data,['id' => $id])){
 					# 修改用户组
 					$aga->save(['group_id' => $data['group_id']],['uid' => $id]);
 					
 					add_logs('编辑管理员', 1);
-					$this->redirect('User/lis','',302,['code' => 'success','msg' => '管理员编辑成功！']);
+					return hui_redirect('User/lis', ['code' => 'success','msg' => '管理员编辑成功！']);
 
 				}else{
 
 					add_logs('编辑管理员', 0);
-					$this->redirect('User/lis','',302,['code' => 'error','msg' => '管理员编辑失败！']);
+					return hui_redirect('User/lis', ['code' => 'error','msg' => '管理员编辑失败！']);
 					
 				}
 			}
@@ -170,32 +169,32 @@ class User extends Base{
 				$aga = new AuthGroupAccess();
 				# 特殊管理员无法删除
 				if($user->id == 1){
-					$this->redirect('User/lis','',302,['code' => 'error','msg' => '该角色系统生成，无法删除！']);
+					return hui_redirect('User/lis', ['code' => 'error','msg' => '该角色系统生成，无法删除！']);
 					return;
 				}
 				if(!$user){
-					$this->redirect('User/lis','',302,['code' => 'error','msg' => '数据不存在！']);
+					return hui_redirect('User/lis', ['code' => 'error','msg' => '数据不存在！']);
 					return;
 				}
 				if($user->delete()){
 					if($aga->where(['uid' => $user->id])->delete()){
 						
 						add_logs('删除管理员', 1);
-						$this->redirect('User/lis','',302,[
+						return hui_redirect('User/lis', [
 							'code' => 'success',
 							'msg' => '管理员【'.$user->username.'】删除成功！'
 						]);
 
 					}else{
 						add_logs('删除管理组', 0);
-						$this->redirect('User/lis','',302,['code' => 'error','msg' => '管理组删除失败！']);
+						return hui_redirect('User/lis', ['code' => 'error','msg' => '管理组删除失败！']);
 					}
 				}else{
 					add_logs('删除管理员', 0);
-					$this->redirect('User/lis','',302,['code' => 'error','msg' => '管理员信息删除失败！']);
+					return hui_redirect('User/lis', ['code' => 'error','msg' => '管理员信息删除失败！']);
 				}
 			}else{
-				$this->redirect('User/lis','',302,['code' => 'error','msg' => '参数错误！']);
+				return hui_redirect('User/lis', ['code' => 'error','msg' => '参数错误！']);
 			}
 		}
 	}
@@ -210,7 +209,7 @@ class User extends Base{
 			$id = $request->param('id/d');
 			$state = $request->param('state/d');
 			if(empty($id) || !is_numeric($id) || !is_numeric($state)){
-				$this->redirect('User/lis', '', 302, ['code' => 'error', 'msg' => '参数错误！']);
+				return hui_redirect('User/lis', ['code' => 'error', 'msg' => '参数错误！']);
 			}else{
 				$user = UserModel::get($id);
 				if($user){
@@ -220,7 +219,7 @@ class User extends Base{
 
 						add_logs('管理员【' . $user->username. '】' . $msg, 1);
 
-						$this->redirect('User/lis','',302,[
+						return hui_redirect('User/lis', [
 							'code' => 'success',
 							'msg' => '管理员【' . $user->username . '】' . $msg . '成功！'
 						]);
@@ -229,14 +228,14 @@ class User extends Base{
 
 						add_logs('管理员【' . $user->username . '】' . $msg, 0);
 
-						$this->redirect('User/lis', '', 302, [
+						return hui_redirect('User/lis', [
 							'code' => 'error',
 							'msg' => '管理员【' . $user->username . '】' . $msg . '失败！'
 						]);
 
 					}
 				}else{
-					$this->redirect('User/lis', '', 302, ['code' => 'error', 'msg' => '数据不存在！']);
+					return hui_redirect('User/lis', ['code' => 'error', 'msg' => '数据不存在！']);
 				}
 			}
 		}

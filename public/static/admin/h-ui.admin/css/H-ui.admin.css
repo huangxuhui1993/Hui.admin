@@ -91,3 +91,78 @@ h4{line-height:30px;}
 .portfolio-area li.hover .textbox{display:block;}
 .portfolio-area li label{display:block;cursor:pointer;}
 .portfolio-area li .portfoliobox em{position:absolute;top:4px;left:4px;z-index:101;display:block;font-style:normal;font-size:8px;}
+
+/*常用宽度*/
+.width-50{width:50px;}
+.width-100{width:100px;}
+.width-150{width:150px;}
+.width-200{width:200px;}
+.width-250{width:250px;}
+.width-300{width:300px;}
+.width-350{width:350px;}
+.width-400{width:400px;}
+.width-450{width:450px;}
+.width-500{width:500px;}
+
+.Hui-tags-list, .Huitags-list {
+    padding:0px;
+}
+.statistical-1{border-right:1px solid #ddd}
+.statistical-1,.statistical-2{height:300px;border-bottom:1px solid #ddd}
+.statistical-3{height:300px;border-right:1px solid #ddd}
+.statistical-4{height:300px}
+.imgDiv{position:relative;display:inline-block}
+.imgDiv .delete{position:absolute;top:-2px;right:0}
+.imgDiv .delete img{width:14px;height:14px}
+.imgDiv .cover{position:absolute;top:75px;right:0;left:0;text-align:center}
+.imgDiv .cover input{cursor:pointer}
+.imgDiv .img-thumbnail{height:75pt}
+.refresh{margin-top:3px;line-height:1.6em}
+.channel-select{width:200px}
+#datemax,#datemin{width:90pt;cursor:pointer}
+input.search-input{width:250px}
+input.page-input{width:5pc}
+.pagination{margin:20px 0;height:40px}
+.pagination ul{display:inline-block;margin-bottom:0;margin-left:0;border-radius:3px 3px 3px 3px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.pagination li{display:inline}
+.pagination a,.pagination span{float:left;padding:0 14px;border-color:#ddd;border-style:solid;border-width:1px 1px 1px 0;border-image:none;background-color:#fff;text-decoration:none;line-height:38px;border:none}
+.pagination .active a,.pagination .active span,.pagination a:hover{background-color:#f5f5f5}
+.pagination .active a,.pagination .active span{color:#999;cursor:default}
+.pagination .disabled a,.pagination .disabled a:hover,.pagination .disabled span{background-color:transparent;color:#999;cursor:default}
+.pagination li:first-child a,.pagination li:first-child span{border-radius:3px 0 0 3px;border-left-width:1px}
+.pagination li:last-child a,.pagination li:last-child span{border-radius:0 3px 3px 0}
+.pagination-centered{text-align:center}
+.pagination-right{text-align:right}
+
+/*文件管理*/
+#treeDemo {
+    margin-bottom: 10px;
+    border: 1px solid #617775;
+    background: #f0f6e4;
+    width: 100%;
+    height: 280px;
+    overflow-y: scroll;
+    overflow-x: auto;
+    float: left;
+    padding: 5px;
+    color: #333;
+}
+
+/*上传进度条*/
+#uploader-body{
+    font-size: 12px;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    margin: 0;
+    padding: 0;
+    background: none repeat scroll 0 0 #F0F0EE;
+}
+.upload-progress-bar{
+    border:1px solid #ddd;
+    padding:8px 4px;
+    margin-bottom: 10px;
+    display: none;
+}
+.upload-progress-bar .progress{
+    width: 100%;
+    margin: 0 auto;
+}

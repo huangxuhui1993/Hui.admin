@@ -31,14 +31,14 @@ class Email extends Base{
                 ['email', 'email', '请输入正确的邮箱地址！']
             ]);
 			if(!$validate->check($data)){
-				$this->redirect('Email/lis', '', 302, ['code' => 'error', 'msg' => $validate->getError(), 'data' => $data]);
+				return hui_redirect('Email/lis', ['code' => 'error', 'msg' => $validate->getError(), 'data' => $data]);
 			}else{
 				if($db->insert($data)){
 					add_logs('添加邮箱', 1);
-					$this->redirect('Email/lis', '', 302, ['code' => 'success', 'msg' => '添加邮箱成功！']);
+					return hui_redirect('Email/lis', ['code' => 'success', 'msg' => '添加邮箱成功！']);
 				}else{
 					add_logs('添加邮箱', 0);
-					$this->redirect('Email/lis', '', 302, ['code' => 'error', 'msg' => '添加邮箱失败！']);
+					return hui_redirect('Email/lis', ['code' => 'error', 'msg' => '添加邮箱失败！']);
 				}
 			}
 		}else{
@@ -128,11 +128,6 @@ class Email extends Base{
             	}
             }
         }else{
-        	$config = Config::get('websetup'); // 获取上传配置信息
-        	$ext = isset($config['attach_ext']) ? $config['attach_ext'] : 'rar,tar,7z,zip,gz,txt,chm,xml,doc,ppt,pdf,xls,xlsx,pptx,docx';
-        	$size = isset($config['attach_size']) ? $config['attach_size'] : 104857600; // 附件上传大小限制，单位：字节(b)，默认100MB
-        	$this->assign('ext', $ext);
-        	$this->assign('size', $size);
             return $this->fetch();
         }
 	}

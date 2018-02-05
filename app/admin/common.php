@@ -46,23 +46,22 @@ function delete_file($id = 0){
     if(!empty($id) && is_numeric($id)){
         $db = Attach::get($id);
         if($db){
-            $url = HUI_FILES .$db->url;
+            $url = HUI_FILES . $db->url;
             // 删除文件
             if(is_file($url)){
-                chmod($url,0777);
+                chmod($url, 0777);
                 unlink($url);
             }
             // 删除缩略图
-            if (!empty($db->thumb)) {
-                $thumb = HUI_FILES .$db->thumb;
+            if(!empty($db->thumb)){
+                $thumb = HUI_FILES . $db->thumb;
                 if(is_file($thumb)){
-                    chmod($thumb,0777);
+                    chmod($thumb, 0777);
                     unlink($thumb);
                 }
             }
             // 删除文件数据
-            $result = $db->delete();
-            return $result ? true : false;
+            return $db->delete() ? true : false;
         }
     }else{
         return false;
@@ -79,9 +78,9 @@ function delete_conversion($id = 0){
         $db = Convert::get($id);
         if($db){
             // 删除文件
-            $url = HUI_FILES.$db->url;
+            $url = HUI_FILES . $db->url;
             if(is_file($url)){
-                chmod($url,0777);
+                chmod($url, 0777);
                 unlink($url);
             }
             $result = $db->delete();
@@ -102,9 +101,9 @@ function delete_export($id = 0){
         $db = Export::get($id);
         if($db){
             // 删除文件
-            $url = HUI_FILES.$db->url;
+            $url = HUI_FILES . $db->url;
             if(is_file($url)){
-                chmod($url,0777);
+                chmod($url, 0777);
                 unlink($url);
             }
             $result = $db->delete();
@@ -137,8 +136,8 @@ function get_username($uid = 0){
 function get_user_role($uid = 0){
     if(!empty($uid) && is_numeric($uid)){
         $result = AuthGroupAccess::getByUid($uid);
-        $AuthGroup = AuthGroup::get($result['group_id']);
-        return $AuthGroup['title'];
+        $auth_group = AuthGroup::get($result['group_id']);
+        return $auth_group['title'];
     }else{
         return false;
     }

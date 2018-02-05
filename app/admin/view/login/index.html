@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>{:config('websetup.sitename')}</title>
     <link rel="stylesheet" type="text/css" href="__ADMIN__/h-ui.admin/css/login.css" media="all">
-    <script type="text/javascript" src="__ADMIN__/lib/jquery/1.9.1/jquery.min.js"></script> 
+    <script type="text/javascript" src="__ROOT__/js/jquery/jquery.min.js"></script> 
 </head>
 <body id="login-page">
 
@@ -77,7 +77,7 @@
 		function success(data){
 			if(data.status){
 				window.location.href = data.url;
-			} else {
+			}else{
 				self.find(".check-tips").text(data.info);
 				// 刷新验证码
 				$(".reloadverify").click();

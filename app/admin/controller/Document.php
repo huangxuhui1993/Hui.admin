@@ -36,7 +36,7 @@ class Document extends Base{
 			$datemin = strtotime($datemin);
 			$datemax = strtotime($datemax);
 			if($datemin > $datemax){
-				$this->redirect('document/lis','',302,['code' => 'error','msg' => '开始时间不能大于结束时间！']);
+				return hui_redirect('Document/lis', ['code' => 'error','msg' => '开始时间不能大于结束时间！']);
 			}else{
 				$where['create_time'] = ['between',[$datemin,$datemax]];
 			}
@@ -82,7 +82,7 @@ class Document extends Base{
 		$crs = $channel->field('id,model,mname')->where(['id' => $cid])->find();
 
 		if(!$crs){
-			$this->redirect('document/lis','',302,['code' => 'error','msg' => '栏目不存在！']);
+			return hui_redirect('Document/lis', ['code' => 'error','msg' => '栏目不存在！']);
 		}else{
 			$this->assign("crs",$crs);
 			
@@ -90,7 +90,7 @@ class Document extends Base{
 			$mrs = $models->where(['id' => $crs['model']])->find();
 			
 			if(!$mrs){
-				$this->redirect('document/lis','',302,['code' => 'error','msg' => '模型不存在！']);
+				return hui_redirect('Document/lis', ['code' => 'error','msg' => '模型不存在！']);
 			}else{
 				$this->assign("mrs",$mrs);
 				
@@ -124,30 +124,34 @@ class Document extends Base{
 		if($request->isPost()){
 			
 			$data = $request->post();
-			
-			if(!isset($data['property'])){ $data['property'] = null; }
-			if(!isset($data['photo'])){ $data['photo'] = null; }
-			if(!isset($data['photos'])){ $data['photos'] = null; }
-			if(!isset($data['attach'])){ $data['attach'] = null; }
+
+			$data['property'] = !isset($data['property']) ? null : $data['property'];
+			$data['photo'] = !isset($data['photo']) ? null : $data['photo'];
+			$data['photos'] = !isset($data['photos']) ? null : $data['photos'];
+			$data['attach'] = !isset($data['attach']) ? null : $data['attach'];
 
 			# 验证Document数据
-			$drs = $this->validate($data,'Document');
+			$drs = $this->validate($data, 'Document');
             if(true !== $drs){
-                $this->redirect('document/addform',['cid' => $data['cid']],302,[
+            	$with = [
                 	'code' => 'error',
                 	'msg' => $drs,
                 	'data' => $data
-	            ]);
+	            ];
+            	$params = ['cid' => $data['cid']];
+                return hui_redirect('Document/addform', $with, $params);
             }else{
 				
 				# 验证自定义数据
 	            $mrs = $this->validate($data,$data['table']);
 	            if(true !== $mrs){
-	                $this->redirect('document/addform',['cid' => $data['cid']],302,[
+	            	$with = [
 	                	'code' => 'error',
 	                	'msg' => $mrs,
 	                	'data' => $data
-	                ]);
+		            ];
+	            	$params = ['cid' => $data['cid']];
+	                return hui_redirect('Document/addform', $with, $params);
 	            }else{
 	            	
 	            	# 插入Document数据
@@ -171,20 +175,18 @@ class Document extends Base{
 		            		if(isset($files)){
 		            			Attach::where('id','in',$files)->update(['aid' => $db->id]);
 		            		}
-		            		
-
-		            		$this->redirect('document/lis','',302,['code' => 'success','msg' => '信息添加成功！']);
+		            		return hui_redirect('Document/lis', ['code' => 'success','msg' => '信息添加成功！']);
 		            	}else{
-		            		$this->redirect('document/lis','',302,['code' => 'error','msg' => '自定义信息添加失败！']);
+		            		return hui_redirect('Document/lis', ['code' => 'error','msg' => '自定义信息添加失败！']);
 		            	}
 	            	}else{
-	            		$this->redirect('document/lis','',302,['code' => 'error','msg' => '公共信息添加失败！']);
+	            		return hui_redirect('Document/lis', ['code' => 'error','msg' => '公共信息添加失败！']);
 	            	}
 	            }
             }
 
 		}else{
-			$this->redirect('document/lis','',302,['code' => 'error','msg' => '请您正常操作！']);
+			return hui_redirect('Document/lis', ['code' => 'error','msg' => '请您正常操作！']);
 		}
 	}
 
@@ -208,14 +210,14 @@ class Document extends Base{
 		$crs = $channel->field('id,model,mname')->where(['id' => $cid])->find();
 		
 		if(!$crs || empty($id)){
-			$this->redirect('document/lis','',302,['code' => 'error','msg' => '栏目不存在！']);
+			return hui_redirect('Document/lis', ['code' => 'error','msg' => '栏目不存在！']);
 		}else{
 			$this->assign("crs",$crs);
 			
 			# 获取模型
 			$mrs = $models->where(['id' => $crs['model']])->find();
 			if(!$mrs){
-				$this->redirect('document/lis','',302,['code' => 'error','msg' => '模型不存在！']);
+				return hui_redirect('Document/lis', ['code' => 'error','msg' => '模型不存在！']);
 			}else{
 				$this->assign("mrs",$mrs);
 				
@@ -254,23 +256,17 @@ class Document extends Base{
 			
 			$data = $request->post();
 
-			if(!isset($data['property'])){
-				$data['property'] = null;
-			}
-			if(!isset($data['photo'])){
-				$data['photo'] = null;
-			}
-			if(!isset($data['photos'])){
-				$data['photos'] = null;
-			}
-			if(!isset($data['attach'])){
-				$data['attach'] = null;
-			}
+			$data['property'] = !isset($data['property']) ? null : $data['property'];
+			$data['photo'] = !isset($data['photo']) ? null : $data['photo'];
+			$data['photos'] = !isset($data['photos']) ? null : $data['photos'];
+			$data['attach'] = !isset($data['attach']) ? null : $data['attach'];
 
 			# 验证Document数据
 			$drs = $this->validate($data,'Document');
             if(true !== $drs){
-                $this->redirect('document/editform',['id' => $data['id'],'cid' => $data['cid']],302,['code' => 'error','msg' => $drs]);
+            	$with = ['code' => 'error','msg' => $drs];
+            	$params = ['id' => $data['id'], 'cid' => $data['cid']];
+                return hui_redirect('Document/editform', $with, $params);
             }else{
 				
 				# 创建自定义数据
@@ -282,7 +278,9 @@ class Document extends Base{
             	# 验证自定义数据
 	            $mrs = $this->validate($custom_data,$data['table']);
 	            if(true !== $mrs){
-	                $this->redirect('document/editform',['id' => $data['id'],'cid' => $data['cid']],302,['code' => 'error','msg' => $mrs]);
+	            	$with = ['code' => 'error','msg' => $mrs];
+	            	$params = ['id' => $data['id'],'cid' => $data['cid']];
+	                return hui_redirect('Document/editform', $with, $params);
 	            }else{
 	            	
 	            	# 插入Document数据
@@ -306,18 +304,18 @@ class Document extends Base{
 		            			Attach::where('id','in',$files)->update(['aid' => $data['id']]);
 		            		}
 
-		            		$this->redirect('document/lis','',302,['code' => 'success','msg' => '信息编辑成功！']);
+		            		return hui_redirect('Document/lis', ['code' => 'success','msg' => '信息编辑成功！']);
 		            	}else{
-		            		$this->redirect('document/lis','',302,['code' => 'error','msg' => '没用编辑自定义信息！']);
+		            		return hui_redirect('Document/lis', ['code' => 'error','msg' => '没用编辑自定义信息！']);
 		            	}
 	            	}else{
-	            		$this->redirect('document/lis','',302,['code' => 'error','msg' => '没用编辑信息！']);
+	            		return hui_redirect('Document/lis', ['code' => 'error','msg' => '没用编辑信息！']);
 	            	}
 	            }
             }
 
 		}else{
-			$this->redirect('document/lis','',302,['code' => 'error','msg' => '请您正常操作！']);
+			return hui_redirect('Document/lis', ['code' => 'error','msg' => '请您正常操作！']);
 		}
 	}
 
@@ -341,7 +339,7 @@ class Document extends Base{
 			]);
 
 			if(!$validate->check($data)) {
-				$this->redirect('document/lis','',302,['code' => 'error','msg' => $validate->getError()]);
+				return hui_redirect('Document/lis', ['code' => 'error','msg' => $validate->getError()]);
 			}else{
 
 				$id = implode(",",$data['id']);
@@ -351,32 +349,32 @@ class Document extends Base{
 				switch($data['style']){
 					case 'audit':
 						if($db->where($where)->update(['status' => 1])) {
-							$this->redirect('document/lis','',302,['code' => 'success','msg' => '文档审核成功！']);
+							return hui_redirect('Document/lis', ['code' => 'success','msg' => '文档审核成功！']);
 						}else{
-							$this->redirect('document/lis','',302,['code' => 'error','msg' => '文档已审核！']);
+							return hui_redirect('Document/lis', ['code' => 'error','msg' => '文档已审核！']);
 						}
 						break;
 					case 'hidden':
 						if($db->where($where)->update(['status' => 0])) {
-							$this->redirect('document/lis','',302,['code' => 'success','msg' => '文档隐藏成功！']);
+							return hui_redirect('Document/lis', ['code' => 'success','msg' => '文档隐藏成功！']);
 						}else{
-							$this->redirect('document/lis','',302,['code' => 'error','msg' => '文档已隐藏！']);
+							return hui_redirect('Document/lis', ['code' => 'error','msg' => '文档已隐藏！']);
 						}
 						break;
 					case 'recycling':
 						if($db->where($where)->update(['isrec' => 1])) {
-							$this->redirect('document/lis','',302,['code' => 'success','msg' => '文档已放入回收站！']);
+							return hui_redirect('Document/lis', ['code' => 'success','msg' => '文档已放入回收站！']);
 						}else{
-							$this->redirect('document/lis','',302,['code' => 'error','msg' => '放入回收站失败！']);
+							return hui_redirect('Document/lis', ['code' => 'error','msg' => '放入回收站失败！']);
 						}
 						break;
 					default:
-						$this->redirect('document/lis','',302,['code' => 'error','msg' => '请您正常操作！']);
+						return hui_redirect('Document/lis', ['code' => 'error','msg' => '请您正常操作！']);
 						break;
 				}
 			}
 		}else{
-			$this->redirect('document/lis','',302,['code' => 'error','msg' => '请您正常操作！']);
+			return hui_redirect('Document/lis', ['code' => 'error','msg' => '请您正常操作！']);
 		}
 	}
 
@@ -392,7 +390,7 @@ class Document extends Base{
 			$id = $request->param('id/d');
 			$status = $request->param('status/d');
 			if(!isset($id) || !isset($status)){
-				$this->redirect('document/lis','',302,['code' => 'error','msg' => '参数错误！']);
+				return hui_redirect('Document/lis', ['code' => 'error','msg' => '参数错误！']);
 			}else{
 				$document = DocumentModel::get($id);
 				if($document){
@@ -400,13 +398,13 @@ class Document extends Base{
 					$msg = $status == 0 ? '审核' : '隐藏';
 					if($document->save($data)) {
 						add_logs('文档状态设置' . $msg, 1);
-						$this->redirect('document/lis','',302,['code' => 'success','msg' => "文档{$msg}成功！"]);
+						return hui_redirect('Document/lis', ['code' => 'success','msg' => "文档{$msg}成功！"]);
 					}else{
 						add_logs('文档状态设置' . $msg, 0);
-						$this->redirect('document/lis','',302,['code' => 'error','msg' => "文档{$msg}失败！"]);
+						return hui_redirect('Document/lis', ['code' => 'error','msg' => "文档{$msg}失败！"]);
 					}
 				}else{
-					$this->redirect('document/lis','',302,['code' => 'error','msg' => '数据不存在！']);
+					return hui_redirect('Document/lis', ['code' => 'error','msg' => '数据不存在！']);
 				}
 			}
 		}
@@ -461,16 +459,16 @@ class Document extends Base{
 			]);
 
 			if(!$validate->check($data)) {
-				$this->redirect('document/recyclebin','',302,['code' => 'error','msg' => $validate->getError()]);
+				return hui_redirect('Document/recyclebin', ['code' => 'error','msg' => $validate->getError()]);
 			}else{
 				$id = implode(",",$data['id']);
 				$where['id'] = ['in',$id];
 				switch($data['style']){
 					case 'reduction':
 						if($db->where($where)->update(['isrec' => 0])) {
-							$this->redirect('document/recyclebin','',302,['code' => 'success','msg' => '文档还原成功！']);
+							return hui_redirect('Document/recyclebin', ['code' => 'success','msg' => '文档还原成功！']);
 						}else{
-							$this->redirect('document/recyclebin','',302,['code' => 'error','msg' => '文档已还原！']);
+							return hui_redirect('Document/recyclebin', ['code' => 'error','msg' => '文档已还原！']);
 						}
 						break;
 					case 'delete':
@@ -498,18 +496,18 @@ class Document extends Base{
 						}
 
 						if($db->where($where)->delete()){
-							$this->redirect('document/recyclebin','',302,['code' => 'success','msg' => '文档删除成功！']);
+							return hui_redirect('Document/recyclebin', ['code' => 'success','msg' => '文档删除成功！']);
 						}else{
-							$this->redirect('document/recyclebin','',302,['code' => 'error','msg' => '文档删除失败！']);
+							return hui_redirect('Document/recyclebin', ['code' => 'error','msg' => '文档删除失败！']);
 						}
 						break;
 					default:
-						$this->redirect('document/recyclebin','',302,['code' => 'error','msg' => '请您正常操作！']);
+						return hui_redirect('Document/recyclebin', ['code' => 'error','msg' => '请您正常操作！']);
 						break;
 				}
 			}
 		}else{
-			$this->redirect('document/recyclebin','',302,['code' => 'error','msg' => '请您正常操作！']);
+			return hui_redirect('Document/recyclebin', ['code' => 'error','msg' => '请您正常操作！']);
 		}
 	}
 

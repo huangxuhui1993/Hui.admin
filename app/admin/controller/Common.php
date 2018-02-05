@@ -19,54 +19,47 @@ class Common extends Base{
         parent::_initialize();
     }
 
-    public function folder(){
-    	
-    	$hui_files_path = Config::get('hui_files_path');
-    	
-    	$list = $this->scanAll(HUI_FILES);
-    	$list = array_merge($list, [['id' => 1, 'pId' => 0, 'name' => $hui_files_path, 'open' => true]]);
-    	$this->assign('list', $list);
-    	return $this->fetch();
+    // 文件上传页面
+    public function uploadPage(Request $request){
+    	$form = $request->param();
+		$data = remove_array_spaces($form);
+
+		# 验证数据
+		$validate = new Validate([
+			['type', 'require', 'type参数缺失！'],
+			['tag', 'require', 'tag参数缺失！']
+		]);
+
+		if(!$validate->check($data)){
+			die($validate->getError());
+		}else{
+			$config = get_upload_config($data['type']); // 获取上传配置
+			if($config['state'] == 1){
+		        $this->assign('title', get_file_type($data['type']));
+		        $this->assign('type', $data['type']);
+		        $this->assign('size', $config['size']);
+		        $this->assign('ext', $config['ext_string']);
+		        $this->assign('chunked_size', $config['chunked_size']);
+		        $this->assign('tag', $data['tag']);
+		    	return $this->fetch();
+	        }else{
+	        	die($config['message']);
+	        }
+		}
     }
 
-	public function scanAll($dir, $pid = 1){
-		global $file_list;
-		if(is_dir($dir)){
-			$children = scandir($dir);
-			foreach($children as $key => $value){
-				if($value !== '.' && $value !== '..'){
-					$child = $pid == 1 ? $dir . $value : $dir . '/' . $value;
-					$id = intval($pid . $key);
-					if(is_file($child)){
-						$file_list[] = [
-							'id' => $id,
-							'pId' => $pid,
-							'name' => $value
-						];
-					}elseif(is_dir($child)){
-						$file_list[] = [
-							'id' => $id,
-							'pId' => $pid,
-							'name' => $value
-						];
-						$this->scanAll($child, $id);
-					}
-
-				}
-			}
-		}
-		return $file_list;
-	}
-
-    public function folderAdd(){
-    	return $this->fetch('folder_add');
+    // 文件管理
+    public function folder(){
+    	$hui_files_path = Config::get('hui_files_path');
+    	$list = scan_all(HUI_FILES);
+    	dump($list);
     }
 
     /**
      * positioning 地图定位
      * @param  Request $request
      */
-    public function positioning(Request $request){
+    public function positioning(){
     	return $this->fetch();
     }
 
@@ -74,9 +67,9 @@ class Common extends Base{
      * networkSpeed 检测网速页面
      * @param  Request $request
      */
-    public function networkSpeed(Request $request){
+    public function networkSpeed(){
     	header("Cache-Control: no-cache, must-revalidate"); // 清除页面缓存
-    	return $this->fetch('network_speed');
+    	return $this->fetch();
     }
 
     /**
@@ -97,14 +90,14 @@ class Common extends Base{
 				['email','email','请输入正确的邮箱地址！']
 			]);
 			if(!$validate->check($data)) {
-				$this->redirect('Common/userSetup','',302,['code' => 'error','msg' => $validate->getError()]);
+				return hui_redirect('Common/userSetup', ['code' => 'error','msg' => $validate->getError()]);
 			}else{
 				if($user->allowField(true)->save($data,['id'=>$id])){
 					add_logs('账号设置', 1);
-					$this->redirect('Common/userSetup','',302,['code' => 'success','msg' => '设置成功！']);
+					return hui_redirect('Common/userSetup', ['code' => 'success','msg' => '设置成功！']);
 				}else{
 					add_logs('账号设置', 0);
-					$this->redirect('Common/userSetup','',302,['code' => 'error','msg' => '设置失败！']);
+					return hui_redirect('Common/userSetup', ['code' => 'error','msg' => '设置失败！']);
 				}
 			}
 			return;
@@ -112,7 +105,7 @@ class Common extends Base{
 		# 获取全部原始数据
 		$det_rs = User::get($id)->getData();
 		$this->assign('rs',$det_rs);
-		return $this->fetch('user_setup');
+		return $this->fetch();
     }
 
     /**

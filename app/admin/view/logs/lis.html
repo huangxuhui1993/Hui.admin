@@ -1,0 +1,82 @@
+{include file="public/meta" /}
+<title>日志管理</title>
+</head>
+<body>
+<nav class="breadcrumb">
+	{$bread}
+	<a class="refresh btn btn-success radius r" href="javascript:location.reload(true);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+	<div class="text-c">
+		<form id="search">
+			<input type="hidden" name="apage" id="apage" value="1">
+			<input type="text" name="keywords" id="keywords" value="{$keywords}" placeholder="请输入关键词" class="input-text radius search-input ">
+			<button class="btn btn-success radius" type="button" onclick="ajaxPage(1);return;"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+		</form>
+	</div>
+	
+	<div class="cl pd-5 bg-1 bk-gray mt-20">
+		<span class="l">
+			<a class="btn btn-success radius" href="javascript:;" onclick="export_data('{:url('Export/xlsxExport')}','日志文件','ExportLogs')"><i class="Hui-iconfont">&#xe644;</i> 导出数据</a>
+			<a class="btn btn-danger radius" href="javascript:;" onclick="del_logs('del')"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+		</span>
+		<span class="r">
+			<form action="{:url('Logs/lis')}" method="get">
+				共 <span class="badge badge-default radius" id="count">{$count}</span> 条数据
+				<input type="text" name="page" class="page-input input-text radius ml-10" onkeyup="if(event.keyCode !=37 && event.keyCode != 39)value=value.replace(/\D/g,'')">
+				<button class="btn btn-default radius" type="submit">跳转</button>
+			</form>
+		</span>
+	</div>
+
+	<div class="mt-20">
+	
+		{include file="public/redirect" /}
+		<form action="{:url('Logs/del')}" method="post" id="log-form">
+			<table class="table table-border table-bordered table-hover table-bg table-sort">
+				<thead>
+					<tr>
+						<th class="text-c"><input type="checkbox"></th>
+						<th class="text-c">ID</th>
+						<th class="text-c">管理员</th>
+						<th class="text-c">客户端IP</th>
+						<th>内容</th>
+						<th class="text-c">时间</th>
+						<th class="text-c">状态</th>
+						<th class="text-c">操作</th>
+					</tr>
+				</thead>
+				<tbody id="ajax_lists">
+					<tr class="text-c"><td colspan="20" class="f-14"><div></div></td></tr>
+				</tbody>
+			</table>
+		</form>
+		<div class="f-r" id="page">
+			{:$list->render()}
+		</div>
+	</div>
+	
+</div>
+
+{tag:adminjs /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+ajaxPage(1);
+function ajaxPage(page){
+	$('#apage').val(page);
+    $.ajax({
+        url:"{:url('Logs/lis')}",
+        type:'POST',
+        dataType:'json',
+        data: $('#search').serialize(),
+        success:function(json){
+            $('#ajax_lists').html(json.list);
+            $('#page').html(json.page);
+            $('#count').text(json.count);
+        }
+    });
+}
+</script>
+</body>
+</html>

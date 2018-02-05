@@ -1,10 +1,9 @@
 {include file="public/meta" /}
 
-<link href="__ROOT__/js/webuploader/webuploader.css" rel="stylesheet" type="text/css" />
 <title>文档转换</title>
 </head>
 
-<body onbeforeunload="return '真的要关闭或刷新此窗口吗？请保存数据！'">
+<body>
 <div class="page-container">
 
 	<form class="form form-horizontal" id="form-conversion">
@@ -30,18 +29,10 @@
 				<div class="row cl mb-20">
 					<label class="form-label col-xs-4 col-sm-2">上传文件：</label>
 					<div class="formControls col-xs-8 col-sm-10">
-						<div class="uploader-thum-container">
-							<input class="input-text upload-url radius f-l" type="text" name="uploadfile" id="uploadfile" readonly>
-							<div class="ml-10" id="file-picker">
-								<i class="Hui-iconfont">&#xe642;</i> 浏览文件
-							</div>
-							<button class="btn btn-default btn-uploadstar radius ml-10" type="button" onclick="delete_file()">
-								<i class="Hui-iconfont">&#xe6e2;</i> 清除文件
-							</button>
-						</div>
-						<input type="hidden" name="id" id="id">
-						<small class="label label-default radius">文件格式：({$ext})，大小：{:truesize($size)}</small>
-						<input type="text" class="input-text radius width-50 ml-10 hide text-c" id="percentage" disabled>
+						<a href="javascript:;" class="btn btn-secondary radius size-M" onclick="open_window('{:url('Common/uploadPage', ['type' => 'office', 'tag' => 'id'])}', 480, 170, 0);">
+							<i class="Hui-iconfont">&#xe642;</i> 选择文件
+						</a>
+						<input type="text" class="input-text radius width-50" name="id" id="id" placeholder="ID" readonly>
 					</div>
 				</div>
 
@@ -67,79 +58,16 @@
 
 {tag:validatejs /}
 
-<script type="text/javascript" src="__ROOT__/js/webuploader/webuploader.js"></script>
 <script type="text/javascript">
 $(function(){
-	var percentages = $("#percentage"), // 上传进度
-	uploadfile = $("#uploadfile"); 		// 文件信息
-
-	var uploader = WebUploader.create({
-		auto: true,													// 选完文件后，是否自动上传
-		swf: '__ROOT__/js/webuploader/Uploader.swf', 				// 加载swf文件
-		server: "{:url('upload/fileUpload', ['type' => 'office'])}",// 文件接收服务端
-		pick: "#file-picker",										// 选择文件的按钮，可选
-		fileSingleSizeLimit: '{$size}',								// 限制 单文件大小
-		fileSizeLimit: '{$size}',									// 限制 所有文件大小
-		accept: { 													// 传入文件格式限制
-			title: 'Applications',
-			extensions: '{$ext}',
-			mimeTypes: '',
-		},
-	});
-
-    uploader.on('beforeFileQueued', function(file){	// 当文件被加入队列之前触发
-        var id = $("#id").val();
-        if(id.length != 0){
-            layer.msg('请先清除文件');
-            return false;
-		}
-    });
-
-    uploader.on('fileQueued', function(file){ // 当有文件被添加进队列的时候
-        uploadfile.val(file.name);
-    });
-
-    uploader.on( 'uploadProgress', function(file, percentage){ // 文件上传过程中创建进度条实时显示
-        percentages.show();
-        percentages.val(Math.round(percentage * 100) + '%'); // 百分比
-    });
-
-	uploader.on('uploadSuccess', function(file, response){ // 文件上传成功
-		log(response);
-        if(response.error == 1){
-            uploadfile.val('');
-        }else{
-            $("#id").val(response.id);
-        }
-        layer.msg(response.message);
-	});
-
-	uploader.on('error', function(res){
-		log(res)
-		if(res == 'Q_TYPE_DENIED') layer.msg('文件格式不允许!');
-		if(res == 'Q_EXCEED_SIZE_LIMIT') layer.msg('文件大小超出系统限制!');
-		if(res == 'F_EXCEED_SIZE') layer.msg('文件大小超出系统限制!');
-	});
-
-	uploader.on('uploadError',function(file){ // 文件上传失败
-        uploadfile.val('');
-		layer.msg('服务器错误!');
-	});
-
-    uploader.on('uploadComplete',function(file){ // 完成上传不论成功或失败，删除进度条
-        percentages.hide();
-    });
-
 	// 表单验证Ajax提交
 	$("#form-conversion").validate({
 		rules:{
 			format:{required:true},
-			uploadfile:{required:true},
 			id:{required:true},
 		},
 		messages:{
 		  	format:{required: "请选择转换的格式"},
-		  	uploadfile:{required: "请上传文件"},
 		  	id:{required: "文件参数缺失"},
 		},
 		onkeyup:false,
@@ -160,7 +88,6 @@ $(function(){
 							btn: ['确认并清除原文件'],
 							yes: function(ts){
                                 layer.close(ts);
-                                delete_file();
                             }
                         });
 					}else{
@@ -175,27 +102,6 @@ $(function(){
 	});
 
 });
-
-// 清除文件
-function delete_file(){
-    var id = $("#id").val();
-    if(id.length == 0){
-        layer.msg('没有文件可以清除');
-        return false;
-	}
-    $.ajax({type:'post', url:"{:url('Common/deleteFile')}", data:{'id':id},
-        success: function(result){
-            if(result.error == 0){
-                $("#id").val('');
-                $("#format").val('');
-                $("#uploadfile").val('');
-                layer.msg('文件清除成功！');
-            }else{
-                layer.msg('文件清除失败');
-            }
-        }
-    });
-}
 </script>
 </body>
 </html>

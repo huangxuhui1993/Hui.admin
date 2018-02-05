@@ -51,7 +51,7 @@ class Dbmanage extends Base{
 			$data = $request->post();
 
 			if(!isset($data['name']) || !is_array($data['name']) || empty($data) || empty($data['name'])){
-				$this->redirect('dbmanage/lis', '', 302, ['code' => 'error', 'msg' => '请选择要优化的数据表！']);
+				return hui_redirect('Dbmanage/lis', ['code' => 'error', 'msg' => '请选择要优化的数据表！']);
 			}else{
 				$name = $data['name'];
 				$db = implode(",", $name);
@@ -308,7 +308,7 @@ class Dbmanage extends Base{
 		if($request->isGet()){
 			$id = $request->param('id/d');
 			if(!isset($id)){
-				$this->redirect('dbmanage/backlist','',302,['code' => 'error','msg' => '参数错误！']);
+				return hui_redirect('Dbmanage/backlist', ['code' => 'error','msg' => '参数错误！']);
 			}else{
 				ini_set("magic_quotes_runtime", 0);
 				$db = Db::name('backup');
@@ -339,12 +339,12 @@ class Dbmanage extends Base{
 
 			            if($db->where('id',$id)->delete()) {
 			            	add_logs('删除备份文件', 1);
-							$this->redirect('dbmanage/backlist', '', 302, ['code' => 'success', 'msg' => '备份文件删除成功！']);
+							return hui_redirect('Dbmanage/backlist', ['code' => 'success', 'msg' => '备份文件删除成功！']);
 			            }
 			        }
 
 				}else{
-					$this->redirect('dbmanage/backlist', '', 302, ['code' => 'error', 'msg' => '数据不存在！']);
+					return hui_redirect('Dbmanage/backlist', ['code' => 'error', 'msg' => '数据不存在！']);
 				}
 
 			}

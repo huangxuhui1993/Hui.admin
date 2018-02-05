@@ -1,32 +1,8 @@
 <?php
 namespace app\home\controller;
 use think\Config;
-use org\util\WeChat;
 
 class Index{
-
-	public function shortcut(){
-		$url = 'http://127.0.0.2';
-		$icon = 'http://127.0.0.2/favicon.ico';
-		download_shortcut('Hui.url', $url, $icon);
-	}
-
-	public function wechat(){
-    	$data = [
-    		'openid' => 'o7dqp0pQq83eqe4Xk522Vut2PYF4',
-    		'url' => 'http://www.baidu.com',
-    		'template_id' => 'C-8aiVM-VY8ejsrlmvXq159iGzI0YSWvBABtGRIOeRg',
-    		'data' => [
-	            'first'    => ['value' => urlencode('黄旭辉'),'color' => "#0000"],
-	            'keyword1' => ['value' => urlencode('男'),'color'=>'#0000'],
-	            'keyword2' => ['value' => urlencode('1993-10-23'),'color' => '#0000'],
-	            'remark'   => ['value' => urlencode('我的模板'),'color' => '#0000']
-        	]
-    	];
-    	$WeChat = new WeChat();
-    	$result = $WeChat::pushMessage($data);
-    	dump($result);
-	}
 
     public function index(){
     	$config = Config::get('websetup');

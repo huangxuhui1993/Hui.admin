@@ -14,30 +14,34 @@ use app\admin\model\Attach as AttachModel;
 class Upload extends Base{
 
     public function _initialize(){
-        ini_set("magic_quotes_runtime",0);
+        set_time_limit(0);
+        ini_set('memory_limit', '512M');
+        ini_set('magic_quotes_runtime', 0);
         parent::_initialize();
     }
 
     /**
-     * 上传文件
+     * 文件上传
      * @param Request $request
      * @return \think\response\Json
      */
-	public function fileUpload(Request $request){
+	public function index(Request $request){
         if($request->isPost()){
-            // 是否开启上传
-            $is_upload = Config::get('websetup.is_upload');
-            if ($is_upload == 0){
+
+            $is_upload = Config::get('websetup.is_upload'); // 是否开启上传
+            if($is_upload == 0){
                 return json(['error' => 1, 'message' => '系统未开启上传功能，无法上传文件！']);
-            }
-            $type = $request->param('type');
-            
-            if(empty($type)){
-                return json(['error' => 1, 'message' => '类型为空！']);
             }else{
-                $result = self::upload($type, $request);
-                return json($result);
+                $data = $request->post();
+                
+                if(empty($data['flag'])){
+                    return json(['error' => 1, 'message' => '上传类型为空！']);
+                }else{
+                    $result = $this->upload($data, $request);
+                    return json($result);
+                }  
             }
+
         }else{
            return json(['error' => 1, 'message' => '非法操作！']);
         }
@@ -45,86 +49,130 @@ class Upload extends Base{
 
     /**
      * 处理上传文件
-     * @param string $type 类型
-     * @param Request $request 请求信息
+     * @param string $data 请求数据
+     * @param Request $request 请求对象
      * @param string $fieldName 表单name
      * @return array
      */
-    private static function upload($type, $request, $fieldName = 'file'){
-        $config = Config::get('websetup'); // 获取上传配置信息
-        switch($type){
-            case 'photo':
-                $photo_ext = isset($config['photo_ext']) ? $config['photo_ext'] : 'png,jpg,jpeg,bmp,gif';
-                // 图片上传参数
-            	$url = isset($config['photo_dir']) ? $config['photo_dir'] : 'images';
-			    $size = isset($config['photo_size']) ? $config['photo_size'] : 3145728; // 附件上传大小限制，单位：字节(b)，默认3MB
-                $ext = explode(',', $photo_ext);
-			    $is_water = isset($config['is_water']) ? $config['is_water'] : 0;
-			    $water = isset($config['photo_water']) ? $config['photo_water'] : './static/images/water.png';
-                break;
-            case 'office':
-                $office_ext = isset($config['office_ext']) ? $config['office_ext'] : 'doc,ppt,xls,docx,pptx,xlsx';
-                // 文档上传参数
-                $url = isset($config['office_dir']) ? $config['office_dir'] : 'office';
-                $size = isset($config['office_size']) ? $config['office_size'] : 52428800; // office上传大小限制，单位B，默认50MB 
-                $ext = explode(',', $office_ext);
-                break;
-            case 'video':
-                $video_ext = isset($config['video_ext']) ? $config['video_ext'] : 'swf,flv,wav,ram,wma,mp4';
-                // 视频上传参数
-                $url = isset($config['video_dir']) ? $config['video_dir'] : 'video';
-                $size = isset($config['video_size']) ? $config['video_size'] : 104857600; // 视频上传大小限制，单位B，默认100MB 
-                $ext = explode(',', $video_ext);
-                break;
-            case 'attach':
-                $attach_ext = isset($config['attach_ext']) ? $config['attach_ext'] : 'rar,tar,7z,zip,gz,txt,chm,xml,doc,ppt,pdf,xls,xlsx,pptx,docx';
-                // 附件上传参数
-                $url = isset($config['attach_dir']) ? $config['attach_dir'] : 'attach';
-                $size = isset($config['attach_size']) ? $config['attach_size'] : 104857600; // 附件上传大小限制，单位：字节(b)，默认100MB
-                $ext = explode(',', $attach_ext);
-                break;
-            default:
-                return ['message' => '类型错误！','error' => 1];
-                break;
-        }
+    private function upload($data, $request, $fieldName = 'file'){
+        $config = get_upload_config($data['flag']); // 获取上传配置
 
-        if(!empty($url) && !empty($size) && !empty($ext) && is_array($ext)){
+        if($config['state'] == 1){
+
             // 获取表单上传文件
             $file = $request->file($fieldName);
-            $where = ['size' => $size, 'ext' => $ext];
-            // 移动文件
-            $info = $file->validate($where)->move(HUI_FILES . $url);
+            // 判断是否分片
+            $chunk_state = isset($data['chunk']) && isset($data['chunks']) ? true : false;
+            // 若是分片文件移动文件到临时目录
+            $url = $chunk_state ? 'interim' . DS . md5($data['guid']) : $config['url'];
+            
+            $validate = [
+                'size' => $config['size'],
+                'ext' => $config['ext']
+            ];
+            $actual_path = HUI_FILES . $config['url'];          // 文件实际存储路径
+            $current_path = HUI_FILES . $url;                   // 文件当前上传路径
+            $savename = $chunk_state ? $data['chunk'] : true;   // 设置文件名
+            $info = $file->rule('uniqid')->validate($validate)->move($current_path, $savename);
             if($info){
-
-                $file_url = $url . '/' . str_replace('\\', '/', $info->getSaveName());
-                // 数据库存储上传文件数据
-                $db = new AttachModel();
-                $data = [
+                $add_data = [
                     'uid'         => session('uid'),
-                    'type'        => $type,
-                    'title'       => $_FILES[$fieldName]['name'],
-                    'name'        => $info->getFilename(),
-                    'url'         => $file_url,
+                    'type'        => $data['flag'],
+                    'title'       => $data['name'],
                     'ext'         => $info->getExtension(),
-                    'size'        => $info->getSize(),
                     'create_time' => time()
                 ];
-                $state = $db->save($data);
-                if($state){
-                    add_logs('文件上传成功，文件名称：' . $info->getFilename(), 1);
-                    return ['error' => 0, 'message' => '上传成功！', 'id' => $db->id, 'ext' => $info->getExtension()];
+                // 数据库存储上传文件数据
+                $id = 0;
+                $db = new AttachModel();
+                if($chunk_state){
+                    if($data['chunk'] + 1 == $data['chunks']){ // 文件全部上传 执行合并文件
+                        $data['ext'] = $info->getExtension();
+                        $merge_res = $this->mergeFile($data, $current_path, $actual_path, $config['url']); // 合并临时并移动文件
+                        if($merge_res){
+                            $add_data['name'] = $merge_res['name'];
+                            $add_data['url'] = $merge_res['url'];
+                            $add_data['size'] = $merge_res['size'];
+                            $db->save($add_data);
+                            $id = $db->id;
+                        }else{
+                            return ['error' => 1, 'message' => '文件合并失败！'];
+                        }
+                    }
                 }else{
-                    $data_json = json_encode($data, JSON_UNESCAPED_UNICODE);
-                    add_logs("文件上传，数据库记录失败！文件信息：{$data_json}", 0);
-                    return ['error' => 1, 'message' => '数据库记录失败！'];
+                    $add_data['name'] = $info->getFilename();
+                    $add_data['url'] = $url . '/' . $info->getSaveName();
+                    $add_data['size'] = $info->getSize();
+                    $db->save($add_data);
+                    $id = $db->id;
                 }
-    
+                return [
+                    'error' => 0,
+                    'message' => '文件上传成功！',
+                    'id' => $id,
+                    'ext' => $info->getExtension(),
+                    'name' => $data['name'],
+                    'chunks_path' => $chunk_state ? $current_path : ''
+                ];
+
             }else{
-                // 上传错误提示错误信息
-                return ['error' => 1, 'message' => $file->getError()];
+                return ['error' => 1, 'message' => $file->getError()]; // 上传错误提示错误信息
             }
         }else{
-            return ['error' => 1, 'message' => '上传配置出错！'];
+            return ['error' => 1, 'message' => $config['message']];
+        }
+    }
+
+    /**
+     * mergeFile 合并分片文件
+     * @param  array  $data         数据
+     * @param  string $current_path 当前文件上传目录
+     * @param  string $actual_path  文件实际存储路径
+     * @param  string $conurl       文件实际存储文件夹
+     * @return array
+     */
+    private function mergeFile($data, $current_path, $actual_path, $conurl){
+        $ext = '.' . $data['ext'];                  // 文件格式
+        $name = uniqid() . $ext;                    // 合并后文件名
+        $actual_file = $actual_path . DS . $name;   // 合并后文件绝对路径
+        $out = fopen($actual_file, 'wb');
+        if(flock($out, LOCK_EX)){
+            for($i = 0; $i < $data['chunks']; $i++){
+                $current_file = $current_path . DS . $i . $ext;
+                $in = fopen($current_file, 'r');
+                while($buff = fread($in, 4096)){
+                    fwrite($out, $buff); 
+                }
+                fclose($in);
+                $chunks_arr[] = $current_file;
+            }
+            flock($out, LOCK_UN);
+        }
+        fclose($out);
+        $result = [
+            'name' => $name,
+            'url' =>  $conurl . '/' . $name,
+            'size' => filesize($actual_file),
+            'chunks_arr' => $chunks_arr
+        ];
+        return $result;
+    }
+
+    /**
+     * delChunks 删除分片临时文件
+     * @param    Request  $request
+     * @return   json
+     */
+    public function delChunks(Request $request){
+        if($request->isPost()){
+            $chunks_path = $request->post('chunks_path');
+            if(remove_dir($chunks_path)){
+                return json(['error' => 0, 'message' => '分片文件清除成功！']);
+            }else{
+                return json(['error' => 1, 'message' => '分片文件清除失败！']);
+            }
+        }else{
+            return json(['error' => 1, 'message' => '非法操作！']);
         }
     }
 

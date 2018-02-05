@@ -37,14 +37,14 @@ class Rule extends Base{
         	// 数据验证
             $result = $this->validate($data,'AuthRule');
             if(true !== $result){
-                $this->redirect('Rule/add','',302,['code' => 'error','msg' => $result,'data' => $data]);
+                return hui_redirect('Rule/add', ['code' => 'error','msg' => $result,'data' => $data]);
             }else{
 				if($db->allowField(true)->save($data)){
 					add_logs('添加权限规则', 1);
-					$this->redirect('Rule/lis','',302,['code' => 'success','msg' => '权限添加成功！']);
+					return hui_redirect('Rule/lis', ['code' => 'success','msg' => '权限添加成功！']);
 				}else{
 					add_logs('添加权限规则', 0);
-					$this->redirect('Rule/lis','',302,['code' => 'error','msg' => '权限添加失败！']);
+					return hui_redirect('Rule/lis', ['code' => 'error','msg' => '权限添加失败！']);
 				} 
             }
             return;
@@ -70,14 +70,16 @@ class Rule extends Base{
 	        	// 数据验证
 	            $result = $this->validate($data,'AuthRule');
 	            if(true !== $result){
-                	$this->redirect('Rule/edit',['id' => $id],302,['code' => 'error','msg' => $result,'data' => $data]);
+	            	$with = ['code' => 'error', 'msg' => $result, 'data' => $data];
+		        	$params = ['id' => $id];
+		            return hui_redirect('Rule/edit', $with, $params);
 	            }else{
 					if($db->allowField(true)->save($data,['id' => $data['id']])){
 						add_logs('编辑权限规则', 1);
-						$this->redirect('Rule/lis','',302,['code' => 'success','msg' => '权限编辑成功！']);
+						return hui_redirect('Rule/lis', ['code' => 'success','msg' => '权限编辑成功！']);
 					}else{
 						add_logs('编辑权限规则', 0);
-						$this->redirect('Rule/lis','',302,['code' => 'error','msg' => '您没有编辑权限信息！']);
+						return hui_redirect('Rule/lis', ['code' => 'error','msg' => '您没有编辑权限信息！']);
 					} 
 	            }
 	            return;
@@ -94,7 +96,7 @@ class Rule extends Base{
 			$this->assign('bread',breadcrumb([$this->bread,'编辑权限']));
 			return $this->fetch();
 		}else{
-			$this->redirect('Rule/lis','',302,['code' => 'error','msg' => '参数错误！']);
+			return hui_redirect('Rule/lis', ['code' => 'error','msg' => '参数错误！']);
 		}
 
 	}
@@ -109,19 +111,19 @@ class Rule extends Base{
 			$id = $request->param('id/d');
 			if(isset($id) && !empty($id)){
 				if($db->where(['pid' => $id])->select()){
-					$this->redirect('Rule/lis','',302,['code' => 'error','msg' => '请先删除子权限！']);
+					return hui_redirect('Rule/lis', ['code' => 'error','msg' => '请先删除子权限！']);
 				}else{
 					$result = AuthRuleModel::get($id);
 					if($result->delete()){
 						add_logs('删除权限规则', 1);
-						$this->redirect('Rule/lis','',302,['code' => 'success','msg' => '权限【' . $result->title . '】删除成功！']);
+						return hui_redirect('Rule/lis', ['code' => 'success','msg' => '权限【' . $result->title . '】删除成功！']);
 					}else{
 						add_logs('删除权限规则', 0);
-						$this->redirect('Rule/lis','',302,['code' => 'error','msg' => '权限【' . $result->title . '】删除失败！']);
+						return hui_redirect('Rule/lis', ['code' => 'error','msg' => '权限【' . $result->title . '】删除失败！']);
 					}
 				}
 			}else{
-				$this->redirect('Rule/lis','',302,['code' => 'error','msg' => '参数错误！']);
+				return hui_redirect('Rule/lis', ['code' => 'error','msg' => '参数错误！']);
 			}
 		}
 	}

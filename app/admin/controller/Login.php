@@ -77,9 +77,9 @@ class Login extends Controller{
             Session::delete('uid');
             Session::delete('uname');
             Session::clear();
-            $this->redirect('Login/index');
+            return hui_redirect('Login/index');
         }else{
-            $this->redirect('Login/index');
+            return hui_redirect('Login/index');
         }
     }
 

@@ -21,7 +21,7 @@ class Channel extends Base{
 		$this->assign('list',$list);
 
 		# 面包屑
-		$this->assign('bread',breadcrumb([$this->bread,'栏目列表']));
+		$this->assign('bread', breadcrumb([$this->bread, '栏目列表']));
 		return $this->fetch();
 	}
 	
@@ -30,15 +30,15 @@ class Channel extends Base{
 		$models = new ModelsModel();
 
 		// 获取栏目
-		$c_list = get_channel($pid = 0,"┣━ ");
-		$this->assign('c_list',$c_list);
+		$c_list = get_channel($pid = 0, "┣━ ");
+		$this->assign('c_list', $c_list);
 
 		// 栏目模型
 		$m_list = $models->field("id,name")->order("sorting asc")->select();
-		$this->assign("m_list",$m_list);
+		$this->assign("m_list", $m_list);
 
 		// 面包屑
-		$this->assign('bread',breadcrumb([$this->bread,'栏目列表','添加栏目']));
+		$this->assign('bread', breadcrumb([$this->bread, '栏目列表','添加栏目']));
 		return $this->fetch();
 	}
 	
@@ -51,9 +51,9 @@ class Channel extends Base{
 			// 检测是否为外部栏目
 			$data['flag'] = $data['model'] > 0 ? 1 : 0;
         	// 数据验证
-            $result = $this->validate($data,'Channel');
+            $result = $this->validate($data, 'Channel');
             if(true !== $result){
-                return json(['message' => $result,'code' => 1]);
+                return json(['message' => $result, 'code' => 1]);
             }else{
 				$db->data([
             		'pid' 		=> $data['pid'],
@@ -71,7 +71,7 @@ class Channel extends Base{
 				if($db->allowField(true)->save()){
 					// 生成更新URL链接
 					$curl = self::generateChannelUrl($data['model'],$data['mname'],$db->id);
-					$db->save(['curl' => $curl],['id' => $db->id]);
+					$db->save(['curl' => $curl], ['id' => $db->id]);
 					return json(['message' => '栏目添加成功！','code' => 2]);
 				}else{
 					return json(['message' => '栏目添加失败！','code' => 1]);
@@ -79,7 +79,7 @@ class Channel extends Base{
             }
             return;
 		}else{
-			$this->redirect('channel/lis','',302,['code' => 'error','msg' => '请您正常操作！']);
+			return hui_redirect('Channel/lis', ['code' => 'error', 'msg' => '请您正常操作！']);
 		}
 	}
 
@@ -90,24 +90,23 @@ class Channel extends Base{
 		$id = $request->param('id/d');
 
 		if(!isset($id) || empty($id)){
-			$this->redirect('channel/lis','',302,['code' => 'error','msg' => '参数错误！']);
-			return;
+			return hui_redirect('Channel/lis', ['code' => 'error', 'msg' => '参数错误！']);
 		}
 
 		// 获取栏目
-		$c_list = get_channel($pid = 0,"┣━ ");
-		$this->assign('c_list',$c_list);
+		$c_list = get_channel($pid = 0, "┣━ ");
+		$this->assign('c_list', $c_list);
 
 		// 栏目模型
 		$m_list = $models->field("id,name")->order("sorting asc")->select();
-		$this->assign("m_list",$m_list);
+		$this->assign("m_list", $m_list);
 
 		// 获取栏目原始数据
 		$rs = ChannelModel::get($id)->getData();
-		$this->assign('rs',$rs);
+		$this->assign('rs', $rs);
 		
 		// 面包屑
-		$this->assign('bread',breadcrumb([$this->bread,'栏目列表','添加栏目']));
+		$this->assign('bread', breadcrumb([$this->bread, '栏目列表', '添加栏目']));
 		return $this->fetch();
 	}
 	
@@ -122,7 +121,7 @@ class Channel extends Base{
         	// 数据验证
             $result = $this->validate($data,'Channel');
             if(true !== $result){
-                return json(['message' => $result,'code' => 1]);
+                return json(['message' => $result, 'code' => 1]);
             }else{
 				$val = [
 					'id' 		=> $data['id'],
@@ -143,14 +142,14 @@ class Channel extends Base{
 					// 生成更新URL链接
 					$curl = self::generateChannelUrl($data['model'],$data['mname'],$data['id']);
 					$db->save(['curl' => $curl],$where);
-					return json(['message' => '栏目编辑成功！','code' => 2]);
+					return json(['message' => '栏目编辑成功！', 'code' => 2]);
 				}else{
-					return json(['message' => '栏目编辑失败！','code' => 1]);
+					return json(['message' => '栏目编辑失败！', 'code' => 1]);
 				} 
             }
             return;
 		}else{
-			$this->redirect('channel/lis','',302,['code' => 'error','msg' => '请您正常操作！']);
+			return hui_redirect('Channel/lis', ['code' => 'error', 'msg' => '请您正常操作！']);
 		}
 	}
 
@@ -164,23 +163,23 @@ class Channel extends Base{
 		if($request->isGet()){
 			$id = $request->param('id/d');
 			if(empty($id)){
-				$this->redirect('channel/lis','',302,['code' => 'error','msg' => '参数错误！']);
+				return hui_redirect('Channel/lis', ['code' => 'error', 'msg' => '参数错误！']);
 			}else{
 				if(self::isChild($id)){
-					$this->redirect('channel/lis','',302,['code' => 'error','msg' => '请先删除子栏目！']);
+					return hui_redirect('Channel/lis', ['code' => 'error', 'msg' => '请先删除子栏目！']);
 				}else{
 					$db = ChannelModel::get($id);
 					if($db->delete()){
 						add_logs('栏目【' . $db->cname . '】删除', 1);
-						$this->redirect('channel/lis','',302,['code' => 'success','msg' => '栏目【' . $db->cname . '】删除成功！']);
+						return hui_redirect('Channel/lis', ['code' => 'success', 'msg' => '栏目【' . $db->cname . '】删除成功！']);
 					}else{
 						add_logs('栏目删除', 0);
-						$this->redirect('channel/lis','',302,['code' => 'error','msg' => '栏目删除失败！']);
+						return hui_redirect('Channel/lis', ['code' => 'error', 'msg' => '栏目删除失败！']);
 					}
 				}
 			}
 		}else{
-			$this->redirect('channel/lis','',302,['code' => 'error','msg' => '请您正常操作！']);
+			return hui_redirect('Channel/lis', ['code' => 'error', 'msg' => '请您正常操作！']);
 		}
 	}
 
@@ -196,21 +195,21 @@ class Channel extends Base{
 			$id = $request->param('id/d');
 			$status = $request->param('status/d');
 			if(!isset($id) || !isset($status)){
-				$this->redirect('channel/lis','',302,['code' => 'error','msg' => '参数错误！']);
+				return hui_redirect('Channel/lis', ['code' => 'error', 'msg' => '参数错误！']);
 			}else{
 				$channel = ChannelModel::get($id);
 				if($channel){
-					$data['status'] = $status == 0 ? 1:0;
-					$msg = $status == 0 ? '启用':'禁用';
+					$data['status'] = $status == 0 ? 1 : 0;
+					$msg = $status == 0 ? '启用' : '禁用';
 					if($channel->save($data)) {
 						add_logs('栏目状态设置' . $msg, 1);
-						$this->redirect('channel/lis','',302,['code' => 'success','msg' => "栏目【" . $channel->cname . "】{$msg}成功！"]);
+						return hui_redirect('Channel/lis', ['code' => 'success', 'msg' => "栏目【" . $channel->cname . "】{$msg}成功！"]);
 					}else{
 						add_logs('栏目状态设置' . $msg, 0);
-						$this->redirect('channel/lis','',302,['code' => 'error','msg' => "栏目【" . $channel->cname . "】{$msg}失败！"]);
+						return hui_redirect('Channel/lis', ['code' => 'error', 'msg' => "栏目【" . $channel->cname . "】{$msg}失败！"]);
 					}
 				}else{
-					$this->redirect('channel/lis','',302,['code' => 'error','msg' => '数据不存在！']);
+					return hui_redirect('Channel/lis', ['code' => 'error', 'msg' => '数据不存在！']);
 				}
 			}
 		}
@@ -224,14 +223,19 @@ class Channel extends Base{
 	public function getChannel(Request $request){
 		$id = $request->param('id/d');
 		if(empty($id)){
-			return json(['message' => '抱歉，参数错误','code' => 1]);
+			return json(['message' => '抱歉，参数错误', 'code' => 1]);
 		}else{
 			$db = new ChannelModel();
 			$result = $db->field('mname,model,listnum')->where(['id' => $id])->find();
 			if(!$result){
-				$data = ['message' => '','code' => 1];
+				$data = ['message' => '', 'code' => 1];
 			}else{
-				$data = ['mname' => $result['mname'],'model' => $result['model'],'listnum' => $result['listnum'],'code' => 2];	
+				$data = [
+					'mname' => $result['mname'],
+					'model' => $result['model'],
+					'listnum' => $result['listnum'],
+					'code' => 2
+				];	
 			}
 			return json($data);
 		}

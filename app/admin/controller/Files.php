@@ -71,7 +71,7 @@ class Files extends Base{
         }
         # 记录日志
         add_logs('清理未使用上传文件', 1);
-        $this->redirect('Files/uploadFile','',302,['code' => 'success','msg' => '清理未使用上传文件成功！']);
+        return hui_redirect('Files/uploadFile', ['code' => 'success','msg' => '清理未使用上传文件成功！']);
     }
 
 	/**
@@ -106,14 +106,14 @@ class Files extends Base{
             # 单文件删除
             $id = $request->param('id/d');
             if(!isset($id) || empty($id)){
-                $this->redirect('Files/conversionFile','',302,['code' => 'error','msg' => '参数错误！']);
+                return hui_redirect('Files/conversionFile', ['code' => 'error','msg' => '参数错误！']);
             }else{
                 if(delete_conversion($id)){
                     add_logs('删除转换文件', 1);
-                    $this->redirect('Files/conversionFile','',302,['code' => 'success','msg' => '转换文件删除成功！']);
+                    return hui_redirect('Files/conversionFile', ['code' => 'success','msg' => '转换文件删除成功！']);
                 }else{
                     add_logs('删除转换文件', 0);
-                    $this->redirect('Files/conversionFile','',302,['code' => 'error','msg' => '转换文件删除失败！']);
+                    return hui_redirect('Files/conversionFile', ['code' => 'error','msg' => '转换文件删除失败！']);
                 }
             }
 
@@ -127,13 +127,13 @@ class Files extends Base{
                     } 
                 }
                 add_logs('批量删除转换文件', 1);
-                $this->redirect('Files/conversionFile','',302,['code' => 'success','msg' => '批量删除转换文件成功！']);
+                return hui_redirect('Files/conversionFile', ['code' => 'success','msg' => '批量删除转换文件成功！']);
             }else{
-                $this->redirect('Files/conversionFile','',302,['code' => 'error','msg' => '请选择要删除的文件！']);
+                return hui_redirect('Files/conversionFile', ['code' => 'error','msg' => '请选择要删除的文件！']);
             }
 
         }else{
-            $this->redirect('Files/conversionFile','',302,['code' => 'error','msg' => '非法操作！']);
+            return hui_redirect('Files/conversionFile', ['code' => 'error','msg' => '非法操作！']);
         }
     }
 
@@ -171,14 +171,14 @@ class Files extends Base{
             # 单文件删除
             $id = $request->param('id/d');
             if(!isset($id) || empty($id)){
-                $this->redirect('Files/exportFile','',302,['code' => 'error','msg' => '参数错误！']);
+                return hui_redirect('Files/exportFile', ['code' => 'error','msg' => '参数错误！']);
             }else{
                 if(delete_export($id)){
                     add_logs('删除导出文件', 1);
-                    $this->redirect('Files/exportFile','',302,['code' => 'success','msg' => '导出文件删除成功！']);
+                    return hui_redirect('Files/exportFile', ['code' => 'success','msg' => '导出文件删除成功！']);
                 }else{
                     add_logs('删除导出文件', 0);
-                    $this->redirect('Files/exportFile','',302,['code' => 'error','msg' => '导出文件删除失败！']);
+                    return hui_redirect('Files/exportFile', ['code' => 'error','msg' => '导出文件删除失败！']);
                 }
             }
 
@@ -192,13 +192,13 @@ class Files extends Base{
                     }
                 }
                 add_logs('批量删除导出文件', 1);
-                $this->redirect('Files/exportFile','',302,['code' => 'success','msg' => '批量删除导出文件成功！']);
+                return hui_redirect('Files/exportFile', ['code' => 'success','msg' => '批量删除导出文件成功！']);
             }else{
-                $this->redirect('Files/exportFile','',302,['code' => 'error','msg' => '请选择要删除的文件！']);
+                return hui_redirect('Files/exportFile', ['code' => 'error','msg' => '请选择要删除的文件！']);
             }
 
         }else{
-            $this->redirect('Files/exportFile','',302,['code' => 'error','msg' => '非法操作！']);
+            return hui_redirect('Files/exportFile', ['code' => 'error','msg' => '非法操作！']);
         }
     }
 

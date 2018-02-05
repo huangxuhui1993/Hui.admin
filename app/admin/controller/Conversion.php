@@ -17,83 +17,19 @@ class Conversion extends Base{
 
     public function _initialize(){
         // 设置脚本运行时间
-        ini_set("magic_quotes_runtime",0);
+        set_time_limit(0);
+        ini_set('memory_limit', '512M');
+        ini_set('magic_quotes_runtime', 0);
         parent::_initialize();
-    }
-
-    /**
-     * 文件列表
-     * @Author   Hui
-     * @DateTime 2017-06-27T22:19:08+0800
-     * @return   mixed
-     */
-    public function lis(){
-        $db = new ConvertModel();
-        $list = $db->order('id desc')->paginate(12);
-        $this->assign('list',$list);
-        $count = $db->count();
-        $this->assign('count',$count);
-        return $this->fetch();
-    }
-
-    /**
-     * 查看转换文件
-     * @param Request $request
-     * @return mixed
-     */
-    public function preview(Request $request){
-        if($request->isGet()){
-            $id = $request->param('id/d');
-            // 获取全部原始数据
-            $det_rs = ConvertModel::get($id)->getData();
-            $this->assign('rs',$det_rs);
-            return $this->fetch();
-        }
-    }
-
-    /**
-     * 删除转换文件
-     * @param Request $request
-     */
-    public function del(Request $request){
-        if($request->isGet()){
-            $id = $request->param('id/d');
-            if(!isset($id) || empty($id)){
-                $this->redirect('conversion/lis', '', 302, ['code' => 'error', 'msg' => '参数错误！']);
-            }else{
-                $db = ConvertModel::get($id);
-                if($db){
-                    if($db->delete()){
-                        // 删除文件
-                        $url = HUI_FILES . $db->url;
-                        if(is_file($url)){
-                            unlink($url);
-                        }
-                        add_logs('删除转换文件', 1);
-                        $this->redirect('conversion/lis', '', 302, ['code' => 'success', 'msg' => '转换文件删除成功！']);
-                    }else{
-                        add_logs('删除转换文件', 0);
-                        $this->redirect('conversion/lis', '', 302, ['code' => 'error', 'msg' => '转换文件删除失败！']);
-                    }
-                }else{
-                    $this->redirect('conversion/lis', '', 302, ['code' => 'error', 'msg' => '数据不存在！']);
-                }
-            }
-        }
     }
 
     /**
      * 文档转换页面
      * @return mixed
      */
-	public function index(){
-        $config = Config::get('websetup'); // 获取上传配置信息
-        $ext = isset($config['office_ext']) ? $config['office_ext'] : 'doc,ppt,xls,docx,pptx,xlsx';
-        $size = isset($config['office_size']) ? $config['office_size'] : 52428800; // office上传大小限制，单位B，默认50MB 
-        $this->assign('ext', $ext);
-        $this->assign('size', $size);
+    public function index(){
         return $this->fetch();
-	}
+    }
 
     /**
      * Office文档转换
@@ -111,21 +47,16 @@ class Conversion extends Base{
             // 验证数据
             $validate = new Validate([
                 ['format','require','请选择转换格式'],
-                ['id','require','请上传Office文件'],
-                ['uploadfile','require','原文件名为空'],
+                ['id','require','请上传Office文件']
             ]);
             if(!$validate->check($data)) {
                 return json(['error' => 1,'msg' => $validate->getError()]);
             }else{
                 // 实例化文件信息表模型
-                $attach = new Attach();
-                $where = [
-                    'id' => ['eq', $data['id']],
-                ];
-                $result = $attach->where($where)->find();
-                if($result){
+                $attach = Attach::get($data['id']);
+                if($attach){
                     // Office文件绝对路径
-                    $word_file = HUI_FILES . $result['url'];
+                    $word_file = HUI_FILES . $attach['url'];
 
                     // 文件保存绝对路径
                     $convert_dir = HUI_FILES . Config::get('websetup.convert_dir') . DS;
@@ -141,7 +72,7 @@ class Conversion extends Base{
                         // 数据库记录数据
                         $db->allowField(true)->save([
                             'uid'   => session('uid'),
-                            'title' => $data['uploadfile'],
+                            'title' => $attach['title'],
                             'name'  => $info['file'] . '.' . $info['ext'],
                             'ext'   => $info['ext'],
                             'url'   => 'convert/' . $info['file'] . '.' . $info['ext'],
@@ -205,6 +136,67 @@ class Conversion extends Base{
                 break;
         }
         return $info;
+    }
+
+    /**
+     * 文件列表
+     * @Author   Hui
+     * @DateTime 2017-06-27T22:19:08+0800
+     * @return   mixed
+     */
+    public function lis(){
+        $db = new ConvertModel();
+        $list = $db->order('id desc')->paginate(12);
+        $this->assign('list',$list);
+        $count = $db->count();
+        $this->assign('count',$count);
+        return $this->fetch();
+    }
+
+    /**
+     * 查看转换文件
+     * @param Request $request
+     * @return mixed
+     */
+    public function preview(Request $request){
+        if($request->isGet()){
+            $id = $request->param('id/d');
+            // 获取全部原始数据
+            $det_rs = ConvertModel::get($id)->getData();
+            $this->assign('rs',$det_rs);
+            return $this->fetch();
+        }
+    }
+
+    /**
+     * 删除转换文件
+     * @param Request $request
+     */
+    public function del(Request $request){
+        if($request->isGet()){
+            $id = $request->param('id/d');
+            if(!isset($id) || empty($id)){
+                return hui_redirect('Conversion/lis', ['code' => 'error', 'msg' => '参数错误！']);
+            }else{
+                $db = ConvertModel::get($id);
+                if($db){
+                    if($db->delete()){
+                        // 删除文件
+                        $url = HUI_FILES . $db->url;
+                        if(is_file($url)){
+                            unlink($url);
+                        }
+                        add_logs('删除转换文件', 1);
+                        return hui_redirect('Conversion/lis', ['code' => 'success', 'msg' => '转换文件删除成功！']);
+                    }else{
+                        add_logs('删除转换文件', 0);
+                        return hui_redirect('Conversion/lis', ['code' => 'error', 'msg' => '转换文件删除失败！']);
+                    }
+                }else{
+                    return hui_redirect('Conversion/lis', ['code' => 'error', 'msg' => '数据不存在！']);
+                }
+            }
+        }
     }
 
 }

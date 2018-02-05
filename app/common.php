@@ -4,13 +4,13 @@ use think\Db;
 use think\Config;
 use think\Session;
 use think\Request;
+use think\Response;
 use think\Debug;
 use org\util\HttpCurl;
 use app\admin\model\Attach;
 use app\admin\model\Channel;
 use app\admin\model\Models;
 use app\common\model\Document;
-
 
 // 上传导出文件路径常量
 define('HUI_FILES', ROOT_PATH . 'public' . DS . Config::get('hui_files_path') . DS);
@@ -19,22 +19,141 @@ if(!is_dir(HUI_FILES)){
     chmod(HUI_FILES, 0777); // 设置权限
 }
 
-// 获取IP地址信息
-function get_ip_address($ip = ''){
-    if(!empty($ip)){
-        $url = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php';
-        $data = ['format' => 'json', 'ip'=>$ip];
-        $result = $curl::get($url, $data);
-        $IPinfo = json_decode($result, true);
-        if($IPinfo != -2){
-            $array = [
-                'state' => 0,
-                'address' => "IP：".$ip."<br />地区：".$IPinfo["country"].'-'.$IPinfo["province"].'-'.$IPinfo["city"].$IPinfo["district"].$IPinfo["isp"]
-            ];
-        }else{
-            $array = ['state' => 1, 'msg' => 'IP地址错误，无法查询！'];
+/**
+ * 重定向
+ * @param mixed         $url 重定向地址 支持Url::build方法的地址
+ * @param array         $with 隐式传参
+ * @param array         $params 额外参数
+ * @param integer       $code 状态码
+ * @return 获取\think\response\Redirect对象实例
+ */
+function hui_redirect($url = [], $with = [], $params = [], $code = 302){
+    return Response::create($url, 'redirect', $code)->params($params)->with($with);
+}
+
+/**
+ * scan_all 遍历目录下所有文件和文件夹
+ * @param    string                   $dir 目录路径
+ * @param    integer                  $pid 主目录id
+ * @return   array
+ */
+function scan_all($dir, $pid = 0){
+    global $file_list;
+    if(is_dir($dir)){
+        $children = scandir($dir);
+        foreach($children as $key => $value){
+            if($value !== '.' && $value !== '..'){
+                $child = $dir . '/' . $value;
+                if(is_file($child)){
+                    $file_list[] = ['id' => $key, 'pid' => $pid, 'name' => $value];
+                }elseif(is_dir($child)){
+                    $file_list[] = ['id' => $key, 'pid' => $pid, 'name' => $value];
+                    scan_all($child, $key);
+                }
+
+            }
         }
     }
+    return $file_list;
+}
+
+/**
+ * remove_dir 删除非空目录
+ * @param  string $dirName 目录路径
+ * @return boolean
+ */
+function remove_dir($dirName = ''){
+    if(!is_dir($dirName)){ 
+        return false; 
+    }
+    $handle = opendir($dirName);
+    while(($file = readdir($handle)) !== false){
+        if($file != '.' && $file != '..'){
+            $dir = $dirName . '/' . $file;
+            chmod($dir, 0777);
+            is_dir($dir) ? remove_dir($dir) : unlink($dir);
+        }
+    }
+    closedir($handle);
+    return rmdir($dirName) ? true : false;
+}
+
+/**
+ * get_upload_config 获取系统上传配置
+ * @Author   Hui
+ * @DateTime 2018-01-31T23:15:10+0800
+ * @param    string                   $type 上传类型
+ * @return   array
+ */
+function get_upload_config($type = ''){
+    if(!empty($type)){
+        $config = Config::get('websetup'); // 获取上传配置信息
+        switch($type){
+            case 'photo':
+                $ext_string = isset($config['photo_ext']) ? $config['photo_ext'] : 'png,jpg,jpeg,bmp,gif';
+                // 图片上传参数
+                $url = isset($config['photo_dir']) ? $config['photo_dir'] : 'images';
+                $size = isset($config['photo_size']) ? $config['photo_size'] : 3 * 1024 * 1024; // 图片上传大小限制，单位：字节(b)，默认3MB
+                $ext = explode(',', $ext_string);
+                $is_water = isset($config['is_water']) ? $config['is_water'] : 0;
+                $water = isset($config['photo_water']) ? $config['photo_water'] : './static/images/water.png';
+                break;
+            case 'office':
+                $ext_string = isset($config['office_ext']) ? $config['office_ext'] : 'doc,ppt,xls,docx,pptx,xlsx';
+                // 文档上传参数
+                $url = isset($config['office_dir']) ? $config['office_dir'] : 'office';
+                $size = isset($config['office_size']) ? $config['office_size'] : 50 * 1024 * 1024; // office上传大小限制，单位B，默认50MB 
+                $ext = explode(',', $ext_string);
+                break;
+            case 'video':
+                $ext_string = isset($config['video_ext']) ? $config['video_ext'] : 'swf,flv,wav,ram,wma,mp4';
+                // 视频上传参数
+                $url = isset($config['video_dir']) ? $config['video_dir'] : 'video';
+                $size = isset($config['video_size']) ? $config['video_size'] : 100 * 1024 * 1024; // 视频上传大小限制，单位B，默认100MB 
+                $ext = explode(',', $ext_string);
+                break;
+            case 'attach':
+                $ext_string = isset($config['attach_ext']) ? $config['attach_ext'] : 'rar,tar,7z,zip,gz,txt,chm,xml,doc,ppt,pdf,xls,xlsx,pptx,docx';
+                // 附件上传参数
+                $url = isset($config['attach_dir']) ? $config['attach_dir'] : 'attach';
+                $size = isset($config['attach_size']) ? $config['attach_size'] : 500 * 1024 * 1024; // 附件上传大小限制，单位：字节(b)，默认500MB
+                $ext = explode(',', $ext_string);
+                break;
+            default:
+                return ['state' => 0, 'message' => '类型错误！'];
+                break;
+        }
+        if(!empty($url) && !empty($size) && !empty($ext) && is_array($ext)){
+            $chunked_size = isset($config['chunked_size']) ? $config['chunked_size'] : 100 * 1024 * 1024;
+            $arr = [
+                'state' => 1,
+                'url' => $url,
+                'size' => $size,
+                'ext' => $ext,
+                'ext_string' => $ext_string,
+                'chunked_size' => $chunked_size
+            ];
+            return $arr;
+        }else{
+            return ['state' => 0, 'message' => '上传配置出错！'];
+        }
+    }else{
+        return ['state' => 0, 'message' => '上传类型为空！'];
+    }
+}
+
+// 获取IP地址信息
+function get_ip_address($ip = ''){
+    $url = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php';
+    $data = ['format' => 'json', 'ip' => $ip];
+    $result = HttpCurl::get($url, $data);
+    $IPinfo = json_decode($result, true);
+    if($IPinfo != -2){
+        $info = ['state' => 1, 'msg' => '查询成功！', 'address' => $IPinfo];
+    }else{
+        $info = ['state' => 0, 'msg' => 'IP地址错误，无法查询！'];
+    }
+    return $info;
 }
 
 /**
@@ -556,7 +675,7 @@ function get_file_type($type = ''){
     if(!empty($type)){
         $array = [
             'photo'  => '图片文件',
-            'office' => 'Office文件',
+            'office' => '文档文件',
             'attach' => '附件文件',
             'video'  => '视频文件'
         ];
@@ -568,29 +687,29 @@ function get_file_type($type = ''){
 
 /**
  * get_file_url 获取文件存储路径
- * @param  integer  $val   文件id
+ * @param  integer $id     文件id
  * @param  string  $picUrl 默认图片
  * @param  boolean $thumb  是否使用缩略图
  * @return string          文件路径
  */
-function get_file_url($val = 0, $picUrl = '', $thumb = false){
+function get_file_url($id = 0, $picUrl = '', $thumb = false){
     $attUrl = $picUrl;
-    if(empty($val) || !is_numeric($val)){
+    if(empty($id) || !is_numeric($id)){
         return $attUrl;
     }else{
         $db = new Attach();
         $hui_files_path = Config::get('hui_files_path');
-        $rs = $db->field('url,thumb')->where(['id' => $val])->find();
-        if($rs){
+        $result = $db->field('url,thumb')->where(['id' => $id])->find();
+        if($result){
             unset($attUrl);
             if($thumb){
-                if($rs['thumb'] != ''){
-                    $attUrl = "/{$hui_files_path}/" . $rs['thumb'];
+                if($result['thumb'] != ''){
+                    $attUrl = "/{$hui_files_path}/" . $result['thumb'];
                 }else{
-                    $attUrl = "/{$hui_files_path}/" . $rs['url'];
+                    $attUrl = "/{$hui_files_path}/" . $result['url'];
                 }
             }else{
-                $attUrl = "/{$hui_files_path}/" . $rs['url'];
+                $attUrl = "/{$hui_files_path}/" . $result['url'];
             }
         }
         return $attUrl;
@@ -670,7 +789,7 @@ function get_channel_model_name($cid = 0){
             return "外部导航";
         }else{
             $result = get_model_name($channel['model']);
-            return $result ? $result : '';
+            return $result ? $result : false;
         }
     }else{
         return false;

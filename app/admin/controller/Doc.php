@@ -28,14 +28,14 @@ class Doc extends Base{
         	// 数据验证
             $result = $this->validate($data, 'Doc');
             if(true !== $result){
-                $this->redirect('doc/add', '', 302, ['code' => 'error', 'msg' => $result, 'data' => $data]);
+                return hui_redirect('Doc/add', ['code' => 'error', 'msg' => $result, 'data' => $data]);
             }else{
 				if($db->allowField(true)->save($data)){
 					add_logs('文档属性添加', 1);
-					$this->redirect('doc/lis', '', 302, ['code' => 'success', 'msg' => '文档属性添加成功！']);
+					return hui_redirect('Doc/lis', ['code' => 'success', 'msg' => '文档属性添加成功！']);
 				}else{
 					add_logs('文档属性添加', 0);
-					$this->redirect('doc/lis', '', 302, ['code' => 'error', 'msg' => '文档属性添加失败！']);
+					return hui_redirect('Doc/lis', ['code' => 'error', 'msg' => '文档属性添加失败！']);
 				}
             }
             return;
@@ -48,8 +48,7 @@ class Doc extends Base{
 	public function edit(Request $request){
 		$id = $request->param('id/d');
 		if(empty($id)){
-            $this->redirect('doc/lis','',302,['code' => 'error','msg' => '缺少参数！']);
-            return;
+            return hui_redirect('Doc/lis', ['code' => 'error','msg' => '缺少参数！']);
 		}
 		if($request->isPost()){
 			$db = new DocModel();
@@ -57,14 +56,14 @@ class Doc extends Base{
         	// 数据验证
             $result = $this->validate($data,'Doc');
             if(true !== $result){
-                $this->redirect('doc/edit',['id'=>$id],302,['code' => 'error','msg' => $result]);
+                return hui_redirect('Doc/edit', ['code' => 'error', 'msg' => $result], ['id' => $id], 302);
             }else{
 				if($db->save($data,['id' => $data['id']])){
 					add_logs('文档属性编辑', 1);
-					$this->redirect('doc/lis','',302,['code' => 'success','msg' => '文档属性编辑成功！']);
+					return hui_redirect('Doc/lis', ['code' => 'success','msg' => '文档属性编辑成功！']);
 				}else{
 					add_logs('文档属性编辑', 0);
-					$this->redirect('doc/lis','',302,['code' => 'error','msg' => '文档属性编辑失败！']);
+					return hui_redirect('Doc/lis', ['code' => 'error','msg' => '文档属性编辑失败！']);
 				}
             }
             return;
@@ -85,20 +84,20 @@ class Doc extends Base{
 				if($db){
 					if($db->delete()){
 						add_logs('文档属性删除', 1);
-						$this->redirect('doc/lis','',302,['code' => 'success','msg' => '文档属性删除成功！']);
+						return hui_redirect('Doc/lis', ['code' => 'success','msg' => '文档属性删除成功！']);
 					}else{
 						add_logs('文档属性删除', 0);
-						$this->redirect('doc/lis','',302,['code' => 'error','msg' => '文档属性删除失败！']);
+						return hui_redirect('Doc/lis', ['code' => 'error','msg' => '文档属性删除失败！']);
 					}
 				}else{
-					$this->redirect('doc/lis','',302,['code' => 'error','msg' => '数据不存在！']);
+					return hui_redirect('Doc/lis', ['code' => 'error','msg' => '数据不存在！']);
 				}
 
 			}else{
-				$this->redirect('doc/lis','',302,['code' => 'error','msg' => '参数错误！']);
+				return hui_redirect('Doc/lis', ['code' => 'error','msg' => '参数错误！']);
 			}
 		}else{
-			$this->redirect('doc/lis','',302,['code' => 'error','msg' => '请您正常操作！']);
+			return hui_redirect('Doc/lis', ['code' => 'error','msg' => '请您正常操作！']);
 		}
 	}
 
@@ -114,7 +113,7 @@ class Doc extends Base{
 			$id = $request->param('id/d');
 			$status = $request->param('status/d');
 			if(!isset($id) || !isset($status)){
-				$this->redirect('doc/lis','',302,['code' => 'error','msg' => '参数错误！']);
+				return hui_redirect('Doc/lis', ['code' => 'error','msg' => '参数错误！']);
 			}else{
 				$doc = DocModel::get($id);
 				if($doc){
@@ -122,13 +121,13 @@ class Doc extends Base{
 					$msg = $status == 0 ? '启用' : '禁用';
 					if($doc->save($data)) {
 						add_logs('文档属性状态设置' . $msg, 1);
-						$this->redirect('doc/lis','',302,['code' => 'success','msg' => "文档属性{$msg}成功！"]);
+						return hui_redirect('Doc/lis', ['code' => 'success','msg' => "文档属性{$msg}成功！"]);
 					}else{
 						add_logs('文档属性状态设置' . $msg, 0);
-						$this->redirect('doc/lis','',302,['code' => 'error','msg' => "文档属性{$msg}失败！"]);
+						return hui_redirect('Doc/lis', ['code' => 'error','msg' => "文档属性{$msg}失败！"]);
 					}
 				}else{
-					$this->redirect('doc/lis','',302,['code' => 'error','msg' => '数据不存在！']);
+					return hui_redirect('Doc/lis', ['code' => 'error','msg' => '数据不存在！']);
 				}
 			}
 		}

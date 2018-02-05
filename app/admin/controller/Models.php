@@ -48,7 +48,7 @@ class Models extends Base{
         	# 数据验证
             $result = $this->validate($data,'Models');
             if(true !== $result){
-                $this->redirect('models/add','',302,['code' => 'error','msg' => $result,'data' => $data]);
+                return hui_redirect('Models/add', ['code' => 'error','msg' => $result,'data' => $data]);
             }else{
 				if($db->allowField(true)->save($data)){
                     $message = '';
@@ -64,14 +64,14 @@ class Models extends Base{
                     }
                     if(empty($message)){
                     	add_logs('模型添加', 1);
-                        $this->redirect('models/lis','',302,['code' => 'success','msg' => '模型添加成功！']);
+                        return hui_redirect('Models/lis', ['code' => 'success','msg' => '模型添加成功！']);
                     }else{
                     	add_logs('模型添加：' . $message, 0);
-                        $this->redirect('models/add', '', 302, ['code' => 'error', 'msg' => $message, 'data' => $data]);
+                        return hui_redirect('Models/add', ['code' => 'error', 'msg' => $message, 'data' => $data]);
                     }
 				}else{
 					add_logs('模型信息添加', 0);
-					$this->redirect('models/add','',302,['code' => 'error','msg' => '模型信息添加失败！','data' => $data]);
+					return hui_redirect('Models/add', ['code' => 'error','msg' => '模型信息添加失败！','data' => $data]);
 				}
             }
             return;
@@ -92,7 +92,7 @@ class Models extends Base{
 	public function edit(Request $request){
 		$id = $request->param('id/d');
 		if(!isset($id) || empty($id)){
-			$this->redirect('models/lis','',302,['code' => 'error','msg' => '参数错误！']);
+			return hui_redirect('Models/lis', ['code' => 'error','msg' => '参数错误！']);
 			return;
 		}
 		$db = new ModelsModel();
@@ -104,7 +104,9 @@ class Models extends Base{
         	# 数据验证
             $result = $this->validate($data,'Models');
             if(true !== $result){
-                $this->redirect('models/edit',['id' => $id],302,['code' => 'error','msg' => $result]);
+            	$with = ['code' => 'error','msg' => $result];
+	        	$params = ['id' => $id];
+	            return hui_redirect('Models/edit', $with, $params);
             }else{
 				if($db->allowField(true)->save($data,['id' => $id])){
                     $message = '';
@@ -118,14 +120,16 @@ class Models extends Base{
                     }
                     if(empty($message)){
                     	add_logs('模型编辑', 1);
-                        $this->redirect('models/lis','',302,['code' => 'success','msg' => '模型编辑成功！']);
+                        return hui_redirect('Models/lis', ['code' => 'success','msg' => '模型编辑成功！']);
                     }else{
                     	add_logs('模型编辑：' . $message, 0);
-                        $this->redirect('models/edit',['id'=>$id],302,['code' => 'error','msg' => $message]);
+                    	$with = ['code' => 'error','msg' => $message];
+			        	$params = ['id' => $id];
+			            return hui_redirect('Models/edit', $with, $params);
                     }
 				}else{
 					add_logs('模型信息编辑', 0);
-					$this->redirect('models/lis','',302,['code' => 'error','msg' => '模型信息编辑失败！']);
+					return hui_redirect('Models/lis', ['code' => 'error','msg' => '模型信息编辑失败！']);
 				}
             }
             return;
@@ -158,8 +162,7 @@ class Models extends Base{
 		if($request->isGet()){
 			$id = $request->param('id/d');
 			if(!isset($id) || empty($id)){
-				$this->redirect('models/lis','',302,['code' => 'error','msg' => '参数错误！']);
-				return;
+				return hui_redirect('Models/lis', ['code' => 'error','msg' => '参数错误！']);
 			}
 			$db = ModelsModel::get($id);
 			if($db->delete()){
@@ -176,17 +179,17 @@ class Models extends Base{
                 }
                 if(empty($message)){
                 	add_logs('模型【' . $db->name . '】删除', 1);
-                    $this->redirect('models/lis','',302,['code' => 'success','msg' => '模型【'.$db->name.'】删除成功！']);
+                    return hui_redirect('Models/lis', ['code' => 'success','msg' => '模型【'.$db->name.'】删除成功！']);
                 }else{
                 	add_logs('模型删除：' . $message, 0);
-                    $this->redirect('models/lis','',302,['code' => 'error','msg' => $message]);
+                    return hui_redirect('Models/lis', ['code' => 'error','msg' => $message]);
                 }
 			}else{
 				add_logs('模型信息删除', 0);
-				$this->redirect('models/lis','',302,['code' => 'error','msg' => '模型信息删除失败！']);
+				return hui_redirect('Models/lis', ['code' => 'error','msg' => '模型信息删除失败！']);
 			}
 		}else{
-			$this->redirect('models/lis','',302,['code' => 'error','msg' => '请正常操作！']);
+			return hui_redirect('Models/lis', ['code' => 'error','msg' => '请正常操作！']);
 		}
 	}
 }

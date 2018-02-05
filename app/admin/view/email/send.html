@@ -1,11 +1,9 @@
 {include file="public/meta" /}
 
-<link href="__ROOT__/js/webuploader/webuploader.css" rel="stylesheet" type="text/css" />
-
 <title>发送邮件</title>
 
 </head>
-<body onbeforeunload="return '真的要关闭或刷新此窗口吗？请保存数据！'">
+<body>
 <article class="page-container">
 	<form class="form form-horizontal" id="form-email-send">
 		<div class="row cl">
@@ -29,15 +27,10 @@
 		<div class="row cl">
 			<label class="form-label col-xs-2">上传附件：</label>
 			<div class="formControls col-xs-10">
-				<div id="Attach"></div>
-				<div class="uploader-thum-container">
-					<div id="file-picker">
-						<i class="Hui-iconfont">&#xe642;</i> 上传附件
-					</div>
-				</div>
-				<input type="hidden" name="aid" id="aid">
-				<small class="label label-default radius">文件格式：({$ext})，大小：{:truesize($size)}</small>
-				<input type="text" class="input-text radius width-50 ml-10 hide text-c" id="percentage" disabled>
+				<a href="javascript:;" class="btn btn-secondary radius size-M" onclick="open_window('{:url('Common/uploadPage', ['type' => 'attach', 'tag' => 'aid'])}', 600, 170, 0);">
+					<i class="Hui-iconfont">&#xe642;</i> 上传文件
+				</a>
+				<input type="text" class="input-text radius width-50" name="aid" id="aid" placeholder="ID" readonly>
 			</div>
 		</div>
 
@@ -61,67 +54,8 @@
 {tag:ueditor /}
 {tag:validatejs /}
 
-<script type="text/javascript" src="__ROOT__/js/webuploader/webuploader.js"></script>
-
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function(){
-	var $progressbar = $("#percentage"); 							// 上传进度
-
-	var uploader = WebUploader.create({
-		auto: true,													// 选完文件后，是否自动上传
-		swf: '__ROOT__/js/webuploader/Uploader.swf', 				// 加载swf文件
-		server: "{:url('upload/fileUpload',['type' => 'attach'])}",	// 文件接收服务端
-		pick: '#file-picker',										// 选择文件的按钮，可选
-		fileSingleSizeLimit: '{$size}',								// 限制 单文件大小
-		fileSizeLimit: '{$size}',									// 限制 所有文件大小
-		accept: { 													// 传入文件格式限制
-			title: 'Applications',
-			extensions: '{$ext}',
-			mimeTypes: ''
-		}
-	});
-    
-    uploader.on( 'uploadProgress',function(file,percentage){		// 文件上传过程中创建进度条实时显示
-        $progressbar.show();
-        $progressbar.val(Math.round(percentage * 100) + '%');
-    });
-	
-	uploader.on('uploadSuccess', function(file,response){			// 文件上传成功
-		console.log(response);
-		if(response.error == 1){
-            layer.msg(response.message);
-        }else{
-        	layer.msg(response.message);
-	        $("#aid").val(response.id);
-        	$(".uploader-thum-container").hide();
-	    	var afterHtml = '';
-		    	afterHtml += '<span class="attlist'+response.id+'">';
-		    	afterHtml += '<div class="imgDiv">';
-		        afterHtml += '<img src="__ROOT__/images/files/'+response.ext+'.png" class="img-responsive thumbnail" style="width:60px;height:60px;">';
-		        afterHtml += '<a href="javascript:delete_file('+response.id+',1);" class="delete" title="删除">';
-		        afterHtml += '<img src="__ADMIN__/h-ui.admin/images/dialog_del.gif">';
-		        afterHtml += '</a>';
-		        afterHtml += '</div>';
-		        afterHtml += '</span>';
-            $('#Attach').append(afterHtml);
-        }
-	});
-
-	uploader.on('error', function(res){
-		log(res)
-		if(res == 'Q_TYPE_DENIED') layer.msg('文件格式不允许!');
-		if(res == 'Q_EXCEED_SIZE_LIMIT') layer.msg('文件大小超出系统限制!');
-		if(res == 'F_EXCEED_SIZE') layer.msg('文件大小超出系统限制!');
-	});
-	
-	uploader.on('uploadError', function(file){						// 文件上传失败
-		layer.msg('服务器错误!');
-	});
-   
-    uploader.on('uploadComplete', function(file){					// 完成上传不论成功或失败，删除进度条
-    	$progressbar.hide();
-    });
-
 	// 百度编辑器
     window.UEDITOR_HOME_URL = "__ADMIN__/lib/Ueditor/";
     var Ueditor = UE.getEditor('content',{
@@ -168,26 +102,6 @@ $(document).ready(function(){
 	});
 
 });
-
-// 清除文件
-function delete_file(id){
-    if(id.length == 0){
-        layer.msg('没有文件可以删除', {icon:0,shade: 0.04,time:1000});
-        return false;
-	}
-    $.ajax({type:'post', url:"{:url('common/deleteFile')}",data:{'id':id},
-        success: function(result){
-            if(result.error == 0){
-            	$("#aid").val("");
-            	$(".attlist" + id).remove();
-                $(".uploader-thum-container").show();
-                layer.msg('附件删除成功！', {icon:1,shade: 0.04,time:1000});
-            }else{
-                layer.msg('删除失败！', {icon:0,shade: 0.04,time:1000});
-            }
-        }
-    });
-}
 </script> 
 <!--/请在上方写此页面业务相关的脚本-->
 

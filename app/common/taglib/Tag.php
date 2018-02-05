@@ -18,13 +18,13 @@ class Tag extends TagLib{
 
 		$str = <<<EOT
     	<!-- Tag标签加载js -->
-        <script type="text/javascript" src="__ROOT__/js/layer/2.4/layer.js"></script>
+        <script type="text/javascript" src="__ROOT__/js/layer/layer.js"></script>
         <script type="text/javascript" src="__ROOT__/js/laydate/laydate.js"></script>
         <script type="text/javascript" src="__ADMIN__/h-ui/js/H-ui.min.js"></script>
         <script type="text/javascript" src="__ADMIN__/h-ui.admin/js/H-ui.admin.js"></script>
         <script type="text/javascript" src="__ADMIN__/lib/icheck/jquery.icheck.min.js"></script>
         <script type="text/javascript" src="__ROOT__/js/toastr/toastr.js"></script>
-        <script type="text/javascript" src="__ROOT__/js/admin.js"></script>
+        <script type="text/javascript" src="__ADMIN__/h-ui.admin/js/admin.js"></script>
 EOT;
 
         return $str;
@@ -47,7 +47,7 @@ EOT;
         $str = <<<EOT
         <!-- 百度UE编辑器Start -->
         <script type="text/javascript" src="__ROOT__/js/ueditor/ueditor.config.js"></script>
-        <script type="text/javascript" src="__ROOT__/js/ueditor/ueditor.all.js"></script>
+        <script type="text/javascript" src="__ROOT__/js/ueditor/ueditor.all.min.js"></script>
         <script type="text/javascript" src="__ROOT__/js/ueditor/lang/zh-cn/zh-cn.js"></script>
         <!-- 百度UE编辑器End -->
 EOT;
