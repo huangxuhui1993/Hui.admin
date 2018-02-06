@@ -3,10 +3,20 @@ namespace app\admin\controller;
 use think\Controller;
 use think\Request;
 use think\Cache;
+use think\Cookie;
 use org\util\HttpCurl;
 
 class Ajax extends Controller{
 
+	public function message(){
+		$cookie = Cookie::get();
+		$array = [
+			'messageCount' => mt_rand(0, 10),
+			'messageCountCookie' => $cookie['messageCount'],
+			'messageIndexID' => $cookie['messageIndexID']
+		];
+		return json($array);
+	}
 
     /**
      * news 获取新闻

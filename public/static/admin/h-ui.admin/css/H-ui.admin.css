@@ -166,3 +166,9 @@ input.page-input{width:5pc}
     width: 100%;
     margin: 0 auto;
 }
+
+.tips_main .tips_box{width:400px; height:auto; margin:15px auto auto auto;}
+.tips_main .tips_box h1{width:400px; height:20px; line-height:20px; border:1px solid #cfcfcf; font-size:12px; text-align:center; float:left}
+.tips_main .tips_box .tips_con{width:360px; float:left; line-height:25px; height:80px; border:1px solid #cfcfcf; border-top:none; padding:20px;}
+.tips_main .tips_box .tips_con p{text-align:center}
+.tips_main .tips_box .tips_con p a{ font-weight:600;color:#f00; }

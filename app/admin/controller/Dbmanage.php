@@ -247,7 +247,7 @@ class Dbmanage extends Base{
 		$this->assign('db_size', mysql_db_size());
 		$this->assign('backup_dir', Config::get('websetup.backup_dir'));
 		# 面包屑
-		$this->assign('bread',breadcrumb([$this->bread,'数据库备份文件列表']));
+		$this->assign('bread', breadcrumb([$this->bread, '数据库备份文件列表']));
 		return $this->fetch();
 	}
 
@@ -266,13 +266,12 @@ class Dbmanage extends Base{
 
 			# 数据库大小超过50M自动启用分卷备份
 			# 参数：备份哪个表(可选),备份目录(可选，默认为backup),分卷大小(可选,默认2048，即2M)
-			$back_path = self::$db_backup;
 			if($style == 2 || $db_size >= 52428800){
 				$size = 10240;
 			}else{
 				$size = 51200;
 			}
-			$result = $db->backup('',$back_path,$size);
+			$result = $db->backup('', self::$db_backup, $size);
 			if($result['code'] == 1){
 				add_logs('备份数据库', 1);
 				return ['error' => 0];

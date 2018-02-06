@@ -37,7 +37,7 @@ class Upload extends Base{
                 if(empty($data['flag'])){
                     return json(['error' => 1, 'message' => '上传类型为空！']);
                 }else{
-                    $result = $this->upload($data, $request);
+                    $result = $this->_upload($data, $request);
                     return json($result);
                 }  
             }
@@ -54,7 +54,7 @@ class Upload extends Base{
      * @param string $fieldName 表单name
      * @return array
      */
-    private function upload($data, $request, $fieldName = 'file'){
+    private function _upload($data, $request, $fieldName = 'file'){
         $config = get_upload_config($data['flag']); // 获取上传配置
 
         if($config['state'] == 1){

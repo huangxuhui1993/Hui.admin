@@ -1,0 +1,30 @@
+{include file="public/meta" /}
+<title>信息提示</title>
+</head>
+<body>
+	<div class="tips_main">
+		<div class="tips_box">
+			<h1>系统信息提示</h1>
+			<div class="tips_con">
+				{empty name="url"}
+					<script type="text/javascript">
+						(function(){
+							var wait = '{$waitSecond}';
+							var interval = setInterval(function(){
+								var time = --wait;
+								if(time <= 0){
+									window.location.href = '{$jumpUrl}';
+									clearInterval(interval);
+								};
+							}, 1000);
+						})();
+					</script>
+					<p>{$message}</p>
+					<p><a href="{$jumpUrl}">如果你的浏览器没反应，请点击这里...</a></p>
+				{else/}
+					<p><a href="{$url}">{$message}</a></p>
+				{/empty}
+			</div>
+		</div>
+	</div>
+</body>

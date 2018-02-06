@@ -1,3 +1,4 @@
+window.cookie_config = {expires:7, path:'/'};
 $(function(){
     // 全局配置参数
     laydate.skin('molv');
@@ -26,7 +27,13 @@ function log(str){
 
 // 数据加载层
 function loading(msg, flag){
-    var config = {icon:16, area:'auto', shade:0.4, shadeClose:false, time:0};
+    var config = {
+        icon:16,
+        area:'auto',
+        shade:0.4,
+        shadeClose:false,
+        time:0
+    };
     if(flag == undefined || flag == ''){
         return window.layer.msg(msg, config);
     }else{
@@ -68,6 +75,46 @@ function render_size(value){
     var size = srcsize / Math.pow(1024, index);
     size = size.toFixed(2); // 保留的小数位数
     return size + unitArr[index];
+}
+
+/**
+ * open_message_parent_html 打开系统消息详情
+ * @param  {obj} obj 对象
+ */
+function open_message_parent_html(obj){
+    window.parent.Hui_admin_tab(obj);
+}
+
+// message 获取消息提醒
+function message(){
+    $.get(ajax_messages_url, function(json){
+        $.cookie('messageCount', json.messageCount, cookie_config); // 更新消息数量
+        if(json.messageCount >= 1){
+            var index = layer.open({
+                    type: 2,
+                    id: 'message-layer',
+                    title: '新消息',
+                    area: ['300px', '150px'],
+                    anim: 2,
+                    isOutAnim: true,
+                    shade: false,
+                    offset: 'b',
+                    maxmin: true,
+                    content: common_message_lis_url
+            });
+            if(json.messageIndexID == 0){
+                $.cookie('messageIndexID', index, cookie_config);
+            }
+            if(json.messageCountCookie < json.messageCount){
+                // show_notification('您有新消息，请注意查看~', '');
+            }
+            layer.iframeSrc(json.messageIndexID, common_message_lis_url);
+        }else{
+            $.cookie('messageIndexID', 0, cookie_config);
+            layer.close(json.messageIndexID);
+        }
+        $('#message-count').text(json.messageCount);
+    });
 }
 
 // 浏览器H5桌面通知

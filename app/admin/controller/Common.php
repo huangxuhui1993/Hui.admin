@@ -3,6 +3,7 @@ namespace app\admin\controller;
 use app\admin\controller\Base;
 use think\Db;
 use think\Config;
+use think\Cookie;
 use think\Request;
 use think\Validate;
 use app\admin\model\User;
@@ -17,6 +18,30 @@ class Common extends Base{
     
     public function _initialize(){
         parent::_initialize();
+    }
+
+    public function dotips(Request $request){
+    	$autoid = $request->param('autoid');
+		if ($autoid == 10) {
+			$message = "恭喜，任务执行完成！";
+			$jumpUrl = '';
+			$url = 'javascript:void(0);';
+		}else{
+			$autoid = $autoid + 1;
+			$message = "操作步骤【HUI_{$autoid}】，完成！";
+			$jumpUrl = url('Common/dotips', ['autoid' => $autoid]);
+			$url = '';
+		}
+		$this->assign('message', $message);
+		$this->assign('jumpUrl', $jumpUrl);
+		$this->assign('waitSecond', 1);
+		$this->assign("url", $url);
+		return $this->fetch('Public/tips');
+    }
+
+    // 消息列表
+    public function message_lis(){
+    	return '消息数量：' . Cookie::get('messageCount') . ',弹窗ID：' . Cookie::get('messageIndexID');
     }
 
     // 文件上传页面
@@ -46,13 +71,6 @@ class Common extends Base{
 	        	die($config['message']);
 	        }
 		}
-    }
-
-    // 文件管理
-    public function folder(){
-    	$hui_files_path = Config::get('hui_files_path');
-    	$list = scan_all(HUI_FILES);
-    	dump($list);
     }
 
     /**

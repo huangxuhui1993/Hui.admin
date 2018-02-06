@@ -36,23 +36,36 @@
 	</ul>
 </div>
 
-<div class="hide" id="network-speed"></div>
-
 {tag:adminjs /}
+
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="__ADMIN__/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
-
+<script type="text/javascript" src="__ROOT__/js/timerHandler/jquery.timerHandler.min.js"></script>
 <script type="text/javascript">
+window.ajax_messages_url = "{:url('Ajax/message')}";
+window.common_message_lis_url = "{:url('Common/message_lis')}";
 $(function(){
 	// 初始化页面
 	initialize_page();
-	$(".loading").show();
 	$("body").Huitab({
 		tabBar:".navbar-wrapper .navbar-levelone",
 		tabCon:".Hui-aside .menu_dropdown",
 		className:"current",
 		index:0,
 	});
+
+	// $.cookie('messageCount', 0, cookie_config); // 初始化消息数量cookie
+	// $.cookie('messageIndexID', 0, cookie_config); // 初始化消息弹框唯一编号cookie
+	// message(); // 初始化消息
+
+	// 注册一个名为'MessageTimer'的定时器，每30秒运行一次
+	// var MessageTimer = $.timerHandler('MessageTimer').time('60s').call(function(count) {
+	// 	message();
+	// }).start();
+	// myTimer.pause(); // 暂停定时器运行
+	// myTimer.start(); // 定时器重新启动
+	// myTimer.call(callback); // 重新注册定时器回调主函数
+	// myTimer.stop(); // 停止(销毁)定时器
 });
 </script>
 </body>

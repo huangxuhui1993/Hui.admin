@@ -8,16 +8,8 @@ use org\util\HttpCurl;
 
 class Demo extends Controller{
 
-	public function pjax(){
+	public function timer(){
 		return $this->fetch();
-	}
-
-	public function test1(){
-		echo "test1";
-	}
-
-	public function test2(){
-		echo "test2";
 	}
 
 	// 地图经纬度转地址

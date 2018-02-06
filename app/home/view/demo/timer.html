@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title>jQuery timerHandler</title>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="__ROOT__/js/jquery/jquery.js"></script>
+    <script type="text/javascript" src="__ROOT__/js/timerHandler/jquery.timerHandler.min.js"></script>
+</head>
+
+<body>
+	<h3>jQuery timerHandler</h3>
+	<p id="count"></p>
+	<script type="text/javascript">
+		// 注册一个名为'mytimer'的定时器，每1秒运行一次
+		var myTimer = $.timerHandler('mytimer').time('1s').call(function(count) {
+			$('#count').append('注册一个名为mytimer的定时器，每1秒运行一次，mytimer runing : ' + count + '<br>');
+		}).start();
+		// myTimer.pause(); // 暂停定时器运行
+		// myTimer.start(); // 定时器重新启动
+		// myTimer.call(callback); // 重新注册定时器回调主函数
+		// myTimer.stop(); // 停止(销毁)定时器
+	</script>
+</body>
+</html>

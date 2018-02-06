@@ -35,8 +35,8 @@
 								</a>
 							</li>
 							<li>
-								<a href="javascript:;" onclick="show_notification('标题~~~', '内容~~~')">
-									<i class="Hui-iconfont">&#xe654;</i> 桌面提醒
+								<a href="javascript:;" onclick="open_window('{:url('Common/dotips', ['autoid' => 0])}', 600, 210, 0);">
+									<i class="Hui-iconfont">&#xe654;</i> 分步操作
 								</a>
 							</li>
 						</ul>
@@ -65,7 +65,13 @@
 							</li>
 						</ul>
 					</li>
-					<li id="Hui-msg"> <a href="javascript:;" title="消息"><span class="badge badge-danger">1</span><i class="Hui-iconfont f-16">&#xe62f;</i></a> </li>
+					
+					<li id="Hui-msg"> 
+						<a href="javascript:;" title="消息">
+							<span class="badge badge-danger" id="message-count">0</span>
+							<i class="Hui-iconfont f-16">&#xe62f;</i>
+						</a>
+					</li>
 
 					<li id="Hui-msg"> <a href="javascript:;" onclick="full_screen(this)" flag="on" title="全屏"><i class="Hui-iconfont f-16">&#xe64f;</i></a> </li>
 
