@@ -8,9 +8,9 @@
 	<div class="panel panel-default">
 		<div class="panel-body">
 			<p class="f-20 text-success">欢迎使用Hui.admin v1.0管理系统！</p>
-			<p><i class="Hui-iconfont">&#xe728;</i> 运行天数：{:site_run_time()}天</p>
+			<p><i class="Hui-iconfont">&#xe728;</i> 运行时间：{:site_run_time()}</p>
 			<p><i class="Hui-iconfont">&#xe668;</i> {:time_tips()}</p>
-			<p><i class="Hui-iconfont">&#xe671;</i> 上次登录IP：{:session('loginip')}　　<i class="Hui-iconfont">&#xe606;</i> 上次登录时间：{:date('Y-m-d H:i:s',session('logintime'))}　　<i class="Hui-iconfont">&#xe64b;</i> 登录次数：{$user_info.loginnumber}</p>
+			<p><i class="Hui-iconfont">&#xe671;</i> 上次登录IP：{$session_loginip}　　<i class="Hui-iconfont">&#xe606;</i> 上次登录时间：{:date('Y-m-d H:i:s', $session_logintime)}　　<i class="Hui-iconfont">&#xe64b;</i> 登录次数：{:get_user_info($session_uid)['loginnumber']}</p>
 		</div>
 	</div>
 

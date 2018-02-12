@@ -1,6 +1,7 @@
 <?php
 namespace app\admin\controller;
 use think\Controller;
+use think\Session;
 use app\admin\model\User;
 
 /**
@@ -15,12 +16,15 @@ class Base extends Controller{
 		if(!is_login()){
            $this->redirect('Login/index');
         }else{
-            # 获取登录用户信息
-            $user_info = User::get(session('uid'));
-            $this->assign('user_info',$user_info);
+            # 获取登录session信息
+            $session = Session::get();
+            $this->assign('session_uid', $session['uid']);
+            $this->assign('session_uname', $session['uname']);
+            $this->assign('session_loginip', $session['loginip']);
+            $this->assign('session_logintime', $session['logintime']);
 
             # 获取皮肤cookie
-            $this->assign('Huiskin',cookie('Huiskin'));
+            $this->assign('Huiskin', cookie('Huiskin'));
 
             # 空数据提示
             $this->assign('empty_str','<tr class="text-c"><td colspan="20" class="f-14">暂时没有数据！</td></tr>');            

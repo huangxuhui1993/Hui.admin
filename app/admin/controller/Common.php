@@ -17,27 +17,19 @@ use \Exception;
 class Common extends Base{
     
     public function _initialize(){
+    	Config::set('app_trace', false);
         parent::_initialize();
     }
 
-    public function dotips(Request $request){
-    	$autoid = $request->param('autoid');
-		if ($autoid == 10) {
-			$message = "恭喜，任务执行完成！";
-			$jumpUrl = '';
-			$url = 'javascript:void(0);';
-		}else{
-			$autoid = $autoid + 1;
-			$message = "操作步骤【HUI_{$autoid}】，完成！";
-			$jumpUrl = url('Common/dotips', ['autoid' => $autoid]);
-			$url = '';
-		}
-		$this->assign('message', $message);
-		$this->assign('jumpUrl', $jumpUrl);
-		$this->assign('waitSecond', 1);
-		$this->assign("url", $url);
-		return $this->fetch('Public/tips');
-    }
+	// 创建桌面图标
+	public function shortcut(Request $request){
+		$domain = $request->domain();
+		$module = $request->module();
+		$filename = 'Hui.admin.url';
+		$url = $domain . '/' . $module;
+		$icon = $domain . '/icon.ico';
+		download_shortcut($filename, $url, $icon);
+	}
 
     // 消息列表
     public function message_lis(){

@@ -23,7 +23,6 @@ class Tag extends TagLib{
         <script type="text/javascript" src="__ADMIN__/h-ui/js/H-ui.min.js"></script>
         <script type="text/javascript" src="__ADMIN__/h-ui.admin/js/H-ui.admin.js"></script>
         <script type="text/javascript" src="__ADMIN__/lib/icheck/jquery.icheck.min.js"></script>
-        <script type="text/javascript" src="__ROOT__/js/toastr/toastr.js"></script>
         <script type="text/javascript" src="__ADMIN__/h-ui.admin/js/admin.js"></script>
 EOT;
 

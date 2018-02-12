@@ -63,11 +63,11 @@ class Export extends Base{
 			$writer->writeSheetRow('Sheet1',$row);
 		}
 		
-		$dir = HUI_FILES.Config::get('websetup.export_dir').DS;
-		$file_name = date('YmdHis').'.xlsx';
+		$dir = HUI_FILES . Config::get('websetup.export_dir') . DS;
+		$file_name = date('YmdHis') . '.xlsx';
 		
 		$writer->writeToFile($dir.$file_name);
-        $url = Config::get('websetup.export_dir').DS.$file_name;
+        $url = Config::get('websetup.export_dir') . DS . $file_name;
 		# 记录导出文件信息
 		$db = new ExportModel();
 		$edata = [
@@ -78,7 +78,10 @@ class Export extends Base{
 			'ext'   => 'csv'
 		];
 		if($db->save($edata)){
-			return ['error' => 0,'file' => DS.Config::get('hui_files_path').DS.$url];
+			return [
+				'error' => 0,
+				'file' => DS . Config::get('hui_files_path') . DS . $url
+			];
 		}else{
 			return ['error' => 1,'msg'  => '导出文件记录失败！'];	
 		}

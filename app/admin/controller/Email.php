@@ -9,6 +9,11 @@ use \Exception;
 
 class Email extends Base{
 
+    public function _initialize(){
+    	Config::set('app_trace', false);
+        parent::_initialize();
+    }
+
 	// 邮箱列表
 	public function lis(){
 		$db = Db::name('email');

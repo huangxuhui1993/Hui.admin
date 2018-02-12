@@ -2,43 +2,58 @@ window.cookie_config = {expires:7, path:'/'};
 $(function(){
     // 全局配置参数
     laydate.skin('molv');
-    toastr.options = {
-        "closeButton": true,
-        "positionClass": "toast-bottom-right",
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "3000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
+    // 桌面应用打开
+    try{ 
+        const {app} = require('electron');
+        log(navigator.platform); // 浏览器的操作系统平台
+        log(navigator.onLine); // 是否联网
+    }catch(e){
+        return;
     }
 });
 
 // log js打印日志
 function log(str){
-    try{  
-        console.log(str);  
+    try{
+        console.log(str);
+        // console.trace();
     }catch(exception){  
         return;  
     }
 }
 
 // 数据加载层
-function loading(msg, flag){
+function loading(msg){
     var config = {
         icon:16,
         area:'auto',
-        shade:0.4,
+        shade:0.1,
         shadeClose:false,
         time:0
     };
-    if(flag == undefined || flag == ''){
-        return window.layer.msg(msg, config);
-    }else{
-        return window.parent.layer.msg(msg, config);
-    }
+    return window.layer.msg(msg, config);
+}
+
+/**
+ * layer_open layer窗口
+ * @param  {string}  url    页面路径
+ * @param  {integer} w      窗口宽
+ * @param  {integer} h      窗口高
+ * @param  {integer} shade  遮罩层透明度
+ * @param  {bool}    maxmin 最大化
+ */
+function layer_open(url, title, w, h, shade, maxmin){
+    var config = {
+        title: title,
+        type: 2,
+        area: [w + 'px', h + 'px'],
+        fixed: true, //不固定
+        maxmin: maxmin,
+        scrollbar: false,
+        shade: shade,
+        content: url
+    };
+    return window.layer.open(config);
 }
 
 /**
@@ -47,11 +62,14 @@ function loading(msg, flag){
  * @param  {integer} w 窗口宽
  * @param  {integer} h 窗口高
  * @param  {integer} r 窗口偏移
+ * window.resizeTo(windowInfo.w, windowInfo.h); // 改变大小
+ * window.onresize = new Function('window.resizeTo(windowInfo.w, windowInfo.h);');
  */
-function open_window(u, w, h, r){
-    var l = (screen.width - w) / 2 - r,
-    t = (screen.height - h) / 2 - r,
-    e = window.open(u, "_blank", "width=" + w + ",height=" + h + ",toolbars=0,resizable=1,left=" + l + ",top=" + t);
+function open_window(u, w, h, r, data){
+    var l = (screen.width - w) / 2 - r;
+    var t = (screen.height - h) / 2 - r;
+    var e = window.open(u, "_blank", "width=" + w + ",height=" + h + ",toolbars=0,resizable=0,left=" + l + ",top=" + t);
+    e.parentData = {w:w,h:h,data:data};
     e.focus();
     return e;
 }
@@ -75,6 +93,11 @@ function render_size(value){
     var size = srcsize / Math.pow(1024, index);
     size = size.toFixed(2); // 保留的小数位数
     return size + unitArr[index];
+}
+
+// 文件上传窗口
+function upload_window(url){
+    layer_open(url, '上传文件', 600, 240, 0.01, false);
 }
 
 /**
@@ -144,13 +167,14 @@ function show_notification(title, msg){
 
 // 确认选择邮箱
 function confirm_email(){
-    var emails = $('#emails').val();
+    var index = parent.layer.getFrameIndex(window.name), // 获取iframe层的索引
+    emails = $('#emails').val();
     if(emails != ''){
-        window.opener.document.getElementById('emails').value = emails;
-        window.opener.document.getElementById('emails-text').innerHTML = 'ID:(' + emails + ')';
-        close_window();
+        parent.document.getElementById('emails').value = emails;
+        parent.document.getElementById('emails-text').innerHTML = 'ID:(' + emails + ')';
+        parent.layer.close(index); // 执行关闭
     }else{
-        toastr.warning('请选择邮箱！');
+        layer.msg('请选择邮箱！');
     }
 }
 
@@ -161,28 +185,41 @@ function email_edit(url, id){
         var remarks = $('#remarks' + id).val();
         $.post(url, {id:id, email:email, remarks:remarks}, function(data){
             log(data);
-            if(data.state == 1){
-                toastr.success(data.msg);
-            }else{
-                toastr.warning(data.msg);
-            }
+            layer.msg(data.msg);
         });
     }else{
-        toastr.warning('参数缺失！');
+        layer.msg('参数缺失！');
     }
+}
+
+// 选择邮箱窗口
+function select_email_window(url){
+    layer_open(url, '邮箱列表', 900, 500, 0.01, false);
+}
+
+// 发送邮件窗口
+function send_email_window(url){
+    layer_open(url, '发送邮件', 900, 660, 0.1, false);
+}
+
+// 文档转换窗口
+function conversion_window(url){
+    layer_open(url, '文档转换', 850, 400, 0.1, false);
+}
+
+// 地图定位窗口
+function positioning_window(url){
+    layer_open(url, '地图定位', 600, 640, 0.1, false);
+}
+
+// 检测网速窗口
+function network_speed_window(url){
+    layer_open(url, '检测网速', 450, 290, 0.1, false);
 }
 
 // 数据表详情
 function table_details(title, url){
-    parent.layer.open({
-        type: 2,
-        title: title,
-        shadeClose: true,
-        shade: false,
-        maxmin: true,
-        area: ['850px', '600px'],
-        content: url
-    });
+    parent.layer_open(url, title, 850, 600, 0.1, true);
 }
 
 // 查看图片
@@ -205,7 +242,7 @@ function see_img(src,title){
 }
 
 // 导出数据
-function export_data(url,title,type){
+function export_data(url, title, type){
     if(url == '' || title == '' || type == ''){
         parent.layer.msg('导出数据参数缺失!',{icon:0,time:1000,offset: '100px',shade: 0.03});
         return false;
@@ -217,9 +254,9 @@ function export_data(url,title,type){
     $.ajax({
         type:"POST",
         url:url,
-        data:"type="+type,
+        data:"type=" + type,
         beforeSend: function(){
-            index = loading('正在导出数据......', 1);
+            index = parent.loading('正在导出数据......');
         },
         success: function(result){
             window.onbeforeunload = '';
@@ -229,12 +266,12 @@ function export_data(url,title,type){
                 return false;   
             }else{
                 parent.layer.open({
-                    title:'导出数据',
+                    title: title,
                     type: 1,
                     skin: 'layui-layer-lan',
                     shadeClose: true,
                     area: ['360px', '160px'],
-                    content: '<div style="width:300px; height:40px; margin:10px; padding:20px;">恭喜，数据导出成功！<a href=\"'+result.file+'\" target="_blank" style="color:#F00">点此下载文件</a></div>'
+                    content: '<div style="width:300px; height:40px; margin:10px; padding:20px;">恭喜，数据导出成功！<a href=\"' + result.file + '\" style="color:#F00">点此下载文件</a></div>'
                 }); 
             }   
         }
@@ -275,7 +312,7 @@ function document_operation(style,msg){
 function add_document(url){
     var cid = $("#cid").val();
     if(cid == ''){
-        parent.toastr.error("请选择栏目！");
+        parent.layer.msg("请选择栏目！");
         return false;
     }else{
         var addform = url+'?cid='+cid;
@@ -284,7 +321,7 @@ function add_document(url){
 }
 
 // 设置信息状态
-function setup_status(url,status){
+function setup_status(url, status){
     var msg = status == 0 ? '确定要启用？':'确定要禁用？';
     parent.layer.msg(msg, {
         time: 0,
@@ -298,12 +335,13 @@ function setup_status(url,status){
 }
 
 // 重定向页面提示信息
-function prompt_window(msg,code){
+function prompt_window(msg, code){
+    var title = "Hui.admin温馨提醒";
     if(code == 'success'){
-        parent.toastr.success(msg);
+        return parent.layer.alert(msg, {title:title, icon: 1, shade:0.1});
     }
     if(code == 'error'){
-        parent.toastr.error(msg);
+        return parent.layer.alert(msg, {title:title, icon: 0, shade:0.1});
     }
 }
 
@@ -341,9 +379,9 @@ function clear_cache(url){
         success: function(result){
             layer.close(index); // 关闭加载层
             if(result.error == 1){
-                toastr.warning('暂无可清除的缓存！');
+                layer.msg('暂无可清除的缓存！');
             }else{
-                toastr.success('缓存清除成功！');
+                layer.msg('缓存清除成功！');
             }
         }
     });
@@ -359,7 +397,7 @@ function backup_db(url,style){
         url: url,
         data:{'style':style},
         beforeSend:function(){
-            index = loading('正在备份...', 1);
+            index = parent.loading('正在备份...');
         },
         success: function(result){
             window.onbeforeunload = '';
@@ -404,7 +442,7 @@ function models_path(url,file){
 
 // 删除信息提示
 function delete_info(url,title){
-    parent.layer.msg('您确定删除'+title+'？', {
+    parent.layer.msg('您确定删除' + title + '？', {
         time: 0,
         offset: '100px',
         btn: ['确定', '取消'],
@@ -459,17 +497,8 @@ function conversion_del(){
 }
 
 // 个人设置窗口
-function personal_window(url,title){
-    layer.open({
-        title: "个人信息",
-        offset: '100px',
-        type: 2,
-        area: ['400px', '310px'],
-        fixed: true, //不固定
-        maxmin: false,
-        scrollbar: false,
-        content: url
-    });
+function personal_window(url, title){
+    layer_open(url, '个人信息', 400, 310, 0.1, false);
 }
 
 /**
@@ -479,12 +508,12 @@ function personal_window(url,title){
  * @param flag 1：可编辑，2：不可编辑
  * @returns {boolean}
  */
-function code_window(url,title,flag){
+function code_window(url, title, flag){
     if(url == '' || title == '' || flag == ''){
-        toastr.error("打开窗口参数缺失！");
+        layer.msg("打开窗口参数缺失！");
         return false;
     }else{
-        open_window(url, 900, 510, 0);
+        parent.layer_open(url, title, 900, 560, 0.1, false);
     }
 }
 
@@ -492,7 +521,7 @@ function code_window(url,title,flag){
 function search(){
     var keywords = $.trim($("#keywords").val());
     if(keywords == ''){
-        parent.toastr.error("请输入搜索内容！");
+        parent.layer.msg("请输入搜索内容！");
         return false;
     }else{
         $("#search").submit();
@@ -507,7 +536,7 @@ function db_statistical(val,src){
         closeBtn: 1,
         area: ['800px', '410px'],
         shadeClose: true,
-        content: '<img src="'+src+'">'
+        content: '<img src="' + src + '">'
     });
 }
 
@@ -550,9 +579,9 @@ function full_screen(obj){
 
 // 检测浏览器是否安装flash
 function flashChecker(){
-    var hasFlash = 0;         //是否安装了flash
-    var flashVersion = 0; //flash版本
-    var isIE = /*@cc_on!@*/0;      //是否IE浏览器
+    var hasFlash = 0,           // 是否安装了flash
+    flashVersion = 0,           // flash版本
+    isIE = /*@cc_on!@*/0;       // 是否IE浏览器
     if(isIE){
         var swf = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
         if(swf){
@@ -578,22 +607,22 @@ function flashChecker(){
 
 // js获取当前时间
 function fnDate(){
-    var oDiv=document.getElementById("real-date");
-    var date=new Date();
-    var year=date.getFullYear(); // 当前年份
-    var month=date.getMonth(); // 当前月份
-    var data=date.getDate(); // 天
-    var hours=date.getHours(); // 小时
-    var minute=date.getMinutes(); // 分
-    var second=date.getSeconds(); // 秒
-    var time=year+"-"+fnW((month+1))+"-"+fnW(data)+" "+fnW(hours)+":"+fnW(minute)+":"+fnW(second);
-    oDiv.innerHTML=time;
+    var oDiv = document.getElementById("real-date"),
+    date = new Date(),
+    year = date.getFullYear(), // 当前年份
+    month = date.getMonth(), // 当前月份
+    data = date.getDate(), // 天
+    hours = date.getHours(), // 小时
+    minute = date.getMinutes(), // 分
+    second = date.getSeconds(); // 秒
+    var time = year + "-" + fnW((month + 1)) + "-" + fnW(data) + " " + fnW(hours) + ":" + fnW(minute) + ":" + fnW(second);
+    oDiv.innerHTML = time;
 }
 
 // 补位当某个字段不是两位数时补0
 function fnW(str){
     var num;
-    str>=10?num=str:num="0"+str;
+    str >= 10 ? num = str : num = "0" + str;
     return num;
 }
 
@@ -601,7 +630,7 @@ function fnW(str){
 function initialize_page(){
     var data = $.cookie("Huimenu");
     if (data != undefined && data != 'null'){
-        var dataObj = eval("("+data+")");
+        var dataObj = eval("(" + data + ")");
         creatIframe(dataObj.href, dataObj.title);
         min_titleList(); 
     }

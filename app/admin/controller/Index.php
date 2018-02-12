@@ -3,6 +3,7 @@ namespace app\admin\controller;
 use app\admin\controller\Base;
 use org\util\HttpCurl;
 use think\Request;
+use think\Config;
 use think\Db;
 
 /**

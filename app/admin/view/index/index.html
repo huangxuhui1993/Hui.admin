@@ -62,11 +62,25 @@ $(function(){
 	// var MessageTimer = $.timerHandler('MessageTimer').time('60s').call(function(count) {
 	// 	message();
 	// }).start();
-	// myTimer.pause(); // 暂停定时器运行
-	// myTimer.start(); // 定时器重新启动
-	// myTimer.call(callback); // 重新注册定时器回调主函数
-	// myTimer.stop(); // 停止(销毁)定时器
 });
+
+// wifi 测试定时器
+var wifitime = $.timerHandler('wifitime').time('5s').call(function(count) {
+	testWifi();
+}).start();
+
+function testWifi() {
+    var startime = new Date();
+    $.get('__ROOT__/wifi.json', {}, function (data){
+        var endtime = new Date();
+        var wifi = endtime.getTime() - startime.getTime();
+        log(wifi);
+        var htmlStr = '<i class="Hui-iconfont">&#xe6ce;</i> <span>' + wifi + 'M/S</span>';
+        $('#js-wifi').show().html(htmlStr);
+    });
+}
+
+testWifi();
 </script>
 </body>
 </html>

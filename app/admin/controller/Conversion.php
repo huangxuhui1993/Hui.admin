@@ -16,6 +16,7 @@ use org\util\Convert;
 class Conversion extends Base{
 
     public function _initialize(){
+        Config::set('app_trace', false);
         // 设置脚本运行时间
         set_time_limit(0);
         ini_set('memory_limit', '512M');

@@ -4,6 +4,7 @@ use think\Controller;
 use think\Request;
 use think\Session;
 use think\Db;
+use think\Config;
 use app\admin\model\User as UserModel;
 
 /**
@@ -14,6 +15,7 @@ use app\admin\model\User as UserModel;
 class Login extends Controller{
 
     public function index(){
+        Config::set('app_trace', false);
         return $this->fetch();
     }
 

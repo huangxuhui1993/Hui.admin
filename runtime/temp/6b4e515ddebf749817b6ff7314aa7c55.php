@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\index\index.html";i:1517842212;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1517758706;s:69:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\header.html";i:1517843879;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\menu.html";i:1517750131;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\index\index.html";i:1518425589;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1518064242;s:69:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\header.html";i:1518421900;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\menu.html";i:1517750131;}*/ ?>
 ﻿<!DOCTYPE HTML>
 <html>
 <head>
@@ -18,7 +18,6 @@
 <link rel="stylesheet" type="text/css" href="__ADMIN__/lib/Hui-iconfont/1.0.8/iconfont.css" />
 <link rel="stylesheet" type="text/css" href="__ADMIN__/h-ui.admin/skin/<?php echo (isset($Huiskin) && ($Huiskin !== '')?$Huiskin:'default'); ?>/skin.css" id="skin" />
 <link rel="stylesheet" type="text/css" href="__ADMIN__/lib/icheck/icheck.css" />
-<link rel="stylesheet" type="text/css" href="__ROOT__/js/toastr/toastr.css" />
 <!--[if IE 6]>
 <script type="text/javascript" src="__ADMIN__/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
 <script>DD_belatedPNG.fix('*');</script>
@@ -34,8 +33,8 @@
 <header class="navbar-wrapper">
 	<div class="navbar navbar-fixed-top">
 		<div class="container-fluid cl"> 
-			<a class="logo navbar-logo f-l mr-10 hidden-xs" href="<?php echo url('index/index'); ?>">Hui.admin</a> 
-			<a class="logo navbar-logo-m f-l mr-10 visible-xs" href="<?php echo url('index/index'); ?>">Hui</a> 
+			<a class="logo navbar-logo f-l mr-10 hidden-xs" href="<?php echo url('index/index?times=' . time()); ?>">Hui.admin</a> 
+			<a class="logo navbar-logo-m f-l mr-10 visible-xs" href="javascript:;">Hui</a> 
 			<span class="logo navbar-slogan f-l mr-10 hidden-xs">v1.0</span> 
 			<a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
 			<nav class="nav navbar-nav">
@@ -43,12 +42,12 @@
 					<li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe63c;</i>  工具 <i class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
 							<li>
-								<a href="javascript:;" onclick="open_window('<?php echo url('Email/send'); ?>', 900, 650, 0);">
+								<a href="javascript:;" onclick="send_email_window('<?php echo url('Email/send'); ?>')">
 									<i class="Hui-iconfont">&#xe68a;</i> 发送邮件
 								</a>
 							</li>
 							<li>
-								<a href="javascript:;" onclick="open_window('<?php echo url('Conversion/index'); ?>', 850, 400, 0);">
+								<a href="javascript:;" onclick="conversion_window('<?php echo url('Conversion/index'); ?>')">
 									<i class="Hui-iconfont">&#xe6ab;</i> 文档转换
 								</a>
 							</li>
@@ -58,18 +57,18 @@
 								</a>
 							</li>
 							<li>
-								<a href="javascript:;" onclick="open_window('<?php echo url('Common/networkSpeed'); ?>', 450, 250, 0);">
+								<a href="javascript:;" onclick="network_speed_window('<?php echo url('Common/networkSpeed'); ?>')">
 									<i class="Hui-iconfont">&#xe682;</i> 检测网速
 								</a>
 							</li>
 							<li>
-								<a href="javascript:;" onclick="open_window('<?php echo url('Common/positioning'); ?>', 600, 580, 0);">
+								<a href="javascript:;" onclick="positioning_window('<?php echo url('Common/positioning'); ?>')">
 									<i class="Hui-iconfont">&#xe671;</i> 地图定位
 								</a>
 							</li>
 							<li>
-								<a href="javascript:;" onclick="open_window('<?php echo url('Common/dotips', ['autoid' => 0]); ?>', 600, 210, 0);">
-									<i class="Hui-iconfont">&#xe654;</i> 分步操作
+								<a href="<?php echo url('Common/shortcut'); ?>">
+									<i class="Hui-iconfont">&#xe640;</i> 快捷方式
 								</a>
 							</li>
 						</ul>
@@ -82,7 +81,7 @@
 
 					<li><?php echo get_user_role(session('uid')); ?></li>
 					
-					<li class="dropDown dropDown_hover"> <a href="#" class="dropDown_A"><i class="Hui-iconfont f-16">&#xe60d;</i> <?php echo session('uname'); ?> <i class="Hui-iconfont">&#xe6d5;</i></a>
+					<li class="dropDown dropDown_hover"> <a href="#" class="dropDown_A"><i class="Hui-iconfont f-16">&#xe60d;</i> <?php echo $session_uname; ?> <i class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
 							<li>
 								<a href="javascript:;" onclick="clear_cache('<?php echo url('Ajax/clearcache'); ?>')">清除缓存</a>
@@ -230,7 +229,6 @@
         <script type="text/javascript" src="__ADMIN__/h-ui/js/H-ui.min.js"></script>
         <script type="text/javascript" src="__ADMIN__/h-ui.admin/js/H-ui.admin.js"></script>
         <script type="text/javascript" src="__ADMIN__/lib/icheck/jquery.icheck.min.js"></script>
-        <script type="text/javascript" src="__ROOT__/js/toastr/toastr.js"></script>
         <script type="text/javascript" src="__ADMIN__/h-ui.admin/js/admin.js"></script>
 
 <!--请在下方写此页面业务相关的脚本-->
@@ -257,11 +255,25 @@ $(function(){
 	// var MessageTimer = $.timerHandler('MessageTimer').time('60s').call(function(count) {
 	// 	message();
 	// }).start();
-	// myTimer.pause(); // 暂停定时器运行
-	// myTimer.start(); // 定时器重新启动
-	// myTimer.call(callback); // 重新注册定时器回调主函数
-	// myTimer.stop(); // 停止(销毁)定时器
 });
+
+// wifi 测试定时器
+var wifitime = $.timerHandler('wifitime').time('5s').call(function(count) {
+	testWifi();
+}).start();
+
+function testWifi() {
+    var startime = new Date();
+    $.get('__ROOT__/wifi.json', {}, function (data){
+        var endtime = new Date();
+        var wifi = endtime.getTime() - startime.getTime();
+        log(wifi);
+        var htmlStr = '<i class="Hui-iconfont">&#xe6ce;</i> <span>' + wifi + 'M/S</span>';
+        $('#js-wifi').show().html(htmlStr);
+    });
+}
+
+testWifi();
 </script>
 </body>
 </html>

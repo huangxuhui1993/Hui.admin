@@ -171,13 +171,14 @@ function delete_file(id){
 
 // 确认添加文件
 function confirm_add(){
+    var index = parent.layer.getFrameIndex(window.name); // 获取iframe层的索引
     if(uploadJson != ''){
     	window.onbeforeunload = '';
-        window.opener.document.getElementById('{$tag}').value = uploadJson.id;
-        window.opener.layer.msg('文件：' + uploadJson.name + '，已添加！', {icon:1, time:2500, shade: 0.03});
-        close_window();
+        parent.$('#{$tag}').val(uploadJson.id);
+        parent.layer.msg('文件：' + uploadJson.name + '，已添加！', {icon:1, time:2000, shade: 0.03});
+        parent.layer.close(index); // 执行关闭
     }else{
-        toastr.warning('请上传文件！');
+        layer.msg('请上传文件！');
     }
 }
 </script> 

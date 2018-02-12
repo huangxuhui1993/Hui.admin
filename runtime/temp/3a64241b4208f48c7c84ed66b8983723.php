@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\login\index.html";i:1517758456;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\login\index.html";i:1518421651;}*/ ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -54,14 +54,15 @@
             </div>
         </div>
     </div>
+    
     	<!-- Tag标签加载js -->
         <script type="text/javascript" src="__ROOT__/js/layer/layer.js"></script>
         <script type="text/javascript" src="__ROOT__/js/laydate/laydate.js"></script>
         <script type="text/javascript" src="__ADMIN__/h-ui/js/H-ui.min.js"></script>
         <script type="text/javascript" src="__ADMIN__/h-ui.admin/js/H-ui.admin.js"></script>
         <script type="text/javascript" src="__ADMIN__/lib/icheck/jquery.icheck.min.js"></script>
-        <script type="text/javascript" src="__ROOT__/js/toastr/toastr.js"></script>
         <script type="text/javascript" src="__ADMIN__/h-ui.admin/js/admin.js"></script>
+
 <script type="text/javascript">
 	// 登陆表单获取焦点变色
 	$(".login-form").on("focus", "input", function(){
@@ -80,11 +81,11 @@
 
 	$("form").submit(function(){
 		var self = $(this);
-		$.post(self.attr("action"), self.serialize(),success,"json");
+		$.post(self.attr("action"), self.serialize(), success, "json");
 		return false;
 		function success(data){
-			if(data.status){
-				window.location.href = data.url;
+    		if(data.status){
+                window.location.href = data.url;
 			}else{
 				self.find(".check-tips").text(data.info);
 				// 刷新验证码
@@ -99,10 +100,10 @@
 		// 刷新验证码
 		var verifyimg = $(".verifyimg").attr("src");
         $(".reloadverify").click(function(){
-            if( verifyimg.indexOf('?')>0){
-                $(".verifyimg").attr("src", verifyimg+'&random='+Math.random());
+            if( verifyimg.indexOf('?') > 0){
+                $(".verifyimg").attr("src", verifyimg + '&random=' + Math.random());
             }else{
-                $(".verifyimg").attr("src", verifyimg.replace(/\?.*$/,'')+'?'+Math.random());
+                $(".verifyimg").attr("src", verifyimg.replace(/\?.*$/,'') + '?' + Math.random());
             }
         });
 
@@ -142,7 +143,7 @@
             msie: /msie/.test( userAgent ) && !/opera/.test( userAgent ),
             mozilla: /mozilla/.test( userAgent ) && !/(compatible|webkit)/.test( userAgent )
         }; 
-        if(jQuery.browser.version=='9.0'||jQuery.browser.version=='8.0'||jQuery.browser.version=='7.0'){
+        if(jQuery.browser.version == '9.0' || jQuery.browser.version == '8.0' || jQuery.browser.version == '7.0'){
             $('#SBIE').show();
         }     
     } 

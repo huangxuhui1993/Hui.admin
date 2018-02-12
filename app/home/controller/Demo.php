@@ -8,7 +8,7 @@ use org\util\HttpCurl;
 
 class Demo extends Controller{
 
-	public function timer(){
+	public function pjax(){
 		return $this->fetch();
 	}
 

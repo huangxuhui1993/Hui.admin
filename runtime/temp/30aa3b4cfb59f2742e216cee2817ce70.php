@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:69:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\index\welcome.html";i:1516179008;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1517758706;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:69:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\index\welcome.html";i:1517975978;s:67:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\meta.html";i:1518064242;}*/ ?>
 ﻿<!DOCTYPE HTML>
 <html>
 <head>
@@ -18,7 +18,6 @@
 <link rel="stylesheet" type="text/css" href="__ADMIN__/lib/Hui-iconfont/1.0.8/iconfont.css" />
 <link rel="stylesheet" type="text/css" href="__ADMIN__/h-ui.admin/skin/<?php echo (isset($Huiskin) && ($Huiskin !== '')?$Huiskin:'default'); ?>/skin.css" id="skin" />
 <link rel="stylesheet" type="text/css" href="__ADMIN__/lib/icheck/icheck.css" />
-<link rel="stylesheet" type="text/css" href="__ROOT__/js/toastr/toastr.css" />
 <!--[if IE 6]>
 <script type="text/javascript" src="__ADMIN__/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
 <script>DD_belatedPNG.fix('*');</script>
@@ -33,9 +32,9 @@
 	<div class="panel panel-default">
 		<div class="panel-body">
 			<p class="f-20 text-success">欢迎使用Hui.admin v1.0管理系统！</p>
-			<p><i class="Hui-iconfont">&#xe728;</i> 运行天数：<?php echo site_run_time(); ?>天</p>
+			<p><i class="Hui-iconfont">&#xe728;</i> 运行时间：<?php echo site_run_time(); ?></p>
 			<p><i class="Hui-iconfont">&#xe668;</i> <?php echo time_tips(); ?></p>
-			<p><i class="Hui-iconfont">&#xe671;</i> 上次登录IP：<?php echo session('loginip'); ?>　　<i class="Hui-iconfont">&#xe606;</i> 上次登录时间：<?php echo date('Y-m-d H:i:s',session('logintime')); ?>　　<i class="Hui-iconfont">&#xe64b;</i> 登录次数：<?php echo $user_info['loginnumber']; ?></p>
+			<p><i class="Hui-iconfont">&#xe671;</i> 上次登录IP：<?php echo $session_loginip; ?>　　<i class="Hui-iconfont">&#xe606;</i> 上次登录时间：<?php echo date('Y-m-d H:i:s', $session_logintime); ?>　　<i class="Hui-iconfont">&#xe64b;</i> 登录次数：<?php echo get_user_info($session_uid)['loginnumber']; ?></p>
 		</div>
 	</div>
 

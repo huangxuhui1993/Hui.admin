@@ -16,6 +16,8 @@
     <div class="box">
         <div id="show-speed"></div>
         <script type="text/javascript">
+            window.onresize = new Function('window.resizeTo(450, 250);'); // 禁止改变窗口大小
+
             document.getElementById("show-speed").innerHTML = "正在下载测速图片，请稍后...";
             var Rand = Math.random();
             var RandNum = 1 + Math.round(Rand * 1000);
@@ -30,8 +32,8 @@
                 var kb_speed = Math.round(alltime * Lnum) / Lnum;
                 var mb_speed = Math.round(kb_speed / 128 * Lnum) / Lnum;
                 document.getElementById("show-speed").innerHTML = "您的下载速度为：" + kb_speed + " （KB/秒）  约 " + mb_speed + "（MB/秒）";
-                window.opener.document.getElementById("js-wifi").children[1].innerHTML = mb_speed + "M/S";
-                window.opener.document.getElementById("js-wifi").style.display = "block";
+                window.parent.document.getElementById("js-wifi").children[1].innerHTML = mb_speed + "M/S";
+                window.parent.document.getElementById("js-wifi").style.display = "block";
             }
         </script>
         <div>单位换算：宽带512kbps=64k/s&nbsp;&nbsp;1M=128k/s&nbsp;&nbsp;2M=256k/s。</div>

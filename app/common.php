@@ -5,7 +5,6 @@ use think\Config;
 use think\Session;
 use think\Request;
 use think\Response;
-use think\Debug;
 use org\util\HttpCurl;
 use app\admin\model\Attach;
 use app\admin\model\Channel;
@@ -249,22 +248,23 @@ function download_shortcut($filename = '', $url = '', $icon = ''){
         $shortCut .= "Prop3=19,2\r\n";
         $shortCut .= "URL={$url}\r\n";
         if(!empty($icon)){
-            $shortCut .= "IconFile={$icon}";
+            $shortCut .= "IconFile={$icon}\r\n";
+            $shortCut .= "IconIndex=1";
         }
 
-        header("content-type:application/octet-stream");
+        header("Content-Type:application/octet-stream;charset=utf8");
 
         // 获取用户浏览器
         $user_agent = $_SERVER['HTTP_USER_AGENT'];
-        $encode_filename = rawurlencode($filename);
 
         // 不同浏览器使用不同编码输出
         if(preg_match("/MSIE/", $user_agent)){
-            header('content-disposition:attachment; filename="' . $encode_filename . '"');
+            $encode_filename = rawurlencode($filename);
+            header('Content-Disposition:attachment; filename="' . $encode_filename . '"');
         }elseif(preg_match("/Firefox/", $user_agent)){
-            header("content-disposition:attachment; filename*=\"utf8''" . $filename . '"');
+            header("Content-Disposition:attachment; filename*=\"utf8''" . $filename . '"');
         }else{
-            header('content-disposition:attachment; filename="' . $filename . '"');
+            header('Content-Disposition:attachment; filename="' . $filename . '"');
         }
         echo $shortCut;
     }else{
@@ -312,7 +312,7 @@ function site_run_time(){
 }
 
 /**
- * second_to_time 将秒数转换为时间（年、天、小时、分、秒）
+ * second_to_time 将秒数转换为时间（年、天、时、分、秒）
  * @param  integer $time 秒数
  * @return string
  */
@@ -336,7 +336,7 @@ function second_to_time($time = 0){
             $time = ($time % 60);
         }
         $value['seconds'] = floor($time);
-        return $value['days'] . '天' . $value['hours'] . '小时' . $value['minutes'] . '分' . $value['seconds'] . '秒';
+        return $value['years'] . '年' . $value['days'] . '天' . $value['hours'] . '小时' . $value['minutes'] . '分' . $value['seconds'] . '秒';
     }else{
         return false;
     }

@@ -1,8 +1,8 @@
 <header class="navbar-wrapper">
 	<div class="navbar navbar-fixed-top">
 		<div class="container-fluid cl"> 
-			<a class="logo navbar-logo f-l mr-10 hidden-xs" href="{:url('index/index')}">Hui.admin</a> 
-			<a class="logo navbar-logo-m f-l mr-10 visible-xs" href="{:url('index/index')}">Hui</a> 
+			<a class="logo navbar-logo f-l mr-10 hidden-xs" href="{:url('index/index?times=' . time())}">Hui.admin</a> 
+			<a class="logo navbar-logo-m f-l mr-10 visible-xs" href="javascript:;">Hui</a> 
 			<span class="logo navbar-slogan f-l mr-10 hidden-xs">v1.0</span> 
 			<a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
 			<nav class="nav navbar-nav">
@@ -10,12 +10,12 @@
 					<li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe63c;</i>  工具 <i class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
 							<li>
-								<a href="javascript:;" onclick="open_window('{:url('Email/send')}', 900, 650, 0);">
+								<a href="javascript:;" onclick="send_email_window('{:url('Email/send')}')">
 									<i class="Hui-iconfont">&#xe68a;</i> 发送邮件
 								</a>
 							</li>
 							<li>
-								<a href="javascript:;" onclick="open_window('{:url('Conversion/index')}', 850, 400, 0);">
+								<a href="javascript:;" onclick="conversion_window('{:url('Conversion/index')}')">
 									<i class="Hui-iconfont">&#xe6ab;</i> 文档转换
 								</a>
 							</li>
@@ -25,18 +25,18 @@
 								</a>
 							</li>
 							<li>
-								<a href="javascript:;" onclick="open_window('{:url('Common/networkSpeed')}', 450, 250, 0);">
+								<a href="javascript:;" onclick="network_speed_window('{:url('Common/networkSpeed')}')">
 									<i class="Hui-iconfont">&#xe682;</i> 检测网速
 								</a>
 							</li>
 							<li>
-								<a href="javascript:;" onclick="open_window('{:url('Common/positioning')}', 600, 580, 0);">
+								<a href="javascript:;" onclick="positioning_window('{:url('Common/positioning')}')">
 									<i class="Hui-iconfont">&#xe671;</i> 地图定位
 								</a>
 							</li>
 							<li>
-								<a href="javascript:;" onclick="open_window('{:url('Common/dotips', ['autoid' => 0])}', 600, 210, 0);">
-									<i class="Hui-iconfont">&#xe654;</i> 分步操作
+								<a href="{:url('Common/shortcut')}">
+									<i class="Hui-iconfont">&#xe640;</i> 快捷方式
 								</a>
 							</li>
 						</ul>
@@ -49,7 +49,7 @@
 
 					<li>{:get_user_role(session('uid'))}</li>
 					
-					<li class="dropDown dropDown_hover"> <a href="#" class="dropDown_A"><i class="Hui-iconfont f-16">&#xe60d;</i> {:session('uname')} <i class="Hui-iconfont">&#xe6d5;</i></a>
+					<li class="dropDown dropDown_hover"> <a href="#" class="dropDown_A"><i class="Hui-iconfont f-16">&#xe60d;</i> {$session_uname} <i class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
 							<li>
 								<a href="javascript:;" onclick="clear_cache('{:url('Ajax/clearcache')}')">清除缓存</a>

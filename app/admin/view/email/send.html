@@ -9,7 +9,7 @@
 		<div class="row cl">
 			<label class="form-label col-xs-2">选择邮箱：</label>
 			<div class="formControls col-xs-10">
-				<a href="javascript:;" onclick="open_window('{:url('Email/lis')}', 900, 500, 0);" class="btn btn-success radius size-M">
+				<a href="javascript:;" onclick="select_email_window('{:url('Email/lis')}')" class="btn btn-success radius size-M">
 					<i class="Hui-iconfont">&#xe667;</i> 邮箱列表
 				</a>
 				<input type="hidden" name="emails" id="emails">
@@ -27,7 +27,7 @@
 		<div class="row cl">
 			<label class="form-label col-xs-2">上传附件：</label>
 			<div class="formControls col-xs-10">
-				<a href="javascript:;" class="btn btn-secondary radius size-M" onclick="open_window('{:url('Common/uploadPage', ['type' => 'attach', 'tag' => 'aid'])}', 600, 170, 0);">
+				<a href="javascript:;" class="btn btn-secondary radius size-M" onclick="upload_window('{:url('Common/uploadPage', ['type' => 'attach', 'tag' => 'aid'])}')">
 					<i class="Hui-iconfont">&#xe642;</i> 上传文件
 				</a>
 				<input type="text" class="input-text radius width-50" name="aid" id="aid" placeholder="ID" readonly>
@@ -82,10 +82,10 @@ $(document).ready(function(){
 				type: 'post',
 				url: "{:url('Email/send')}",
                 beforeSend:function(){
-                    index = loading('邮件正在发送中......');
+                    index = parent.loading('邮件正在发送中......');
                 },
 				success: function(result){
-                    layer.close(index); // 关闭加载层
+                    parent.layer.close(index); // 关闭加载层
 					if(result.error == 0){
 						layer.msg('邮件发送成功!');
 						$("#title").val("");

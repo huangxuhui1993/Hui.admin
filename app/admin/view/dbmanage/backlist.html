@@ -45,7 +45,7 @@
 							<span class="label label-success radius"><i class="Hui-iconfont">&#xe709;</i> {$vo.filename}</span>
 						</a>
                     </td>
-                    <td>{:get_username($vo.uid)}</td>
+                    <td>{:get_user_info($vo.uid)['username']}</td>
                     <td align="center">{:date('Y-m-d H:i:s',$vo['create_time'])}</td>
                     <td class="f-14">
                         <a title="恢复备份" href="" data-toggle="tooltip" data-placement="top">

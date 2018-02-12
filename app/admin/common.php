@@ -115,14 +115,14 @@ function delete_export($id = 0){
 }
 
 /**
- * get_username 获取管理员账号
+ * get_user_info 获取管理员账号
  * @param  integer $uid 用户ID
  * @return string
  */
-function get_username($uid = 0){
+function get_user_info($uid = 0){
     if(!empty($uid) && is_numeric($uid)){
         $result = User::get($uid);
-        return $result ? $result['username'] : '未知';
+        return $result ? $result: false;
     }else{
         return false;
     }
@@ -165,9 +165,5 @@ function breadcrumb($arr = []){
  * @return boolean
  */
 function is_login(){
-    if(Session::has('uid') && Session::has('uname')){
-        return true;
-    }else{
-        return false;
-    }
+    return Session::has('uid') && Session::has('uname') ? true : false;
 }
