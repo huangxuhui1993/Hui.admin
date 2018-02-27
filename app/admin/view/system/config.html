@@ -25,15 +25,14 @@
 		<table class="table table-border table-bordered table-hover table-bg table-sort">
 			<thead>
 				<tr class="text-c">
-					<th width="80">ID</th>
+					<th width="40">ID</th>
 					<th width="150">标识</th>
 					<th width="150">名称</th>
 					<th width="100">类型</th>
 					<th width="100">分组</th>
 					<th width="150">添加时间</th>
-					<th width="150">更新时间</th>
 					<th width="100">状态</th>
-					<th width="100">排序</th>
+					<th>排序</th>
 					<th width="150">操作</th>
 				</tr>
 			</thead>
@@ -46,9 +45,10 @@
 					<td>{$vo.type}</td>
 					<td>{$vo.group}</td>
 					<td>{$vo.create_time}</td>
-					<td>{$vo.update_time}</td>
 					<td>{$vo.status}</td>
-					<td><span class="badge badge-secondary radius">{$vo.sort}</span></td>
+                    <td class="width-50">
+	                	<input type="text" value="{$vo.sort}" alt="{$vo.id}" onchange="sorting('{:url('System/sorting')}', this)" class="text-c input-text radius">
+	                </td>
 					<td class="f-14">
 						<a title="编辑" href="{:url('System/edit',['id'=>$vo['id']])}" data-toggle="tooltip" data-placement="top">
 							<i class="Hui-iconfont">&#xe6df;</i>

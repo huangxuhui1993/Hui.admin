@@ -4,14 +4,7 @@ use think\Db;
 use think\Request;
 use think\Config;
 use think\Session;
-use app\admin\model\User;
-use app\admin\model\Attach;
-use app\admin\model\Convert;
-use app\admin\model\Export;
-use app\admin\model\AuthGroup;
-use app\admin\model\AuthGroupAccess;
-use app\admin\model\Channel;
-use app\admin\model\Models;
+use auth\Auth;
 
 /**
  * delete_model_data 删除文档自定义数据
@@ -22,12 +15,12 @@ use app\admin\model\Models;
 function delete_model_data($cid = 0,$id = 0){
     $bool = !empty($cid) && !empty($id) && is_numeric($cid) && is_numeric($id) ? true : false;
     if($bool){
-        $result = Channel::get($cid);
-        if($result){
-            $mrs = Models::get($result['model']);
-            if($mrs){
-                model($mrs['table'])->where(['aid' => $id])->delete();
-                return true;
+        $cres = Db::name('channel')->field('model')->where('id', $cid)->find();
+        if($cres){
+            $mres = Db::name('models')->field('table')->where('id', $cres['model'])->find();
+            if($mres){
+                $dres = model($mres['table'])->where(['aid' => $id])->delete();
+                return $dres ? true : false;
             }else{
                 return false;
             }
@@ -44,24 +37,25 @@ function delete_model_data($cid = 0,$id = 0){
  */
 function delete_file($id = 0){
     if(!empty($id) && is_numeric($id)){
-        $db = Attach::get($id);
-        if($db){
-            $url = HUI_FILES . $db->url;
+        $db = Db::name('attach');
+        $result = $db->field('url,thumb')->where('id', $id)->find();
+        if($result){
+            $url = HUI_FILES . $result['url'];
             // 删除文件
             if(is_file($url)){
                 chmod($url, 0777);
                 unlink($url);
             }
             // 删除缩略图
-            if(!empty($db->thumb)){
-                $thumb = HUI_FILES . $db->thumb;
+            if(!empty($result['thumb'])){
+                $thumb = HUI_FILES . $result['thumb'];
                 if(is_file($thumb)){
                     chmod($thumb, 0777);
                     unlink($thumb);
                 }
             }
             // 删除文件数据
-            return $db->delete() ? true : false;
+            return $db->where('id', $id)->delete() ? true : false;
         }
     }else{
         return false;
@@ -75,16 +69,16 @@ function delete_file($id = 0){
  */
 function delete_conversion($id = 0){
     if(!empty($id) && is_numeric($id)){
-        $db = Convert::get($id);
-        if($db){
+        $db = Db::name('convert');
+        $result = $db->field('url')->where('id', $id)->find();
+        if($result){
             // 删除文件
-            $url = HUI_FILES . $db->url;
+            $url = HUI_FILES . $result['url'];
             if(is_file($url)){
                 chmod($url, 0777);
                 unlink($url);
             }
-            $result = $db->delete();
-            return $result ? true : false;
+            return $db->where('id', $id)->delete() ? true : false;
         }
     }else{
         return false;
@@ -98,16 +92,16 @@ function delete_conversion($id = 0){
  */
 function delete_export($id = 0){
     if(!empty($id) && is_numeric($id)){
-        $db = Export::get($id);
-        if($db){
+        $db = Db::name('export');
+        $result = $db->field('url')->where('id', $id)->find();
+        if($result){
             // 删除文件
-            $url = HUI_FILES . $db->url;
+            $url = HUI_FILES . $result['url'];
             if(is_file($url)){
                 chmod($url, 0777);
                 unlink($url);
             }
-            $result = $db->delete();
-            return $result ? true : false;
+            return $db->where('id', $id)->delete() ? true : false;
         }
     }else{
         return false;
@@ -121,7 +115,7 @@ function delete_export($id = 0){
  */
 function get_user_info($uid = 0){
     if(!empty($uid) && is_numeric($uid)){
-        $result = User::get($uid);
+        $result = Db::name('user')->where('id', $uid)->find();
         return $result ? $result: false;
     }else{
         return false;
@@ -129,14 +123,14 @@ function get_user_info($uid = 0){
 }
 
 /**
- * get_user_role 获取管理员角色
+ * get_user_role 获取管理员角色名称
  * @param  integer $uid 管理员ID
  * @return string
  */
 function get_user_role($uid = 0){
     if(!empty($uid) && is_numeric($uid)){
-        $result = AuthGroupAccess::getByUid($uid);
-        $auth_group = AuthGroup::get($result['group_id']);
+        $result = Db::name('auth_group_access')->where('uid', $uid)->find();
+        $auth_group = Db::name('auth_group')->where('id', $result['group_id'])->find();
         return $auth_group['title'];
     }else{
         return false;
@@ -165,5 +159,23 @@ function breadcrumb($arr = []){
  * @return boolean
  */
 function is_login(){
-    return Session::has('uid') && Session::has('uname') ? true : false;
+    $bool = Session::has('uid') && Session::has('uname');
+    return $bool ? true : false;
+}
+
+/**
+ * get_auth 权限控制函数
+ * @param    string     $name     需要验证的规则列表,支持逗号分隔的权限规则或索引数组
+ * @param    boolean    $relation 如果为 'or' 表示满足任一条规则即通过验证;如果为 'and'则表示需满足所有规则才能通过验证
+ * @return   boolean    通过验证返回true; 失败返回false
+ */
+function get_auth($name = '', $relation = 'or'){
+    if(!empty($name)){
+        $uid = Session::get('uid');
+        $auth = new Auth();
+        $result = $auth->check($name, $uid, $relation);
+        return $result ? true :false;
+    }else{
+        return false;
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 return [
-	'app_trace'              => true,
+	'app_trace'              => false,
 
     // 系统表
     'tables_list' => 'addons|attach|auth_group|auth_group_access|auth_rule|backup|channel|config|convert|doc|document|export|fields|hooks|logs|map_statistics|models|user',

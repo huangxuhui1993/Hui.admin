@@ -54,12 +54,15 @@
 				</div>
 			</div>
 			{/volist}
-
-			<div class="row cl">
-				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
-					<button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存更新</button>
+			
+			{if condition="get_auth('System/websetup/submit/group/' . $group)"}
+				<div class="row cl">
+					<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+						<button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存更新</button>
+					</div>
 				</div>
-			</div>
+			{/if}
+
 		</div>
 	</form>
 </div>
@@ -67,17 +70,7 @@
 {tag:adminjs /}
 
 <!--请在下方写此页面业务相关的脚本-->
-{tag:validatejs /}
 
-<script type="text/javascript">
-$(function(){
-	$('.skin-minimal input').iCheck({
-		checkboxClass: 'icheckbox-blue',
-		radioClass: 'iradio-blue',
-		increaseArea: '20%'
-	});
-});
-</script>
 <!--/请在上方写此页面业务相关的脚本-->
 </body>
 </html>

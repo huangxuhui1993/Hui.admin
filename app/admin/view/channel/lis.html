@@ -7,13 +7,17 @@
 	<a class="refresh btn btn-success radius r" href="javascript:location.reload(true);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
 </nav>
 <div class="page-container">
-	<div class="cl pd-5 bg-1 bk-gray radius">
-		<span class="l">
-			<a class="btn btn-primary radius" href="{:url('Channel/add')}" >
-				<i class="Hui-iconfont">&#xe600;</i> 添加栏目
-			</a>
-		</span>
-	</div>
+
+	{if condition="get_auth('Channel/add')"}
+		<div class="cl pd-5 bg-1 bk-gray radius">
+			<span class="l">
+				<a class="btn btn-primary radius" href="{:url('Channel/add')}" >
+					<i class="Hui-iconfont">&#xe600;</i> 添加栏目
+				</a>
+			</span>
+		</div>
+	{/if}
+
 	<div class="mt-20">
 		{include file="public/redirect" /}
 		<table class="table table-border table-bordered table-hover table-bg table-sort radius">
@@ -33,26 +37,46 @@
 			{volist name="list" id="vo" empty="$empty_str"}
 				<tr>
                     <td class="text-c">{$vo.id}</td>
-                    <td>{eq name="vo.pid" value="0"}<span class="label label-success radius">{$vo.cname}</span>{else/}{$vo.cname}{/eq}</td>
-                    <td class="text-c">{empty name="vo.mname"}— —{else /}{$vo.mname}{/empty}</td>
+                    <td>
+                    	{eq name="vo.pid" value="0"}
+                    		<span class="label label-success radius">{$vo.cname}</span>
+			            {else/}
+			                {$vo.cname}
+			            {/eq}
+			        </td>
+                    <td class="text-c">
+	                    {empty name="vo.mname"}— —{else /}{$vo.mname}{/empty}
+	                </td>
                     <td class="text-c">{$vo.model|get_model_name}</td>
-                    <td class="text-c">{$vo.sorting}</td>
+					<td class="width-50 text-c">
+	                	<input type="text" value="{$vo.sorting}" alt="{$vo.id}" onchange="sorting('{:url('Channel/sorting')}', this)" class="text-c input-text radius">
+	                </td>
                     <td class="text-c">{$vo.update_time}</td>
                     <td class="text-c">{$vo.status.1}</td>
                     <td class="text-c f-14">
-						<a onclick="setup_status('{:url('Channel/channelStatus',['id'=>$vo['id'],'status'=>$vo['status']['2']])}','{$vo.status.2}')" href="javascript:;" title="状态" data-toggle="tooltip" data-placement="top">
-							{eq name="vo.status.2" value="1"}
-								<i class="Hui-iconfont">&#xe631;</i>
-							{else /}
-								<i class="Hui-iconfont">&#xe615;</i>
-							{/eq}
-						</a>
-						<a title="编辑" href="{:url('Channel/edit',['id'=>$vo['id']])}" class="ml-15" data-toggle="tooltip" data-placement="top">
-							<i class="Hui-iconfont">&#xe6df;</i>
-						</a>
-						<a title="删除" href="javascript:;" onclick="delete_info('{:url('Channel/del',['id'=>$vo['id']])}','栏目')" class="ml-15" data-toggle="tooltip" data-placement="top">
-							<i class="Hui-iconfont">&#xe6e2;</i>
-						</a>
+
+                    	{if condition="get_auth('Channel/channelStatus')"}
+							<a onclick="setup_status('{:url('Channel/channelStatus',['id'=>$vo['id'],'status'=>$vo['status']['2']])}','{$vo.status.2}')" href="javascript:;" title="状态" data-toggle="tooltip" data-placement="top">
+								{eq name="vo.status.2" value="1"}
+									<i class="Hui-iconfont">&#xe631;</i>
+								{else /}
+									<i class="Hui-iconfont">&#xe615;</i>
+								{/eq}
+							</a>
+						{/if}
+
+						{if condition="get_auth('Channel/edit')"}
+							<a title="编辑" href="{:url('Channel/edit',['id'=>$vo['id']])}" class="ml-15" data-toggle="tooltip" data-placement="top">
+								<i class="Hui-iconfont">&#xe6df;</i>
+							</a>
+						{/if}
+
+						{if condition="get_auth('Channel/del')"}
+							<a title="删除" href="javascript:;" onclick="delete_info('{:url('Channel/del',['id'=>$vo['id']])}','栏目')" class="ml-15" data-toggle="tooltip" data-placement="top">
+								<i class="Hui-iconfont">&#xe6e2;</i>
+							</a>
+						{/if}
+
 					</td>
 				</tr>
 			{/volist}

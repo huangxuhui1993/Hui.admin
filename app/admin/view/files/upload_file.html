@@ -21,11 +21,15 @@
 		</form>
 	</div>
 	<div class="cl pd-5 bg-1 bk-gray mt-20">
-		<span class="l">
-			<a class="btn btn-success radius" href="javascript:;" onclick="delete_info('{:url('Files/cleanFile')}','垃圾文件')">
-				<i class="Hui-iconfont">&#xe6e2;</i> 清理垃圾文件
-			</a>
-		</span>
+
+		{if condition="get_auth('Files/cleanFile')"}
+			<span class="l">
+				<a class="btn btn-success radius" href="javascript:;" onclick="delete_info('{:url('Files/cleanFile')}','垃圾文件')">
+					<i class="Hui-iconfont">&#xe6e2;</i> 清理垃圾文件
+				</a>
+			</span>
+		{/if}
+
 		<span class="r va-m">
 			总数：<span class="badge badge-default radius mr-10">{$count}</span>
 			使用中：<span class="badge badge-success radius mr-10">{$ycount}</span>
@@ -47,9 +51,13 @@
 							</div>
 						</a>
 						<div class="textbox f-18">
-							<a title="删除" href="javascript:;" onclick="delete_file('{$vo.id}')" data-toggle="tooltip" data-placement="top">
-								<i class="Hui-iconfont">&#xe6e2;</i>
-							</a>
+
+							{if condition="get_auth('Files/deleteFile')"}
+								<a title="删除" href="javascript:;" onclick="delete_file('{$vo.id}')" data-toggle="tooltip" data-placement="top">
+									<i class="Hui-iconfont">&#xe6e2;</i>
+								</a>
+							{/if}
+
 							<a title="详情" href="javascript:;" class="ml-10" onclick="tips('文件类型：{$vo.type|get_file_type}<br>原文件名称：{$vo.title}<br>大小：{$vo.size|truesize}<br>上传时间：{$vo.create_time}','tips{$vo.id}')" data-toggle="tooltip" data-placement="top">
 								<i class="Hui-iconfont">&#xe695;</i>
 							</a>

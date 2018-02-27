@@ -6,10 +6,7 @@ use think\Session;
 use think\Request;
 use think\Response;
 use org\util\HttpCurl;
-use app\admin\model\Attach;
 use app\admin\model\Channel;
-use app\admin\model\Models;
-use app\common\model\Document;
 
 // 上传导出文件路径常量
 define('HUI_FILES', ROOT_PATH . 'public' . DS . Config::get('hui_files_path') . DS);
@@ -697,22 +694,16 @@ function get_file_url($id = 0, $picUrl = '', $thumb = false){
     if(empty($id) || !is_numeric($id)){
         return $attUrl;
     }else{
-        $db = new Attach();
-        $hui_files_path = Config::get('hui_files_path');
-        $result = $db->field('url,thumb')->where(['id' => $id])->find();
+        $hui_files_path = '/' . Config::get('hui_files_path') . '/';
+        $result = Db::name('attach')->field('url,thumb')->where('id', $id)->find();
         if($result){
-            unset($attUrl);
             if($thumb){
-                if($result['thumb'] != ''){
-                    $attUrl = "/{$hui_files_path}/" . $result['thumb'];
-                }else{
-                    $attUrl = "/{$hui_files_path}/" . $result['url'];
-                }
+                $attUrl =  empty($result['thumb']) ? $result['url'] : $result['thumb'];
             }else{
-                $attUrl = "/{$hui_files_path}/" . $result['url'];
+                $attUrl = $result['url'];
             }
         }
-        return $attUrl;
+        return $hui_files_path . $attUrl;
     }
 }
 
@@ -769,7 +760,7 @@ function get_channel_model($cid = 0){
         if($channel['model'] == -1){
             return false;
         }else{
-            $result = Models::get($channel['model']);
+            $result = Db::name('models')->where('id', $channel['model'])->find();
             return $result ? $result : false;
         }
     }else{
@@ -803,9 +794,8 @@ function get_channel_model_name($cid = 0){
  */
 function get_channel_document_count($cid = 0){
     if(!empty($cid) && is_numeric($cid)){
-        $model = new Document();
-        $result = $model->where('cid', $cid)->count();
-        return $result ? $result : 0;
+        $count = Db::name('document')->where('cid', $cid)->count();
+        return $count ? $count : 0;
     }else{
         return false;
     }
@@ -820,7 +810,7 @@ function get_model_name($mid){
     if($mid == -1){
         return "外部导航";
     }
-    $result = Models::get($mid);
+    $result = Db::name('models')->field('name')->where('id', $mid)->find();
     return $result ? $result['name'] : '';  
 }
 

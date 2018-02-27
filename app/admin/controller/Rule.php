@@ -16,8 +16,8 @@ class Rule extends Base{
 	public function lis(){
 		$db = new AuthRuleModel();
 		$list = self::get_auth_rule($pid = 0," ┣━  ");
-		$this->assign('list',$list);
-		$count = $db->where('status','=',1)->count();
+		$this->assign('list', $list);
+		$count = $db->where('status', 1)->count();
 		$this->assign('count',$count);
 
 		// 面包屑
@@ -129,6 +129,34 @@ class Rule extends Base{
 	}
 
 	/**
+	 * sorting 排序
+	 * @param  Request $request
+	 * @return json
+	 */
+	public function sorting(Request $request){
+		if($request->isAjax()){
+			$form = $request->param();
+			$data = remove_array_spaces($form);
+
+			$id = $data['id'];
+			$rule = AuthRuleModel::get($id);
+			if($rule){
+				if($rule->allowField(true)->save($data)){
+					add_logs('权限排序设置，ID:' . $id, 1);
+					return json(['state' => 1, 'msg' => "权限【" . $rule->title . "】排序成功！"]);
+				}else{
+					add_logs('权限排序设置，ID:' . $id, 0);
+					return json(['state' => 0, 'msg' => "权限【" . $rule->title . "】排序失败！"]);
+				}
+			}else{
+				return json(['state' => 0, 'msg' => '数据不存在！']);
+			}
+		}else{
+			return json(['state' => 0, 'msg' => '请您正常操作！']);
+		}
+	}
+
+	/**
 	 * 获取权限规则
 	 * @param  int $pid 父级id
 	 * @param  string $path 分隔符号
@@ -138,16 +166,30 @@ class Rule extends Base{
 		global $a_arr;
 		$db = new AuthRuleModel();
 		//读取数据
-		$list = $db->where('pid','=',$pid)->order('pid')->select();
+		$list = $db->where('pid', $pid)->order('id')->select();
 		if (is_array($list)){
 			foreach($list as $val){
-				if ($val["pid"] == $pid){
-					if ($val["pid"] == 0){
-						$a_arr[] = ["id" => $val["id"],"pid" => $val["pid"],"title" => $val["title"],"name" => $val["name"],"status" => $val["status"]];
+				if ($val['pid'] == $pid){
+					if ($val['pid'] == 0){
+						$a_arr[] = [
+							'id'     => $val['id'],
+							'pid'    => $val['pid'],
+							'title'  => $val['title'],
+							'name'   => $val['name'],
+							'status' => $val['status'],
+							'sort'   => $val['sort']
+						];
 					}else{
-						$a_arr[] = ["id" => $val["id"],"pid" => $val["pid"],"title" => $path.$val["title"],"name" => $val["name"],"status" => $val["status"]];
+						$a_arr[] = [
+							'id'     => $val['id'],
+							'pid'    => $val['pid'],
+							'title'  => $path . $val['title'],
+							'name'   => $val['name'],
+							'status' => $val['status'],
+							'sort'   => $val['sort']
+						];
 					}
-					self::get_auth_rule($val["id"],"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$path);
+					self::get_auth_rule($val['id'], "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $path);
 				}
 			}
 		}

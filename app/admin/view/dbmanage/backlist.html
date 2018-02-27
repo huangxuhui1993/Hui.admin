@@ -8,14 +8,18 @@
 </nav>
 <div class="page-container">
 	<div class="cl pd-5 bg-1 bk-gray">
-		<span class="l">
-			<button class="btn btn-primary radius" type="button" onclick="backup_db('{:url('Dbmanage/backupOperation')}','1')">
-				<i class="Hui-iconfont">&#xe632;</i> 全部备份
-			</button>
-			<button class="btn btn-primary radius" type="button" onclick="backup_db('{:url('Dbmanage/backupOperation')}','2')">
-				<i class="Hui-iconfont">&#xe644;</i> 分卷备份
-			</button>
-		</span>
+
+		{if condition="get_auth('Dbmanage/backupOperation')"}
+			<span class="l">
+				<button class="btn btn-primary radius" type="button" onclick="backup_db('{:url('Dbmanage/backupOperation')}','1')">
+					<i class="Hui-iconfont">&#xe632;</i> 全部备份
+				</button>
+				<button class="btn btn-primary radius" type="button" onclick="backup_db('{:url('Dbmanage/backupOperation')}','2')">
+					<i class="Hui-iconfont">&#xe644;</i> 分卷备份
+				</button>
+			</span>
+		{/if}
+
 		<span class="r va-m">
 			数据库：<span class="label label-success radius mr-15">{:config('database.database')}</span>
 			数据库大小：<span class="label label-success radius">{:truesize($db_size)}</span>
@@ -41,9 +45,13 @@
 				<tr class="text-c">
                     <td>{$i}</td>
                     <td>
-						<a title="查看" href="javascript:;" onclick="get_sql_file('{:url('Common/codemirror')}', 'public/uploads/{$backup_dir}/{$vo.filename}')" class="f-14" data-toggle="tooltip" data-placement="top">
-							<span class="label label-success radius"><i class="Hui-iconfont">&#xe709;</i> {$vo.filename}</span>
-						</a>
+
+                    	{if condition="get_auth('Common/codemirror')"}
+							<a title="查看" href="javascript:;" onclick="get_sql_file('{:url('Common/codemirror')}', 'public/uploads/{$backup_dir}/{$vo.filename}')" class="f-14" data-toggle="tooltip" data-placement="top">
+								<span class="label label-success radius"><i class="Hui-iconfont">&#xe709;</i> {$vo.filename}</span>
+							</a>
+						{/if}
+
                     </td>
                     <td>{:get_user_info($vo.uid)['username']}</td>
                     <td align="center">{:date('Y-m-d H:i:s',$vo['create_time'])}</td>
@@ -51,9 +59,13 @@
                         <a title="恢复备份" href="" data-toggle="tooltip" data-placement="top">
 	                    	<i class="Hui-iconfont">&#xe645;</i>
 	                    </a>
-	                    <a title="删除备份" href="javascript:;" onclick="delete_info('{:url('Dbmanage/delSql', ['id' => $vo['id']])}','备份文件')" class="ml-15" data-toggle="tooltip" data-placement="top">
-	                    	<i class="Hui-iconfont">&#xe6e2;</i>
-	                    </a>
+
+	                    {if condition="get_auth('Dbmanage/delSql')"}
+		                    <a title="删除备份" href="javascript:;" onclick="delete_info('{:url('Dbmanage/delSql', ['id' => $vo['id']])}','备份文件')" class="ml-15" data-toggle="tooltip" data-placement="top">
+		                    	<i class="Hui-iconfont">&#xe6e2;</i>
+		                    </a>
+	                    {/if}
+
                     </td>
 				</tr>
 			{/volist}

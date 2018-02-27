@@ -24,7 +24,7 @@
 	<div id="iframe_box" class="Hui-article">
 		<div class="show_iframe">
 			<div class="loading hide"></div>
-			<iframe scrolling="yes" frameborder="0" src="{:url('Index/welcome')}"></iframe>
+			<iframe scrolling="yes" id="Hui-iframe-window" frameborder="0" src="{:url('Index/welcome')}"></iframe>
 		</div>
 	</div>
 </section>
@@ -42,8 +42,9 @@
 <script type="text/javascript" src="__ADMIN__/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
 <script type="text/javascript" src="__ROOT__/js/timerHandler/jquery.timerHandler.min.js"></script>
 <script type="text/javascript">
-window.ajax_messages_url = "{:url('Ajax/message')}";
-window.common_message_lis_url = "{:url('Common/message_lis')}";
+// window.ajax_messages_url = "{:url('Ajax/message')}";
+// window.common_message_lis_url = "{:url('Common/message_lis')}";
+window.ajax_run_time_url = "{:url('Ajax/runTime')}";
 $(function(){
 	// 初始化页面
 	initialize_page();
@@ -62,25 +63,17 @@ $(function(){
 	// var MessageTimer = $.timerHandler('MessageTimer').time('60s').call(function(count) {
 	// 	message();
 	// }).start();
+
+	 // 浏览器的操作系统平台
+	var platform = navigator.platform;
+	$('#plat-form').empty().text(platform);
+
+	// 运行时间
+	run_time();
+	var RunTime = $.timerHandler('RunTime').time('10s').call(function(count) {
+		run_time();
+	}).start();
 });
-
-// wifi 测试定时器
-var wifitime = $.timerHandler('wifitime').time('5s').call(function(count) {
-	testWifi();
-}).start();
-
-function testWifi() {
-    var startime = new Date();
-    $.get('__ROOT__/wifi.json', {}, function (data){
-        var endtime = new Date();
-        var wifi = endtime.getTime() - startime.getTime();
-        log(wifi);
-        var htmlStr = '<i class="Hui-iconfont">&#xe6ce;</i> <span>' + wifi + 'M/S</span>';
-        $('#js-wifi').show().html(htmlStr);
-    });
-}
-
-testWifi();
 </script>
 </body>
 </html>

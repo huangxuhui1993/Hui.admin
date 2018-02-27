@@ -1,8 +1,8 @@
 <header class="navbar-wrapper">
 	<div class="navbar navbar-fixed-top">
 		<div class="container-fluid cl"> 
-			<a class="logo navbar-logo f-l mr-10 hidden-xs" href="{:url('index/index?times=' . time())}">Hui.admin</a> 
-			<a class="logo navbar-logo-m f-l mr-10 visible-xs" href="javascript:;">Hui</a> 
+			<a class="logo navbar-logo f-l mr-10 hidden-xs" href="javascript:location.reload(true);">Hui.admin</a> 
+			<a class="logo navbar-logo-m f-l mr-10 visible-xs" href="javascript:location.reload(true);">Hui</a> 
 			<span class="logo navbar-slogan f-l mr-10 hidden-xs">v1.0</span> 
 			<a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
 			<nav class="nav navbar-nav">
@@ -25,7 +25,7 @@
 								</a>
 							</li>
 							<li>
-								<a href="javascript:;" onclick="network_speed_window('{:url('Common/networkSpeed')}')">
+								<a href="javascript:;" onclick="netpersec_window('{:url('Common/networkSpeed')}')">
 									<i class="Hui-iconfont">&#xe682;</i> 检测网速
 								</a>
 							</li>
@@ -41,7 +41,10 @@
 							</li>
 						</ul>
 					</li>
-					<li style="display:none;" id="js-wifi"><i class="Hui-iconfont">&#xe6ce;</i> <span>0M/S</span></li>
+					<li>
+						<i class="Hui-iconfont">&#xe64f;</i> <span id="plat-form">...</span>
+						<i class="Hui-iconfont">&#xe728;</i> <span id="run-time">...</span>
+					</li>
 				</ul>
 			</nav>
 			<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
@@ -49,7 +52,7 @@
 
 					<li>{:get_user_role(session('uid'))}</li>
 					
-					<li class="dropDown dropDown_hover"> <a href="#" class="dropDown_A"><i class="Hui-iconfont f-16">&#xe60d;</i> {$session_uname} <i class="Hui-iconfont">&#xe6d5;</i></a>
+					<li class="dropDown dropDown_hover"> <a href="#" class="dropDown_A"><i class="Hui-iconfont f-16">&#xe653;</i> {$session_uname} <i class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
 							<li>
 								<a href="javascript:;" onclick="clear_cache('{:url('Ajax/clearcache')}')">清除缓存</a>
@@ -72,8 +75,6 @@
 							<i class="Hui-iconfont f-16">&#xe62f;</i>
 						</a>
 					</li>
-
-					<li id="Hui-msg"> <a href="javascript:;" onclick="full_screen(this)" flag="on" title="全屏"><i class="Hui-iconfont f-16">&#xe64f;</i></a> </li>
 
 					<li id="Hui-skin" class="dropDown right dropDown_hover"> <a href="javascript:;" class="dropDown_A" title="换肤"><i class="Hui-iconfont f-16">&#xe62a;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">

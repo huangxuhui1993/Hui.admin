@@ -133,4 +133,33 @@ class Doc extends Base{
 		}
 	}
 
+	/**
+	 * sorting 排序
+	 * @param  Request $request
+	 * @return json
+	 */
+	public function sorting(Request $request){
+		if($request->isAjax()){
+			$form = $request->param();
+			$data = remove_array_spaces($form);
+
+			$id = $data['id'];
+			$doc = DocModel::get($id);
+			if($doc){
+				$data['sorting'] = $data['sort'];
+				if($doc->allowField(true)->save($data)){
+					add_logs('文档属性排序设置，ID:' . $id, 1);
+					return json(['state' => 1, 'msg' => "文档属性【" . $doc->name . "】排序成功！"]);
+				}else{
+					add_logs('文档属性排序设置，ID:' . $id, 0);
+					return json(['state' => 0, 'msg' => "文档属性【" . $doc->name . "】排序失败！"]);
+				}
+			}else{
+				return json(['state' => 0, 'msg' => '数据不存在！']);
+			}
+		}else{
+			return json(['state' => 0, 'msg' => '请您正常操作！']);
+		}
+	}
+
 }

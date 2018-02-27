@@ -42,21 +42,10 @@
 
 <script type="text/javascript">
 $(function(){
-	$('.skin-minimal input').iCheck({
-		checkboxClass: 'icheckbox-blue',
-		radioClass: 'iradio-blue',
-		increaseArea: '20%'
-	});
 	// 表单验证
 	$("#for").validate({
-		rules:{
-			id:{required:true},
-			username:{required:true}
-		},
-		messages:{
-			id:{required: "参数错误"},
-		  	username:{required: "请输入账号"}
-		},
+		rules:{id:{required:true}, username:{required:true}},
+		messages:{id:{required: "参数错误"}, username:{required: "请输入账号"}},
 		onkeyup:false,
 		focusCleanup:true,
 		success:"valid",

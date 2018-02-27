@@ -11,19 +11,19 @@
 namespace Auth;
 use think\Config;
 use think\Db;
-    /**
-     * 权限认证类
-     * 功能特性：
-     * 1，是对规则进行认证，不是对节点进行认证。用户可以把节点当作规则名称实现对节点进行认证。
-     *      $auth=new Auth();  $auth->check('规则名称','用户id')
-     * 2，可以同时对多条规则进行认证，并设置多条规则的关系（or或者and）
-     *      $auth=new Auth();  $auth->check('规则1,规则2','用户id','and')
-     *      第三个参数为and时表示，用户需要同时具有规则1和规则2的权限。 当第三个参数为or时，表示用户值需要具备其中一个条件即可。默认为or
-     * 3，一个用户可以属于多个用户组(think_auth_group_access表 定义了用户所属用户组)。我们需要设置每个用户组拥有哪些规则(think_auth_group 定义了用户组权限)
-     *
-     * 4，支持规则表达式。
-     *      在think_auth_rule 表中定义一条规则时，如果type为1， condition字段就可以定义规则表达式。 如定义{score}>5  and {score}<100  表示用户的分数在5-100之间时这条规则才会通过。
-     */
+/**
+ * 权限认证类
+ * 功能特性：
+ * 1，是对规则进行认证，不是对节点进行认证。用户可以把节点当作规则名称实现对节点进行认证。
+ *      $auth=new Auth();  $auth->check('规则名称','用户id')
+ * 2，可以同时对多条规则进行认证，并设置多条规则的关系（or或者and）
+ *      $auth=new Auth();  $auth->check('规则1,规则2','用户id','and')
+ *      第三个参数为and时表示，用户需要同时具有规则1和规则2的权限。 当第三个参数为or时，表示用户值需要具备其中一个条件即可。默认为or
+ * 3，一个用户可以属于多个用户组(think_auth_group_access表 定义了用户所属用户组)。我们需要设置每个用户组拥有哪些规则(think_auth_group 定义了用户组权限)
+ *
+ * 4，支持规则表达式。
+ *      在think_auth_rule 表中定义一条规则时，如果type为1， condition字段就可以定义规则表达式。 如定义{score}>5  and {score}<100  表示用户的分数在5-100之间时这条规则才会通过。
+ */
 
 //数据库
 /*
@@ -71,18 +71,18 @@ CREATE TABLE `think_auth_group_access` (
 class Auth{
 
     //默认配置
-    protected $_config = array(
+    protected $_config = [
         'auth_on'           => true,                      // 认证开关
         'auth_type'         => 1,                         // 认证方式，1为实时认证；2为登录认证。
         'auth_group'        => 'auth_group',        // 用户组数据表名
         'auth_group_access' => 'auth_group_access', // 用户-用户组关系表
         'auth_rule'         => 'auth_rule',         // 权限规则表
         'auth_user'         => 'user'             // 用户信息表
-    );
+    ];
 
     public function __construct() {
         $t = Config::get('auth_config');
-        if (Config::get('auth_config')) {
+        if(Config::get('auth_config')){
             //可设置配置项 auth_config, 此配置项为数组。
             $this->_config = array_merge($this->_config, Config::get('auth_config'));
         }
@@ -96,7 +96,7 @@ class Auth{
      * @param relation string    如果为 'or' 表示满足任一条规则即通过验证;如果为 'and'则表示需满足所有规则才能通过验证
      * @return boolean           通过验证返回true;失败返回false
      */
-    public function check($name, $uid, $type = 1, $mode = 'url', $relation = 'or') {
+    public function check($name, $uid, $relation = 'or', $type = 1, $mode = 'url') {
         if (!$this->_config['auth_on'])
             return true;
         $authList = $this->getAuthList($uid,$type); //获取用户需要验证的所有有效规则列表
@@ -105,10 +105,10 @@ class Auth{
             if (strpos($name, ',') !== false) {
                 $name = explode(',', $name);
             } else {
-                $name = array($name);
+                $name = [$name];
             }
         }
-        $list = array(); //保存验证通过的规则名
+        $list = []; // 保存验证通过的规则名
         if ($mode == 'url') {
             $REQUEST = unserialize( strtolower(serialize($_REQUEST)) );
         }
@@ -143,15 +143,15 @@ class Auth{
      *     ...)
      */
     public function getGroups($uid) {
-        static $groups = array();
+        static $groups = [];
         if (isset($groups[$uid]))
             return $groups[$uid];
         $user_groups = Db::name($this->_config['auth_group_access'])
             ->alias('a')
-            ->join($this->_config['auth_group']." g", "g.id=a.group_id")
+            ->join($this->_config['auth_group'] . " g", "g.id=a.group_id")
             ->where("a.uid='$uid' and g.status='1'")
             ->field('uid,group_id,title,rules')->select();
-        $groups[$uid] = $user_groups ? $user_groups : array();
+        $groups[$uid] = $user_groups ? $user_groups : [];
         return $groups[$uid];
     }
 
@@ -161,7 +161,7 @@ class Auth{
      * @param integer $type
      */
     protected function getAuthList($uid,$type) {
-        static $_authList = array(); //保存用户验证通过的权限列表
+        static $_authList = []; //保存用户验证通过的权限列表
         $t = implode(',',(array)$type);
         if (isset($_authList[$uid.$t])) {
             return $_authList[$uid.$t];
@@ -170,34 +170,34 @@ class Auth{
             return $_SESSION['_auth_list_'.$uid.$t];
         }
 
-        //读取用户所属用户组
+        // 读取用户所属用户组
         $groups = $this->getGroups($uid);
-        $ids = array();//保存用户所属用户组设置的所有权限规则id
+        $ids = []; // 保存用户所属用户组设置的所有权限规则id
         foreach ($groups as $g) {
             $ids = array_merge($ids, explode(',', trim($g['rules'], ',')));
         }
         $ids = array_unique($ids);
         if (empty($ids)) {
-            $_authList[$uid.$t] = array();
-            return array();
+            $_authList[$uid.$t] = [];
+            return [];
         }
 
-        $map=array(
-            'id' => array('in',$ids),
+        $map = [
+            'id' => ['in', $ids],
             'type' => $type,
             'status' => 1,
-        );
+        ];
         //读取用户组所有权限规则
         $rules = Db::name($this->_config['auth_rule'])->where($map)->field('condition,name')->select();
 
         //循环规则，判断结果。
-        $authList = array();   //
+        $authList = [];   //
         foreach ($rules as $rule) {
             if (!empty($rule['condition'])) { //根据condition进行验证
                 $user = $this->getUserInfo($uid);//获取用户信息,一维数组
 
                 $command = preg_replace('/\{(\w*?)\}/', '$user[\'\\1\']', $rule['condition']);
-                //dump($command);//debug
+                // dump($command); // debug
                 @(eval('$condition=(' . $command . ');'));
                 if ($condition) {
                     $authList[] = strtolower($rule['name']);
@@ -219,9 +219,9 @@ class Auth{
      * 获得用户资料,根据自己的情况读取数据库
      */
     protected function getUserInfo($uid) {
-        static $userinfo = array();
+        static $userinfo = [];
         if(!isset($userinfo[$uid])){
-            $userinfo[$uid] = Db::name($this->_config['auth_user'])->where(array('uid' => $uid))->find();
+            $userinfo[$uid] = Db::name($this->_config['auth_user'])->where(['uid' => $uid])->find();
         }
         return $userinfo[$uid];
     }

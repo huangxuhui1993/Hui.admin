@@ -44,7 +44,9 @@
                         </a>
                         <span class="badge badge-default radius">{php}echo model('Fields')->where('mid','=',$vo['id'])->count(){/php}</span>
                     </td>
-                    <td>{$vo.sorting}</td>
+					<td class="width-50 text-c">
+	                	<input type="text" value="{$vo.sorting}" alt="{$vo.id}" onchange="sorting('{:url('Models/sorting')}', this)" class="text-c input-text radius">
+	                </td>
                     <td>{$vo.update_time}</td>
                     <td>{$vo.status.1}</td>
                     <td class="f-14">

@@ -7,15 +7,41 @@
 	<a class="refresh btn btn-success radius r" href="javascript:location.reload(true);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
 </nav>
 <div class="page-container">
+
 <form name="frm" id="frm" method="post" action="{:url('Dbmanage/optimize')}">
-	<div class="cl pd-5 bg-1 bk-gray">
-		<span class="l">
-			<button class="btn btn-success radius" type="submit"><i class="Hui-iconfont">&#xe728;</i> 立即优化</button>
-			<a class="btn btn-primary radius" href="javascript:;" onclick="db_statistical('1','{:url('Dbmanage/statistical',['style'=>1])}')"><i class="Hui-iconfont">&#xe61c;</i> 记录数统计图</a>
-			<a class="btn btn-primary radius" href="javascript:;" onclick="db_statistical('2','{:url('Dbmanage/statistical',['style'=>2])}')"><i class="Hui-iconfont">&#xe618;</i> 大小统计图</a>
-			<a class="btn btn-primary radius" href="javascript:;" onclick="db_statistical('3','{:url('Dbmanage/statistical',['style'=>3])}')"><i class="Hui-iconfont">&#xe618;</i> 碎片统计图</a>
-		</span>
-	</div>
+
+	{if condition="get_auth('Dbmanage/optimize,Dbmanage/statistical/style/1,Dbmanage/statistical/style/2,Dbmanage/statistical/style/3')"}
+		<div class="cl pd-5 bg-1 bk-gray">
+			<span class="l">
+
+				{if condition="get_auth('Dbmanage/optimize')"}
+					<button class="btn btn-success radius" type="submit">
+						<i class="Hui-iconfont">&#xe728;</i> 立即优化
+					</button>
+				{/if}
+
+				{if condition="get_auth('Dbmanage/statistical/style/1')"}
+					<a class="btn btn-primary radius" href="javascript:;" onclick="db_statistical('1','{:url('Dbmanage/statistical', ['style' => 1])}')">
+						<i class="Hui-iconfont">&#xe61c;</i> 记录数统计图
+					</a>
+				{/if}
+
+				{if condition="get_auth('Dbmanage/statistical/style/2')"}
+					<a class="btn btn-primary radius" href="javascript:;" onclick="db_statistical('2','{:url('Dbmanage/statistical', ['style' => 2])}')">
+						<i class="Hui-iconfont">&#xe618;</i> 大小统计图
+					</a>
+				{/if}
+
+				{if condition="get_auth('Dbmanage/statistical/style/3')"}
+					<a class="btn btn-primary radius" href="javascript:;" onclick="db_statistical('3','{:url('Dbmanage/statistical', ['style' => 3])}')">
+						<i class="Hui-iconfont">&#xe618;</i> 碎片统计图
+					</a>
+				{/if}
+
+			</span>
+		</div>
+	{/if}
+
 	<div class="mt-20">
 
 		{include file="public/redirect" /}
@@ -50,9 +76,13 @@
                     <td>{$vo.Comment}</td>
                     <td>{$vo.Create_time}</td>
                     <td class="f-14">
-	                    <a title="预览" href="javascript:;" onclick="table_details('{$vo.Name}','{:url('Dbmanage/details', ['name' => $vo['Name']])}')" data-toggle="tooltip" data-placement="top">
-	                    	<i class="Hui-iconfont">&#xe695;</i>
-	                    </a>
+
+                    	{if condition="get_auth('Dbmanage/details')"}
+		                    <a title="预览" href="javascript:;" onclick="table_details('{$vo.Name}','{:url('Dbmanage/details', ['name' => $vo['Name']])}')" data-toggle="tooltip" data-placement="top">
+		                    	<i class="Hui-iconfont">&#xe695;</i>
+		                    </a>
+	                    {/if}
+
                     </td>
 				</tr>
 			{/volist}

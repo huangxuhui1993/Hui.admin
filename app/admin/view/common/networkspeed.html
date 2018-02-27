@@ -32,8 +32,6 @@
                 var kb_speed = Math.round(alltime * Lnum) / Lnum;
                 var mb_speed = Math.round(kb_speed / 128 * Lnum) / Lnum;
                 document.getElementById("show-speed").innerHTML = "您的下载速度为：" + kb_speed + " （KB/秒）  约 " + mb_speed + "（MB/秒）";
-                window.parent.document.getElementById("js-wifi").children[1].innerHTML = mb_speed + "M/S";
-                window.parent.document.getElementById("js-wifi").style.display = "block";
             }
         </script>
         <div>单位换算：宽带512kbps=64k/s&nbsp;&nbsp;1M=128k/s&nbsp;&nbsp;2M=256k/s。</div>

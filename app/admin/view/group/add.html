@@ -84,12 +84,6 @@
 {tag:validatejs /}
 <script type="text/javascript">
 $(function(){
-	$('.skin-minimal input').iCheck({
-		checkboxClass: 'icheckbox-blue',
-		radioClass: 'iradio-blue',
-		increaseArea: '20%'
-	});
-
 	$(".permission-list dt input:checkbox").click(function(){
 		$(this).closest("dl").find("dd input:checkbox").prop("checked",$(this).prop("checked"));
 	});

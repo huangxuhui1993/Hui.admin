@@ -8,14 +8,25 @@ use org\util\HttpCurl;
 
 class Ajax extends Controller{
 
+	// 检测运行速度
+	public function runTime(){
+		// 运行时间（毫秒）
+        $runtime = (microtime(true) - THINK_START_TIME);
+		return json([
+			'status' => "success",
+			'runtime' => number_format($runtime, 3),
+			'version' => "Hui.admin网络测试"
+		]);
+	}
+
+	// 系统消息
 	public function message(){
 		$cookie = Cookie::get();
-		$array = [
+		return json([
 			'messageCount' => mt_rand(0, 10),
 			'messageCountCookie' => $cookie['messageCount'],
 			'messageIndexID' => $cookie['messageIndexID']
-		];
-		return json($array);
+		]);
 	}
 
     /**

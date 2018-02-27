@@ -192,4 +192,34 @@ class Models extends Base{
 			return hui_redirect('Models/lis', ['code' => 'error','msg' => '请正常操作！']);
 		}
 	}
+
+	/**
+	 * sorting 排序
+	 * @param  Request $request
+	 * @return json
+	 */
+	public function sorting(Request $request){
+		if($request->isAjax()){
+			$form = $request->param();
+			$data = remove_array_spaces($form);
+
+			$id = $data['id'];
+			$models = ModelsModel::get($id);
+			if($models){
+				$data['sorting'] = $data['sort'];
+				if($models->allowField(true)->save($data)){
+					add_logs('模型排序设置，ID:' . $id, 1);
+					return json(['state' => 1, 'msg' => "模型【" . $models->name . "】排序成功！"]);
+				}else{
+					add_logs('模型排序设置，ID:' . $id, 0);
+					return json(['state' => 0, 'msg' => "模型【" . $models->name . "】排序失败！"]);
+				}
+			}else{
+				return json(['state' => 0, 'msg' => '数据不存在！']);
+			}
+		}else{
+			return json(['state' => 0, 'msg' => '请您正常操作！']);
+		}
+	}
+
 }

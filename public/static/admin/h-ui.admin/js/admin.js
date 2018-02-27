@@ -2,97 +2,33 @@ window.cookie_config = {expires:7, path:'/'};
 $(function(){
     // 全局配置参数
     laydate.skin('molv');
-    // 桌面应用打开
-    try{ 
-        const {app} = require('electron');
-        log(navigator.platform); // 浏览器的操作系统平台
-        log(navigator.onLine); // 是否联网
-    }catch(e){
-        return;
-    }
+    $('.skin-minimal input').iCheck({
+        checkboxClass: 'icheckbox-blue',
+        radioClass: 'iradio-blue',
+        increaseArea: '20%'
+    });
 });
 
-// log js打印日志
-function log(str){
-    try{
-        console.log(str);
-        // console.trace();
-    }catch(exception){  
-        return;  
-    }
+// 信息排序
+function sorting(url, obj){
+    var sort = $(obj).val();
+    var id = $(obj).attr('alt');
+    $.post(url, {id:id, sort:sort}, function(data){
+        log(data);
+        parent.layer.msg(data.msg);
+    });
 }
 
-// 数据加载层
-function loading(msg){
-    var config = {
-        icon:16,
-        area:'auto',
-        shade:0.1,
-        shadeClose:false,
-        time:0
-    };
-    return window.layer.msg(msg, config);
-}
-
-/**
- * layer_open layer窗口
- * @param  {string}  url    页面路径
- * @param  {integer} w      窗口宽
- * @param  {integer} h      窗口高
- * @param  {integer} shade  遮罩层透明度
- * @param  {bool}    maxmin 最大化
- */
-function layer_open(url, title, w, h, shade, maxmin){
-    var config = {
-        title: title,
-        type: 2,
-        area: [w + 'px', h + 'px'],
-        fixed: true, //不固定
-        maxmin: maxmin,
-        scrollbar: false,
-        shade: shade,
-        content: url
-    };
-    return window.layer.open(config);
-}
-
-/**
- * open_window 打开window窗口
- * @param  {string}  u 页面路径
- * @param  {integer} w 窗口宽
- * @param  {integer} h 窗口高
- * @param  {integer} r 窗口偏移
- * window.resizeTo(windowInfo.w, windowInfo.h); // 改变大小
- * window.onresize = new Function('window.resizeTo(windowInfo.w, windowInfo.h);');
- */
-function open_window(u, w, h, r, data){
-    var l = (screen.width - w) / 2 - r;
-    var t = (screen.height - h) / 2 - r;
-    var e = window.open(u, "_blank", "width=" + w + ",height=" + h + ",toolbars=0,resizable=0,left=" + l + ",top=" + t);
-    e.parentData = {w:w,h:h,data:data};
-    e.focus();
-    return e;
-}
-
-// 关闭window窗口
-function close_window(){
-    window.opener = null;
-    window.open('', '_self');
-    window.close();
-}
-
-// 格式化文件大小
-function render_size(value){
-    if(null == value || value == ''){
-        return "0 Bytes";
-    }
-    var unitArr = new Array("Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB");
-    var index = 0;
-    var srcsize = parseFloat(value);
-    index = Math.floor(Math.log(srcsize) / Math.log(1024));
-    var size = srcsize / Math.pow(1024, index);
-    size = size.toFixed(2); // 保留的小数位数
-    return size + unitArr[index];
+// 运行时间
+function run_time(){
+    var obj = $('#run-time');
+    obj.empty();
+    var starttime = new Date();
+    $.get(ajax_run_time_url, {}, function(data){
+        var endtime = new Date();
+        var runtime = endtime.getTime() - starttime.getTime();
+        obj.text(runtime + 'MS');
+    });
 }
 
 // 文件上传窗口
@@ -100,10 +36,7 @@ function upload_window(url){
     layer_open(url, '上传文件', 600, 240, 0.01, false);
 }
 
-/**
- * open_message_parent_html 打开系统消息详情
- * @param  {obj} obj 对象
- */
+// 打开系统消息详情
 function open_message_parent_html(obj){
     window.parent.Hui_admin_tab(obj);
 }
@@ -138,31 +71,6 @@ function message(){
         }
         $('#message-count').text(json.messageCount);
     });
-}
-
-// 浏览器H5桌面通知
-function show_notification(title, msg){
-    var data = {body: msg, icon: "/favicon.ico"};
-    var Notification = window.Notification || window.mozNotification || window.webkitNotification;
-    if(Notification){ // 支持桌面通知
-        if(Notification.permission == "granted") { // 已经允许通知
-            var instance = new Notification(title, data);
-            instance.onclick = function() { // 点击事件
-                instance.close();
-            };
-        }else{ // 第一次询问或已经禁止通知(如果用户之前已经禁止显示通知，那么浏览器不会再次询问用户的意见，Notification.requestPermission()方法无效)
-            Notification.requestPermission(function(status) {
-                if(status === "granted"){ // 用户允许
-                    var instance = new Notification(title, data);
-                    instance.onclick = function() { // 点击事件
-                        instance.close();
-                    };
-                }else{ // 用户禁止
-                    return false;
-                }
-            });
-        }
-    }
 }
 
 // 确认选择邮箱
@@ -213,7 +121,7 @@ function positioning_window(url){
 }
 
 // 检测网速窗口
-function network_speed_window(url){
+function netpersec_window(url){
     layer_open(url, '检测网速', 450, 290, 0.1, false);
 }
 
@@ -224,19 +132,18 @@ function table_details(title, url){
 
 // 查看图片
 function see_img(src,title){
-    var img_json = {
-          "title": title,
-          "id": 1,
-          "start": 0,
-          "data": [{
-              "alt": title,
-              "pid": 1,
-              "src": src,
-              "thumb": ""
-            }]
-        }
     layer.photos({
-        photos: img_json,
+        photos: {
+            "title": title,
+            "id": 1,
+            "start": 0,
+            "data": [{
+                "alt": title,
+                "pid": 1,
+                "src": src,
+                "thumb": ""
+            }]
+        },
         shift:0
     });
 }
@@ -244,7 +151,12 @@ function see_img(src,title){
 // 导出数据
 function export_data(url, title, type){
     if(url == '' || title == '' || type == ''){
-        parent.layer.msg('导出数据参数缺失!',{icon:0,time:1000,offset: '100px',shade: 0.03});
+        parent.layer.msg('导出数据参数缺失!', {
+            icon:0,
+            time:1000,
+            offset: '100px',
+            shade: 0.03
+        });
         return false;
     }
     window.onbeforeunload = function(event){
@@ -338,10 +250,20 @@ function setup_status(url, status){
 function prompt_window(msg, code){
     var title = "Hui.admin温馨提醒";
     if(code == 'success'){
-        return parent.layer.alert(msg, {title:title, icon: 1, shade:0.1});
+        return parent.layer.alert(msg, {
+            title:title,
+            icon: 1,
+            shade:0.1,
+            time:2500
+        });
     }
     if(code == 'error'){
-        return parent.layer.alert(msg, {title:title, icon: 0, shade:0.1});
+        return parent.layer.alert(msg, {
+            title:title,
+            icon: 0,
+            shade:0.1,
+            time:2500
+        });
     }
 }
 
@@ -369,6 +291,7 @@ function prompt_html(url,code,msg,wait){
 
 // 清除缓存
 function clear_cache(url){
+    var index;
     $.ajax({
         type: 'post',
         url: url,
@@ -403,15 +326,29 @@ function backup_db(url,style){
             window.onbeforeunload = '';
             parent.layer.close(index); // 关闭加载层
             if(result.error == 1){
-                parent.layer.msg('数据库备份失败！', {icon:0,offset: '100px',shade: 0.03});
+                parent.layer.msg('数据库备份失败！', {
+                    icon:0,
+                    offset: '100px',
+                    shade: 0.03
+                });
             }else{
-                parent.layer.msg('数据库备份成功！', {icon:1,shade: 0.03,offset: '100px',time:1000},function(){
+                parent.layer.msg('数据库备份成功！', {
+                    icon:1,
+                    shade: 0.03,
+                    offset: '100px',
+                    time:1000
+                },function(){
                     window.location.reload();
                 });
             }
         },
         error: function(XmlHttpRequest, textStatus, errorThrown){
-            parent.layer.msg('error!',{icon:0,time:1000,offset: '100px',shade: 0.03});
+            parent.layer.msg('error!', {
+                icon:0,
+                time:1000,
+                offset: '100px',
+                shade: 0.03
+            });
         }
     });
 }
@@ -425,7 +362,11 @@ function get_sql_file(url, sql_path){
 
 // 源代码文件路径
 function code_path(url){
-    layer.prompt({title: '请输入源代码路径',value: 'public/static/notepad.txt',offset: '100px'}, function(file, index){
+    layer.prompt({
+        title: '请输入源代码路径',
+        value: 'public/static/notepad.txt',
+        offset: '100px'
+    }, function(file, index){
         layer.close(index);
         var str = encodeURIComponent(file);
         var file_path = url + '?path=' + str;
@@ -436,8 +377,8 @@ function code_path(url){
 // 模型验证器
 function models_path(url,file){
     var str = encodeURIComponent(file);
-    var file_path = url+'?path='+str;
-    code_window(file_path,'源代码：www/'+file,2);
+    var file_path = url + '?path=' + str;
+    code_window(file_path, '源代码：www/' + file, 2);
 }
 
 // 删除信息提示
@@ -513,7 +454,7 @@ function code_window(url, title, flag){
         layer.msg("打开窗口参数缺失！");
         return false;
     }else{
-        parent.layer_open(url, title, 900, 560, 0.1, false);
+        parent.layer_open(url, title, 900, 555, 0.1, false);
     }
 }
 
@@ -629,9 +570,113 @@ function fnW(str){
 // 刷新之后显示当前页面
 function initialize_page(){
     var data = $.cookie("Huimenu");
-    if (data != undefined && data != 'null'){
+    if(data != undefined && data != 'null'){
         var dataObj = eval("(" + data + ")");
         creatIframe(dataObj.href, dataObj.title);
         min_titleList(); 
+    }
+}
+
+// js打印日志
+function log(str){
+    try{
+        console.log(str);
+        // console.trace();
+    }catch(exception){  
+        return;  
+    }
+}
+
+// 数据加载层
+function loading(msg){
+    return window.layer.msg(msg, {
+        icon:16,
+        area:'auto',
+        shade:0.1,
+        shadeClose:false,
+        time:0
+    });
+}
+
+/**
+ * layer_open layer窗口
+ * @param  {string}  url    页面路径
+ * @param  {integer} w      窗口宽
+ * @param  {integer} h      窗口高
+ * @param  {integer} shade  遮罩层透明度
+ * @param  {bool}    maxmin 最大化
+ */
+function layer_open(url, title, w, h, shade, maxmin){
+    return window.layer.open({
+        title: title,
+        type: 2,
+        area: [w + 'px', h + 'px'],
+        fixed: true, // 不固定
+        maxmin: maxmin,
+        scrollbar: false,
+        shade: shade,
+        content: url
+    });
+}
+
+/**
+ * open_window 打开window窗口
+ * @param  {string}  u 页面路径
+ * @param  {integer} w 窗口宽
+ * @param  {integer} h 窗口高
+ * @param  {integer} r 窗口偏移
+ */
+function open_window(u, w, h, r, data){
+    var l = (screen.width - w) / 2 - r;
+    var t = (screen.height - h) / 2 - r;
+    var e = window.open(u, "_blank", "width=" + w + ",height=" + h + ",toolbars=0,resizable=0,left=" + l + ",top=" + t);
+    e.parentData = {w:w,h:h,data:data};
+    e.focus();
+    return e;
+}
+
+// 关闭window窗口
+function close_window(){
+    window.opener = null;
+    window.open('', '_self');
+    window.close();
+}
+
+// 格式化文件大小
+function render_size(value){
+    if(null == value || value == ''){
+        return "0 Bytes";
+    }
+    var unitArr = new Array("Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB");
+    var index = 0;
+    var srcsize = parseFloat(value);
+    index = Math.floor(Math.log(srcsize) / Math.log(1024));
+    var size = srcsize / Math.pow(1024, index);
+    size = size.toFixed(2); // 保留的小数位数
+    return size + unitArr[index];
+}
+
+// 浏览器H5桌面通知
+function show_notification(title, msg){
+    var data = {body: msg, icon: "/favicon.ico"};
+    var Notification = window.Notification || window.mozNotification || window.webkitNotification;
+    if(Notification){ // 支持桌面通知
+        if(Notification.permission == "granted") { // 已经允许通知
+            var instance = new Notification(title, data);
+            instance.onclick = function() { // 点击事件
+                instance.close();
+            };
+        }else{ // 第一次询问或已经禁止通知(如果用户之前已经禁止显示通知，那么浏览器不会再次询问用户的意见，Notification.requestPermission()方法无效)
+            Notification.requestPermission(function(status) {
+                if(status === "granted"){ // 用户允许
+                    var instance = new Notification(title, data);
+                    instance.onclick = function() { // 点击事件
+                        instance.close();
+                    };
+                }else{ // 用户禁止
+                    return false;
+                }
+            });
+        }
     }
 }

@@ -80,7 +80,7 @@
 			layer.msg('File Path Is Null!'); 
 			return false;
 		}
-		$.post("{:url('Common/savecode')}",{file:filepath,code:codeValue},function(result){
+		$.post("{:url('Common/savecode')}",{file:filepath, code:codeValue}, function(result){
             layer.msg(result.msg);
         });
 	}

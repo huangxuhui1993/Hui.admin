@@ -1,7 +1,6 @@
 <?php
 namespace app\admin\controller;
 use app\admin\controller\Base;
-use think\Db;
 use think\Config;
 use think\Cookie;
 use think\Request;
@@ -17,7 +16,6 @@ use \Exception;
 class Common extends Base{
     
     public function _initialize(){
-    	Config::set('app_trace', false);
         parent::_initialize();
     }
 

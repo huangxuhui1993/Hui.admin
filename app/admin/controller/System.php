@@ -136,6 +136,34 @@ class System extends Base{
 		}
 	}
 
+	/**
+	 * sorting 排序
+	 * @param  Request $request
+	 * @return json
+	 */
+	public function sorting(Request $request){
+		if($request->isAjax()){
+			$form = $request->param();
+			$data = remove_array_spaces($form);
+
+			$id = $data['id'];
+			$config = ConfigModel::get($id);
+			if($config){
+				if($config->allowField(true)->save($data)){
+					add_logs('配置项排序设置，ID:' . $id, 1);
+					return json(['state' => 1, 'msg' => "配置项【" . $config->title . "】排序成功！"]);
+				}else{
+					add_logs('配置项排序设置，ID:' . $id, 0);
+					return json(['state' => 0, 'msg' => "配置项【" . $config->title . "】排序失败！"]);
+				}
+			}else{
+				return json(['state' => 0, 'msg' => '数据不存在！']);
+			}
+		}else{
+			return json(['state' => 0, 'msg' => '请您正常操作！']);
+		}
+	}
+
     /**
      * 网站设置
      * @param Request $request
@@ -144,31 +172,28 @@ class System extends Base{
 	public function websetup(Request $request){
 		$group = $request->param('group/d');
 		if(empty($group) || !isset($group)){
-			$this->error('参数错误！');
-			return;
+			return '参数错误！';
 		}
 
-		$title = [2 => '网站配置',3 => '接口配置',4 => '文件配置'];
+		$title = [2 => '网站配置', 3 => '接口配置', 4 => '文件配置'];
 
 		$db = Db::name('config');
 
         if($request->isPost()){
-            $data = $request->post();
+            $form = $request->post();
 			// 清除数据空格
-			foreach($data as $k => $v){
-				$data[$k] = preg_replace('# #','',$v);
-			}
+			$data = remove_array_spaces($form);
 
             // 批量更新配置值
         	foreach($data as $name => $value){
-        		$map['group'] = ['eq',$group];
-        		$map['name'] = ['eq',$name];
+        		$map['group'] = ['eq', $group];
+        		$map['name'] = ['eq', $name];
         		$db->where($map)->update(['value' => $value]);
         	}
 
 			if(self::updateConfig()){
 				add_logs($title[$group] . '更新', 1);
-            	$with = ['code' => 'success','msg' => $title[$group].'更新成功！'];
+            	$with = ['code' => 'success', 'msg' => $title[$group] . '更新成功！'];
 	        	$params = ['group' => $group];
 	            return hui_redirect('System/websetup', $with, $params);
 			}else{
@@ -182,14 +207,14 @@ class System extends Base{
 
 		// 获取配置项
 		unset($where);
-		$where['group'] = ['eq',$group];
-		$where['status'] = ['eq',1];
+		$where['group'] = ['eq', $group];
+		$where['status'] = ['eq', 1];
 		$list = $db->where($where)->order('sort asc')->select();
-		$this->assign('list',$list);
-		$this->assign('group',$group);
+		$this->assign('list', $list);
+		$this->assign('group', $group);
 
 		// 面包屑
-		$this->assign('bread',breadcrumb([$this->bread,$title[$group]]));
+		$this->assign('bread', breadcrumb([$this->bread, $title[$group]]));
 		return $this->fetch();
 	}
 
@@ -199,23 +224,23 @@ class System extends Base{
 	 * @return bool
 	 */
 	private static function updateConfig(){
-		$map['status'] = ['eq',1];
+		$map['status'] = ['eq', 1];
 		$list = Db::name('config')->where($map)->order('id asc')->field('name,value')->select();
 		$fcon = "<?php\r\n // Hui.admin v1.0 系统生成网站配置文件\r\n return [\r\n";
 					foreach ($list as $key => $value) {
 						if(is_numeric($value['value'])){
-							$fcon .= "\t'".$value['name']."' => ".$value['value'].",\r\n";
+							$fcon .= "\t'" . $value['name'] . "' => " . $value['value'] . ",\r\n";
 						}else{
-							$fcon .= "\t'".$value['name']."' => '".$value['value']."',\r\n";
+							$fcon .= "\t'" . $value['name'] . "' => '" . $value['value'] . "',\r\n";
 						}
 					}
-		$fcon = $fcon."];";
+		$fcon = $fcon . "];";
 		// 写入配置文件
-		$file = CONF_PATH.'/extra/websetup.php';
-		$hand = file_put_contents($file,$fcon);
+		$file = CONF_PATH . '/extra/websetup.php';
+		$hand = file_put_contents($file, $fcon);
 		// 添加权限
-		chmod(dirname($file),0777);
-		chmod($file,0777);
+		chmod(dirname($file), 0777);
+		chmod($file, 0777);
 		if($hand){
 			return true;
 		}else{
@@ -228,8 +253,7 @@ class System extends Base{
      * @return mixed
      */
 	public function codemirror(){
-		Config::set('app_trace',false);
-		$file = CONF_PATH.'extra/websetup.php';
+		$file = CONF_PATH . 'extra/websetup.php';
 		if(!is_file($file)){
 			$code = '文件不存在!';
 		}elseif (!is_readable($file)){

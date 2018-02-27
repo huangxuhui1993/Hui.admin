@@ -32,7 +32,7 @@ class Logs extends Base{
 		}
 
 		$db = new LogsModel();
-		$list = $db->where($where)->paginate(10, false, [
+		$list = $db->where($where)->order('id desc')->paginate(10, false, [
 			'type'     => 'Bootstrap',
 			'var_page' => 'page',
 			'page'     => $page,

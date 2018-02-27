@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:73:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\codemirror.html";i:1518365401;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:73:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\codemirror.html";i:1518520876;}*/ ?>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -81,7 +81,7 @@
 			layer.msg('File Path Is Null!'); 
 			return false;
 		}
-		$.post("<?php echo url('Common/savecode'); ?>",{file:filepath,code:codeValue},function(result){
+		$.post("<?php echo url('Common/savecode'); ?>",{file:filepath, code:codeValue}, function(result){
             layer.msg(result.msg);
         });
 	}

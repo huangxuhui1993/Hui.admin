@@ -26,9 +26,8 @@
 		<table class="table table-border table-bordered table-hover table-bg table-sort">
 			<thead>
 				<tr class="text-c">
-	                <th>ID</th>
+	                <th width="40">ID</th>
 	                <th>角色名称</th>
-	                <th>角色权限</th>
 	                <th>状　态</th>
 	                <th>操　作</th>
 				</tr>
@@ -38,7 +37,6 @@
 				<tr class="text-c">
                     <td>{$vo.id}</td>
                     <td>{$vo.title}</td>
-                    <td>{:msubstr($vo['rules'],0,40,'utf-8',false)}</td>
                     <td>{$vo.status}</td>
 					<td class="f-14">
 						<a title="编辑" href="{:url('Group/edit',['id'=>$vo['id']])}" data-toggle="tooltip" data-placement="top">
