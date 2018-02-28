@@ -17,8 +17,19 @@
 	
 	<div class="cl pd-5 bg-1 bk-gray mt-20">
 		<span class="l">
-			<a class="btn btn-success radius" href="javascript:;" onclick="export_data('{:url('Export/xlsxExport')}','日志文件','ExportLogs')"><i class="Hui-iconfont">&#xe644;</i> 导出数据</a>
-			<a class="btn btn-danger radius" href="javascript:;" onclick="del_logs('del')"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+			
+			{if condition="get_auth('Export/xlsxExport/ExportLogs')"}
+				<a class="btn btn-success radius" href="javascript:;" onclick="export_data('{:url('Export/xlsxExport')}','日志文件','ExportLogs')">
+					<i class="Hui-iconfont">&#xe644;</i> 导出数据
+				</a>
+			{/if}
+
+			{if condition="get_auth('Logs/del')"}
+				<a class="btn btn-danger radius" href="javascript:;" onclick="del_logs('del')">
+					<i class="Hui-iconfont">&#xe6e2;</i> 批量删除
+				</a>
+			{/if}
+
 		</span>
 		<span class="r">
 			<form action="{:url('Logs/lis')}" method="get">
@@ -32,6 +43,7 @@
 	<div class="mt-20">
 	
 		{include file="public/redirect" /}
+
 		<form action="{:url('Logs/del')}" method="post" id="log-form">
 			<table class="table table-border table-bordered table-hover table-bg table-sort">
 				<thead>

@@ -117,7 +117,7 @@ function conversion_window(url){
 
 // 地图定位窗口
 function positioning_window(url){
-    layer_open(url, '地图定位', 700, 700, 0.1, false);
+    layer_open(url, '地图定位', 600, 640, 0.1, false);
 }
 
 // 检测网速窗口

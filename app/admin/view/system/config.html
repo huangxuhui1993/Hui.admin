@@ -15,8 +15,19 @@
 	</div>
 	<div class="cl pd-5 bg-1 bk-gray mt-20">
 		<span class="l">
-			<a class="btn btn-primary radius" href="{:url('System/add')}"><i class="Hui-iconfont">&#xe600;</i> 添加配置项</a>
-			<a class="btn btn-primary radius" href="javascript:;" onclick="parent.code_window('{:url('System/codemirror')}','配置文件','2')"><i class="Hui-iconfont">&#xe63e;</i> 配置文件</a>
+
+			{if condition="get_auth('System/add')"}
+				<a class="btn btn-primary radius" href="{:url('System/add')}">
+					<i class="Hui-iconfont">&#xe600;</i> 添加配置项
+				</a>
+			{/if}
+
+			{if condition="get_auth('System/codemirror')"}
+				<a class="btn btn-primary radius" href="javascript:;" onclick="parent.code_window('{:url('System/codemirror')}','配置文件','2')">
+					<i class="Hui-iconfont">&#xe63e;</i> 配置文件
+				</a>
+			{/if}
+
 		</span>
 		<span class="r">共 <span class="badge badge-default radius">{$count}</span> 条数据</span>
 	</div>
@@ -47,15 +58,28 @@
 					<td>{$vo.create_time}</td>
 					<td>{$vo.status}</td>
                     <td class="width-50">
-	                	<input type="text" value="{$vo.sort}" alt="{$vo.id}" onchange="sorting('{:url('System/sorting')}', this)" class="text-c input-text radius">
+
+                    	{if condition="get_auth('System/sorting')"}
+	                		<input type="text" value="{$vo.sort}" alt="{$vo.id}" onchange="sorting('{:url('System/sorting')}', this)" class="text-c input-text radius">
+	                	{else/}
+	                		{$vo.sort}
+	                	{/if}
+
 	                </td>
 					<td class="f-14">
-						<a title="编辑" href="{:url('System/edit',['id'=>$vo['id']])}" data-toggle="tooltip" data-placement="top">
-							<i class="Hui-iconfont">&#xe6df;</i>
-						</a>
-						<a title="删除" href="javascript:;" onclick="delete_info('{:url('System/del',['id'=>$vo['id']])}','配置项')" class="ml-15" data-toggle="tooltip" data-placement="top">
-							<i class="Hui-iconfont">&#xe6e2;</i>
-						</a>
+
+						{if condition="get_auth('System/edit')"}
+							<a title="编辑" href="{:url('System/edit', ['id' => $vo['id']])}" data-toggle="tooltip" data-placement="top">
+								<i class="Hui-iconfont">&#xe6df;</i>
+							</a>
+						{/if}
+
+						{if condition="get_auth('System/del')"}
+							<a title="删除" href="javascript:;" onclick="delete_info('{:url('System/del', ['id' => $vo['id']])}','配置项')" class="ml-15" data-toggle="tooltip" data-placement="top">
+								<i class="Hui-iconfont">&#xe6e2;</i>
+							</a>
+						{/if}
+
 					</td>
 				</tr>
 			{/volist}

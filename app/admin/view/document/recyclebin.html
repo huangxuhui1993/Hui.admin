@@ -20,12 +20,16 @@
 	</div>
 	<div class="cl pd-5 bg-1 bk-gray mt-20">
 		<span class="l">
-			<a class="btn btn-success radius" href="javascript:;" onclick="recyclebin_operation('reduction','还原文档')" >
-				<i class="Hui-iconfont">&#xe615;</i> 还原文档
-			</a>
-			<a class="btn btn-danger radius" href="javascript:;" onclick="recyclebin_operation('delete','批量删除')" >
-				<i class="Hui-iconfont">&#xe6e2;</i> 批量删除
-			</a>
+			{if condition="get_auth('Document/recyclebinOperation/reduction')"}
+				<a class="btn btn-success radius" href="javascript:;" onclick="recyclebin_operation('reduction','还原文档')" >
+					<i class="Hui-iconfont">&#xe615;</i> 还原文档
+				</a>
+			{/if}
+			{if condition="get_auth('Document/recyclebinOperation/delete')"}
+				<a class="btn btn-danger radius" href="javascript:;" onclick="recyclebin_operation('delete','批量删除')" >
+					<i class="Hui-iconfont">&#xe6e2;</i> 批量删除
+				</a>
+			{/if}
 		</span>
 		<span class="r">共 <span class="badge badge-default radius">{$count}</span> 条数据</span>
 	</div>

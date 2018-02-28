@@ -9,9 +9,11 @@
 <div class="page-container">
 	<div class="cl pd-5 bg-1 bk-gray">
 		<span class="l">
-			<a class="btn btn-primary radius" href="{:url('Fields/add',['mid'=>$mid])}" >
-				<i class="Hui-iconfont">&#xe600;</i> 添加字段
-			</a>
+			{if condition="get_auth('Fields/add')"}
+				<a class="btn btn-primary radius" href="{:url('Fields/add', ['mid' => $mid])}" >
+					<i class="Hui-iconfont">&#xe600;</i> 添加字段
+				</a>
+			{/if}
 			<button class="btn btn-primary radius" type="button" onClick="javascript:window.location.href = '{:url('models/lis')}'">
 				<i class="Hui-iconfont">&#xe66b;</i> 返回管理
 			</button>
@@ -46,12 +48,19 @@
                     <td>{$vo.sorting}</td>
                     <td>{$vo.update_time}</td>
                     <td class="f-14">
-						<a title="编辑" href="{:url('Fields/edit',['mid'=>$mid,'id'=>$vo['id']])}" class="ml-15" data-toggle="tooltip" data-placement="top">
-							<i class="Hui-iconfont">&#xe6df;</i>
-						</a>
-						<a title="删除" href="javascript:;" onclick="delete_info('{:url('Fields/del',['mid'=>$mid,'id'=>$vo['id']])}','字段，灾难操作！')" class="ml-15" data-toggle="tooltip" data-placement="top">
-							<i class="Hui-iconfont">&#xe6e2;</i>
-						</a>
+
+                    	{if condition="get_auth('Fields/edit')"}
+							<a title="编辑" href="{:url('Fields/edit', ['mid' => $mid, 'id' => $vo['id']])}" class="ml-15" data-toggle="tooltip" data-placement="top">
+								<i class="Hui-iconfont">&#xe6df;</i>
+							</a>
+						{/if}
+
+						{if condition="get_auth('Fields/del')"}
+							<a title="删除" href="javascript:;" onclick="delete_info('{:url('Fields/del', ['mid' => $mid, 'id' => $vo['id']])}', '字段，灾难操作！')" class="ml-15" data-toggle="tooltip" data-placement="top">
+								<i class="Hui-iconfont">&#xe6e2;</i>
+							</a>
+						{/if}
+
 					</td>
 				</tr>
 			{/volist}

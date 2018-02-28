@@ -8,11 +8,13 @@
 </nav>
 <div class="page-container">
 	<div class="cl pd-5 bg-1 bk-gray">
-		<span class="l">
-			<a class="btn btn-primary radius" href="{:url('Models/add')}" >
-				<i class="Hui-iconfont">&#xe600;</i> 添加模型
-			</a>
-		</span>
+		{if condition="get_auth('Models/add')"}
+			<span class="l">
+				<a class="btn btn-primary radius" href="{:url('Models/add')}" >
+					<i class="Hui-iconfont">&#xe600;</i> 添加模型
+				</a>
+			</span>
+		{/if}
 		<span class="r">共 <span class="badge badge-default radius">{$count}</span> 条数据</span>
 	</div>
 	<div class="mt-20">
@@ -39,23 +41,36 @@
 						<span class="label label-success radius">{$vo.table}</span>
                     </td>
                     <td class="f-14">
-                        <a href="{:url('fields/lis',['mid'=>$vo['id']])}" title="字段管理" data-toggle="tooltip" data-placement="top">
-                            <i class="Hui-iconfont">&#xe63c;</i>
-                        </a>
+                    	{if condition="get_auth('Fields/lis')"}
+	                        <a href="{:url('Fields/lis', ['mid' => $vo['id']])}" title="字段管理" data-toggle="tooltip" data-placement="top">
+	                            <i class="Hui-iconfont">&#xe63c;</i>
+	                        </a>
+                        {/if}
                         <span class="badge badge-default radius">{php}echo model('Fields')->where('mid','=',$vo['id'])->count(){/php}</span>
                     </td>
 					<td class="width-50 text-c">
-	                	<input type="text" value="{$vo.sorting}" alt="{$vo.id}" onchange="sorting('{:url('Models/sorting')}', this)" class="text-c input-text radius">
+						{if condition="get_auth('Models/sorting')"}
+	                		<input type="text" value="{$vo.sorting}" alt="{$vo.id}" onchange="sorting('{:url('Models/sorting')}', this)" class="text-c input-text radius">
+	                	{else/}
+	                		{$vo.sorting}
+	                	{/if}
 	                </td>
                     <td>{$vo.update_time}</td>
                     <td>{$vo.status.1}</td>
                     <td class="f-14">
-						<a title="编辑" href="{:url('Models/edit',['id'=>$vo['id']])}" class="ml-15" data-toggle="tooltip" data-placement="top">
-							<i class="Hui-iconfont">&#xe6df;</i>
-						</a>
-						<a title="删除" href="javascript:;" onclick="delete_info('{:url('Models/del',['id'=>$vo['id']])}','模型，灾难操作！')" class="ml-15" data-toggle="tooltip" data-placement="top">
-							<i class="Hui-iconfont">&#xe6e2;</i>
-						</a>
+
+                    	{if condition="get_auth('Models/edit')"}
+							<a title="编辑" href="{:url('Models/edit', ['id' => $vo['id']])}" class="ml-15" data-toggle="tooltip" data-placement="top">
+								<i class="Hui-iconfont">&#xe6df;</i>
+							</a>
+						{/if}
+
+						{if condition="get_auth('Models/del')"}
+							<a title="删除" href="javascript:;" onclick="delete_info('{:url('Models/del', ['id' => $vo['id']])}','模型，灾难操作！')" class="ml-15" data-toggle="tooltip" data-placement="top">
+								<i class="Hui-iconfont">&#xe6e2;</i>
+							</a>
+						{/if}
+
 					</td>
 				</tr>
 			{/volist}

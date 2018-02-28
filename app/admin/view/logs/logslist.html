@@ -8,9 +8,11 @@
 		<td class="text-c">{$vo.time}</td>
 		<td class="text-c">{$vo.status}</td>
 		<td class="text-c f-14">
-			<a title="删除" href="javascript:;" onclick="del_logs('{:url('Logs/del', ['id' => $vo['id']])}')" class="ml-10" data-toggle="tooltip" data-placement="top">
-				<i class="Hui-iconfont">&#xe6e2;</i>
-			</a>
+			{if condition="get_auth('Logs/del')"}
+				<a title="删除" href="javascript:;" onclick="del_logs('{:url('Logs/del', ['id' => $vo['id']])}')" class="ml-10" data-toggle="tooltip" data-placement="top">
+					<i class="Hui-iconfont">&#xe6e2;</i>
+				</a>
+			{/if}
 		</td>
 	</tr>
 {/volist}

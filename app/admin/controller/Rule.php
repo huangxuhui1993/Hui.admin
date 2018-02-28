@@ -18,7 +18,7 @@ class Rule extends Base{
 		$list = self::get_auth_rule($pid = 0," ┣━  ");
 		$this->assign('list', $list);
 		$count = $db->where('status', 1)->count();
-		$this->assign('count',$count);
+		$this->assign('count', $count);
 
 		// 面包屑
 		$this->assign('bread',breadcrumb([$this->bread,'权限列表']));
@@ -166,7 +166,7 @@ class Rule extends Base{
 		global $a_arr;
 		$db = new AuthRuleModel();
 		//读取数据
-		$list = $db->where('pid', $pid)->order('id')->select();
+		$list = $db->where('pid', $pid)->order('sort')->select();
 		if (is_array($list)){
 			foreach($list as $val){
 				if ($val['pid'] == $pid){
