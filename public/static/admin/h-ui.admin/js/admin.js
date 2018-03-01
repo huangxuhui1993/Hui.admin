@@ -1,5 +1,7 @@
 window.cookie_config = {expires:7, path:'/'};
 $(function(){
+    // jquery判断checked的方法:
+    // .is(':checked'); 所有版本:true/false 别忘记冒号哦
     // 全局配置参数
     laydate.skin('molv');
     $('.skin-minimal input').iCheck({

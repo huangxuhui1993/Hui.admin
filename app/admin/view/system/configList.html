@@ -8,7 +8,7 @@
 </nav>
 <div class="page-container">
 	<div class="text-c">
-	<form action="{:url('System/config')}" method="post" id="search">
+	<form action="{:url('System/configList')}" method="post" id="search">
 		<input type="text" name="keywords" id="keywords" value="{$keywords}" placeholder="请输入名称、标识" class="search-input input-text radius">
 		<button class="btn btn-success radius" type="button" onclick="search()"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
 	</form>
@@ -32,7 +32,9 @@
 		<span class="r">共 <span class="badge badge-default radius">{$count}</span> 条数据</span>
 	</div>
 	<div class="mt-20">
+
 		{include file="public/redirect" /}
+
 		<table class="table table-border table-bordered table-hover table-bg table-sort">
 			<thead>
 				<tr class="text-c">

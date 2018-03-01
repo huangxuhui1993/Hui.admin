@@ -14,11 +14,13 @@
 	</form>
 	</div>
 	<div class="cl pd-5 bg-1 bk-gray mt-20">
-		<span class="l">
-			<a class="btn btn-primary radius" href="{:url('Group/add')}" >
-				<i class="Hui-iconfont">&#xe600;</i> 添加角色
-			</a>
-		</span>
+		{if condition="get_auth('Group/add')"}
+			<span class="l">
+				<a class="btn btn-primary radius" href="{:url('Group/add')}" >
+					<i class="Hui-iconfont">&#xe600;</i> 添加角色
+				</a>
+			</span>
+		{/if}
 		<span class="r">共 <span class="badge badge-default radius">{$count}</span> 条数据</span>
 	</div>
 	<div class="mt-20">
@@ -39,12 +41,19 @@
                     <td>{$vo.title}</td>
                     <td>{$vo.status}</td>
 					<td class="f-14">
-						<a title="编辑" href="{:url('Group/edit',['id'=>$vo['id']])}" data-toggle="tooltip" data-placement="top">
-							<i class="Hui-iconfont">&#xe6df;</i>
-						</a>
-						<a title="删除" href="javascript:;" onclick="delete_info('{:url('Group/del',['id'=>$vo['id']])}','角色')" class="ml-15" data-toggle="tooltip" data-placement="top">
-							<i class="Hui-iconfont">&#xe6e2;</i>
-						</a>
+
+						{if condition="get_auth('Group/edit')"}
+							<a title="编辑" href="{:url('Group/edit', ['id' => $vo['id']])}" data-toggle="tooltip" data-placement="top">
+								<i class="Hui-iconfont">&#xe6df;</i>
+							</a>
+						{/if}
+
+						{if condition="get_auth('Group/del')"}
+							<a title="删除" href="javascript:;" onclick="delete_info('{:url('Group/del', ['id' => $vo['id']])}', '角色')" class="ml-15" data-toggle="tooltip" data-placement="top">
+								<i class="Hui-iconfont">&#xe6e2;</i>
+							</a>
+						{/if}
+
 					</td>
 				</tr>
 			{/volist}

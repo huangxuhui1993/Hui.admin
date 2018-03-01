@@ -14,15 +14,19 @@
 		</form>
 	</div>
 	<div class="cl pd-5 bg-1 bk-gray mt-20">
-		<span class="l">
-			<a class="btn btn-primary radius" href="{:url('User/add')}" >
-				<i class="Hui-iconfont">&#xe600;</i> 添加管理员
-			</a>
-		</span>
+		{if condition="get_auth('User/add')"}
+			<span class="l">
+				<a class="btn btn-primary radius" href="{:url('User/add')}" >
+					<i class="Hui-iconfont">&#xe600;</i> 添加管理员
+				</a>
+			</span>
+		{/if}
 		<span class="r">共 <span class="badge badge-default radius">{$count}</span> 条数据</span>
 	</div>
 	<div class="mt-20">
+
 		{include file="public/redirect" /}
+
 		<table class="table table-border table-bordered table-hover table-bg table-sort">
 			<thead>
 				<tr class="text-c">
@@ -47,19 +51,29 @@
                     <td>{$vo.loginip}</td>
                     <td>{$vo.state.1}</td>
 					<td class="f-14">
-						<a onclick="setup_status('{:url('User/userState',['id'=>$vo['id'],'state'=>$vo['state']['2']])}','{$vo.state.2}')" href="javascript:;" title="状态" data-toggle="tooltip" data-placement="top">
-							{eq name="vo.state.2" value="1"}
-								<i class="Hui-iconfont">&#xe631;</i>
-							{else /}
-								<i class="Hui-iconfont">&#xe615;</i>
-							{/eq}
-						</a>
-						<a title="编辑" href="{:url('User/edit',['id'=>$vo['id']])}" class="ml-15" data-toggle="tooltip" data-placement="top">
-							<i class="Hui-iconfont">&#xe6df;</i>
-						</a>
-						<a title="删除" href="javascript:;" onclick="delete_info('{:url('User/del',['id'=>$vo['id']])}','管理员')" class="ml-15" data-toggle="tooltip" data-placement="top">
-							<i class="Hui-iconfont">&#xe6e2;</i>
-						</a>
+
+						{if condition="get_auth('User/userState')"}
+							<a onclick="setup_status('{:url('User/userState', ['id' => $vo['id'], 'state' => $vo['state']['2']])}', '{$vo.state.2}')" href="javascript:;" title="状态" data-toggle="tooltip" data-placement="top">
+								{eq name="vo.state.2" value="1"}
+									<i class="Hui-iconfont">&#xe631;</i>
+								{else /}
+									<i class="Hui-iconfont">&#xe615;</i>
+								{/eq}
+							</a>
+						{/if}
+
+						{if condition="get_auth('User/edit')"}
+							<a title="编辑" href="{:url('User/edit', ['id' => $vo['id']])}" class="ml-15" data-toggle="tooltip" data-placement="top">
+								<i class="Hui-iconfont">&#xe6df;</i>
+							</a>
+						{/if}
+
+						{if condition="get_auth('User/del')"}
+							<a title="删除" href="javascript:;" onclick="delete_info('{:url('User/del', ['id' => $vo['id']])}','管理员')" class="ml-15" data-toggle="tooltip" data-placement="top">
+								<i class="Hui-iconfont">&#xe6e2;</i>
+							</a>
+						{/if}
+
 					</td>
 				</tr>
 			{/volist}

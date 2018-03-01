@@ -20,7 +20,7 @@ class System extends Base{
      * @param Request $request
      * @return mixed
      */
-	public function config(Request $request){
+	public function configList(Request $request){
 		$where = [];
 		# 关键字查询
 		$keywords = preg_replace('# #','',$request->post('keywords'));
@@ -102,7 +102,7 @@ class System extends Base{
 
 		// 获取全部原始数据
 		$det_rs = ConfigModel::get($id)->getData();
-		$this->assign('rs',$det_rs);
+		$this->assign('rs', $det_rs);
 		$this->assign('bread',breadcrumb([$this->bread,'配置管理','编辑配置']));
 		return $this->fetch();
 	}
@@ -169,20 +169,44 @@ class System extends Base{
      * @param Request $request
      * @return mixed|void
      */
-	public function websetup(Request $request){
+	public function webSetup(Request $request){
 		$group = $request->param('group/d');
-		if(empty($group) || !isset($group)){
+		if(!empty($group) && isset($group)){
+
+			$title = [2 => '网站配置', 3 => '接口配置', 4 => '文件配置'];
+
+			$db = Db::name('config');
+
+			// 获取配置项
+			unset($where);
+			$where['group'] = ['eq', $group];
+			$where['status'] = ['eq', 1];
+			$list = $db->where($where)->order('sort asc')->select();
+			$this->assign('list', $list);
+			$this->assign('group', $group);
+
+			// 面包屑
+			$this->assign('bread', breadcrumb([$this->bread, $title[$group]]));
+			return $this->fetch();
+		}else{
 			return '参数错误！';
 		}
+	}
 
-		$title = [2 => '网站配置', 3 => '接口配置', 4 => '文件配置'];
-
-		$db = Db::name('config');
-
+	/**
+	 * webSetupEdit 编辑网站设置信息
+	 * @param  Request $request
+	 */
+	public function webSetupEdit(Request $request){
         if($request->isPost()){
+
+			$group = $request->param('group/d');
+			$title = [2 => '网站配置', 3 => '接口配置', 4 => '文件配置'];
+
+			$db = Db::name('config');
+
             $form = $request->post();
-			// 清除数据空格
-			$data = remove_array_spaces($form);
+			$data = remove_array_spaces($form); // 清除数据空格
 
             // 批量更新配置值
         	foreach($data as $name => $value){
@@ -191,31 +215,20 @@ class System extends Base{
         		$db->where($map)->update(['value' => $value]);
         	}
 
-			if(self::updateConfig()){
+			if(self::updateConfigFile()){
 				add_logs($title[$group] . '更新', 1);
             	$with = ['code' => 'success', 'msg' => $title[$group] . '更新成功！'];
 	        	$params = ['group' => $group];
-	            return hui_redirect('System/websetup', $with, $params);
+	            return hui_redirect('System/webSetup', $with, $params);
 			}else{
 				add_logs($title[$group] . '更新', 0);
             	$with = ['code' => 'error', 'msg' => $title[$group] . '更新失败！'];
 	        	$params = ['group' => $group];
-	            return hui_redirect('System/websetup', $with, $params);
+	            return hui_redirect('System/webSetup', $with, $params);
 			}
-            return;
+        }else{
+        	return '非法操作！';
         }
-
-		// 获取配置项
-		unset($where);
-		$where['group'] = ['eq', $group];
-		$where['status'] = ['eq', 1];
-		$list = $db->where($where)->order('sort asc')->select();
-		$this->assign('list', $list);
-		$this->assign('group', $group);
-
-		// 面包屑
-		$this->assign('bread', breadcrumb([$this->bread, $title[$group]]));
-		return $this->fetch();
 	}
 
 	/**
@@ -223,7 +236,7 @@ class System extends Base{
 	 * @param  int $group 配置分组
 	 * @return bool
 	 */
-	private static function updateConfig(){
+	private static function updateConfigFile(){
 		$map['status'] = ['eq', 1];
 		$list = Db::name('config')->where($map)->order('id asc')->field('name,value')->select();
 		$fcon = "<?php\r\n // Hui.admin v1.0 系统生成网站配置文件\r\n return [\r\n";

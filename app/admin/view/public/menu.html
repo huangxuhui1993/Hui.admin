@@ -73,26 +73,26 @@
 			</dl>
 		{/if}
 
-		{if condition="get_auth('System/websetup/group/2,System/websetup/group/3,System/websetup/group/4,System/config,Logs/lis')"}
+		{if condition="get_auth('System/webSetup/group/2,System/webSetup/group/3,System/webSetup/group/4,System/configList,Logs/lis')"}
 			<dl id="menu-conf">
 				<dt><i class="Hui-iconfont">&#xe62e;</i> 系统管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 				<dd>
 					<ul>
 
-						{if condition="get_auth('System/websetup/group/2')"}
-							<li><a data-href="{:url('System/websetup', ['group' => 2])}" data-title="网站配置" href="javascript:void(0)">网站配置</a></li>
+						{if condition="get_auth('System/webSetup/group/2')"}
+							<li><a data-href="{:url('System/webSetup', ['group' => 2])}" data-title="网站配置" href="javascript:void(0)">网站配置</a></li>
 						{/if}
 						
-						{if condition="get_auth('System/websetup/group/3')"}
-							<li><a data-href="{:url('System/websetup', ['group' => 3])}" data-title="接口配置" href="javascript:void(0)">接口配置</a></li>
+						{if condition="get_auth('System/webSetup/group/3')"}
+							<li><a data-href="{:url('System/webSetup', ['group' => 3])}" data-title="接口配置" href="javascript:void(0)">接口配置</a></li>
 						{/if}
 						
-						{if condition="get_auth('System/websetup/group/4')"}
-							<li><a data-href="{:url('System/websetup', ['group' => 4])}" data-title="文件配置" href="javascript:void(0)">文件配置</a></li>
+						{if condition="get_auth('System/webSetup/group/4')"}
+							<li><a data-href="{:url('System/webSetup', ['group' => 4])}" data-title="文件配置" href="javascript:void(0)">文件配置</a></li>
 						{/if}
 						
-						{if condition="get_auth('System/config')"}
-							<li><a data-href="{:url('System/config')}" data-title="配置管理" href="javascript:void(0)">配置管理</a></li>
+						{if condition="get_auth('System/configList')"}
+							<li><a data-href="{:url('System/configList')}" data-title="配置管理" href="javascript:void(0)">配置管理</a></li>
 						{/if}
 
 					</ul>

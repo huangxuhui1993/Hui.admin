@@ -27,18 +27,31 @@
 	</div>
 	<div class="cl pd-5 bg-1 bk-gray mt-20">
 		<span class="l">
-			<a class="btn btn-primary radius" href="javascript:;" onclick="add_document('{:url('Document/addform')}')">
-				<i class="Hui-iconfont">&#xe600;</i> 添加文档
-			</a>
-			<a class="btn btn-success radius" href="javascript:;" onclick="document_operation('audit','审核文档')" >
-				<i class="Hui-iconfont">&#xe615;</i> 审核文档
-			</a>
-			<a class="btn btn-secondary radius" href="javascript:;" onclick="document_operation('hidden','隐藏文档')" >
-				<i class="Hui-iconfont">&#xe631;</i> 隐藏文档
-			</a>
-			<a class="btn btn-default radius" href="javascript:;" onclick="document_operation('recycling','放入回收站')" >
-				<i class="Hui-iconfont">&#xe6e2;</i> 放入回收站
-			</a>
+
+			{if condition="get_auth('Document/addform')"}
+				<a class="btn btn-primary radius" href="javascript:;" onclick="add_document('{:url('Document/addform')}')">
+					<i class="Hui-iconfont">&#xe600;</i> 添加文档
+				</a>
+			{/if}
+
+			{if condition="get_auth('Document/docOperation/style/audit')"}
+				<a class="btn btn-success radius" href="javascript:;" onclick="document_operation('audit','审核文档')" >
+					<i class="Hui-iconfont">&#xe615;</i> 审核文档
+				</a>
+			{/if}
+
+			{if condition="get_auth('Document/docOperation/style/hidden')"}
+				<a class="btn btn-secondary radius" href="javascript:;" onclick="document_operation('hidden','隐藏文档')" >
+					<i class="Hui-iconfont">&#xe631;</i> 隐藏文档
+				</a>
+			{/if}
+
+			{if condition="get_auth('Document/docOperation/style/recycling')"}
+				<a class="btn btn-default radius" href="javascript:;" onclick="document_operation('recycling','放入回收站')" >
+					<i class="Hui-iconfont">&#xe6e2;</i> 放入回收站
+				</a>
+			{/if}
+
 		</span>
 		<span class="r">
 			<form action="{:url('Document/lis')}" method="get">
@@ -49,7 +62,9 @@
 		</span>
 	</div>
 	<div class="mt-20">
+
 		{include file="public/redirect" /}
+
 		<form action="{:url('Document/docOperation')}" method="post" id="document-form">
 			<input type="hidden" name="style" id="style" value="">
 			<table class="table table-border table-bordered table-hover table-bg table-sort">
@@ -72,9 +87,7 @@
 					<tr class="text-c">
 						<td><input type="checkbox" value="{$vo.id}" name="id[]"></td>
 	                    <td>{$vo.id}</td>
-	                    <td>
-	                    	<font color="{$vo.color}">{$vo.topic}</font>
-	                    </td>
+	                    <td><font color="{$vo.color}">{$vo.topic}</font></td>
 	                    <td>{$vo.cid|get_channel_name}</td>
 	                    <td>{$vo.cid|get_channel_model_name}</td>
 	                    <td>{$vo.hits}</td>
@@ -82,19 +95,23 @@
 	                    <td>{$vo.create_time}</td>
 	                    <td>{$vo.status.1}</td>
 	                    <td class="f-14">
-							<a onclick="setup_status('{:url('Document/documentStatus',['id'=>$vo['id'],'status'=>$vo['status']['2']])}','{$vo.status.2}')" href="javascript:;" title="状态" data-toggle="tooltip" data-placement="top">
-								{eq name="vo.status.2" value="1"}
-									<i class="Hui-iconfont">&#xe631;</i>
-								{else /}
-									<i class="Hui-iconfont">&#xe615;</i>
-								{/eq}
-							</a>
-							<a title="编辑" href="{:url('Document/editform',['cid'=>$vo['cid'],'id'=>$vo['id']])}" class="ml-15" data-toggle="tooltip" data-placement="top">
-								<i class="Hui-iconfont">&#xe6df;</i>
-							</a>
-							<a title="预览" href="javascript:;" class="ml-15" data-toggle="tooltip" data-placement="top">
-								<i class="Hui-iconfont">&#xe695;</i>
-							</a>
+
+	                    	{if condition="get_auth('Document/documentStatus')"}
+								<a onclick="setup_status('{:url('Document/documentStatus', ['id' => $vo['id'], 'status' => $vo['status']['2']])}', '{$vo.status.2}')" href="javascript:;" title="状态" data-toggle="tooltip" data-placement="top">
+									{eq name="vo.status.2" value="1"}
+										<i class="Hui-iconfont">&#xe631;</i>
+									{else /}
+										<i class="Hui-iconfont">&#xe615;</i>
+									{/eq}
+								</a>
+							{/if}
+
+							{if condition="get_auth('Document/editform')"}
+								<a title="编辑" href="{:url('Document/editform', ['cid' => $vo['cid'], 'id' => $vo['id']])}" class="ml-15" data-toggle="tooltip" data-placement="top">
+									<i class="Hui-iconfont">&#xe6df;</i>
+								</a>
+							{/if}
+
 						</td>
 					</tr>
 				{/volist}

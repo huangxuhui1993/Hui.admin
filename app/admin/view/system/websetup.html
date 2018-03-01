@@ -11,8 +11,7 @@
 
 	{include file="public/redirect" /}
 
-	<form action="{:url('System/websetup')}" method="post" class="form form-horizontal" id="form-article-add">
-		<input type="hidden" name="group" value="{$group}">
+	<form action="{:url('System/webSetupEdit', ['group' => $group])}" method="post" class="form form-horizontal" id="form-article-add">
 		<div class="HuiTab">
 			
 			{volist name="list" id="vo"}
@@ -55,7 +54,7 @@
 			</div>
 			{/volist}
 			
-			{if condition="get_auth('System/websetup/submit/group/' . $group)"}
+			{if condition="get_auth('System/webSetupEdit/group/' . $group)"}
 				<div class="row cl">
 					<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
 						<button class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存更新</button>
