@@ -94,10 +94,6 @@
 						{if condition="get_auth('System/config')"}
 							<li><a data-href="{:url('System/config')}" data-title="配置管理" href="javascript:void(0)">配置管理</a></li>
 						{/if}
-						
-						{if condition="get_auth('Logs/lis')"}
-							<li><a data-href="{:url('Logs/lis')}" data-title="系统日志" href="javascript:void(0)">系统日志</a></li>
-						{/if}
 
 					</ul>
 				</dd>
@@ -145,6 +141,21 @@
 				</dd>
 			</dl>
 		{/if}
+
+		{if condition="get_auth('Logs/lis')"}
+			<dl id="menu-conf">
+				<dt><i class="Hui-iconfont">&#xe623;</i> 日志管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+				<dd>
+					<ul>
+
+						{if condition="get_auth('Logs/lis')"}
+							<li><a data-href="{:url('Logs/lis')}" data-title="系统日志" href="javascript:void(0)">系统日志</a></li>
+						{/if}
+
+					</ul>
+				</dd>
+			</dl>
+		{/if}		
 
 	</div>
 </aside>

@@ -35,7 +35,7 @@ class Login extends Controller{
             }else{
                 
                 // 检测验证码
-                if(!$this->check($data['code'])){
+                if(!captcha_check($data['code'])){
                     return json(['info' => '验证码错误']);
                 }
                 $user = Db::name('user')->where(['username' => $data['name']])->find();
@@ -45,29 +45,22 @@ class Login extends Controller{
                 Session::set('loginip', $user['loginip']);
                 Session::set('logintime', $user['logintime']);
                 // 登录修改
-                UserModel::where('id',$user['id'])->update([
+                UserModel::where('id', $user['id'])->update([
                     'loginnumber' => $user['loginnumber'] + 1,
                     'logintime'   => time(),
                     'loginip'     => $request->ip(),
                 ]);
                 add_logs('登录系统', 1);
+                send_mailer([ // 发送登录邮件
+                    'title'   => Config::get('websetup.sitename') . '管理系统登录通知邮件',
+                    'content' => '管理员：' . $user['username'] . '，登录系统，时间：' . date('Y-m-d H:i:s'),
+                    'email'   => Config::get('websetup.email'),
+                    'file'    => null
+                ]);
                 return json(['status' => 1, 'url' => url('index/index')]);
             }
         }else{
             die('非法操作！');
-        }
-    }
-
-    /**
-     * 验证码检测
-     * @param string $code
-     * @return bool
-     */
-    public function check($code=''){
-        if (!captcha_check($code)) {
-            return false;
-        } else {
-            return true;
         }
     }
 
