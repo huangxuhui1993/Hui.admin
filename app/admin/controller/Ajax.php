@@ -41,11 +41,11 @@ class Ajax extends Controller{
 	}
 
     /**
-     * clearcache 清除缓存
+     * clearCache 清除缓存
      * @param  Request $request 请求信息
      * @return json
      */
-	public function clearcache(Request $request){
+	public function clearCache(Request $request){
 		if($request->isAjax()){
 			# 清除cache缓存
 			$cache = Cache::clear();
