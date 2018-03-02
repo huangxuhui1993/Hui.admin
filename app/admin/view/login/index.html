@@ -35,11 +35,11 @@
                         <div class="item verifycode">
                             <i class="icon-login-verifycode"></i>
                             <input type="text" name="code" placeholder="请填写验证码" autocomplete="off">
-                            <a class="reloadverify" title="换一张" href="javascript:void(0)">换一张？</a>
+                            <a class="reloadverify" onclick="reload_verify('verifyimg')" title="换一张" href="javascript:void(0)">换一张？</a>
                         </div>
                         <span class="placeholder_copy placeholder_check">请填写验证码</span>
                         <div>
-                            <img class="verifyimg reloadverify" alt="点击切换" src="{:captcha_src()}">
+                            <img class="verifyimg reloadverify" onclick="reload_verify('verifyimg')" alt="点击切换" src="{:captcha_src()}">
                         </div>
                     </div>
                     <div class="login_btn_panel">
@@ -78,28 +78,17 @@
 		return false;
 		function success(data){
     		if(data.status){
+                // 发送登录邮件
+                $.post("{:url('Login/sendMailer')}", {username:data.username}, function(data){}, "json");
                 window.location.href = data.url;
 			}else{
 				self.find(".check-tips").text(data.info);
-				// 刷新验证码
-				$(".reloadverify").click();
+				reload_verify();
 			}
 		}
 	});
 
 	$(function(){
-		// 初始化选中用户名输入框
-		$("#itemBox").find("input[name=name]").focus();
-		// 刷新验证码
-		var verifyimg = $(".verifyimg").attr("src");
-        $(".reloadverify").click(function(){
-            if( verifyimg.indexOf('?') > 0){
-                $(".verifyimg").attr("src", verifyimg + '&random=' + Math.random());
-            }else{
-                $(".verifyimg").attr("src", verifyimg.replace(/\?.*$/,'') + '?' + Math.random());
-            }
-        });
-
         // placeholder兼容性
         // 如果支持 
         function isPlaceholer(){
@@ -117,7 +106,7 @@
                 })                    
             });
             $("#itemBox input").blur(function(){
-                if($(this).val()==""){
+                if($(this).val() == ""){
                     $(this).parents(".item").next(".placeholder_copy").css({
                         display:'block'
                     })                      

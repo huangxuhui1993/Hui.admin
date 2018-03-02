@@ -5,8 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <title>高德地图API地点搜索</title>
+    <script type="text/javascript" src="__ROOT__/js/jquery/jquery.min.js"></script> 
     <script src="http://cache.amap.com/lbs/static/es5.min.js"></script>
-    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.3&key=3df877a70685dac5ecb3afa375d4c305&callback=init&plugin=AMap.Autocomplete,AMap.PlaceSearch"></script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.3&key=3df877a70685dac5ecb3afa375d4c305&callback=init_map&plugin=AMap.Autocomplete,AMap.PlaceSearch"></script>
     <style type="text/css">
         *{ font-family: "微软雅黑";font-size:14px;color: #222;}
         input{width: 50px;height:25px;}
@@ -16,72 +17,16 @@
         .msg{color: red;padding-top: 10px;}
         #location{text-align: right;}
     </style>
-        
 </head>
 
 <body>
-<div class="content">
-    <input id="where" class="text" type="text" placeholder="请输入关键字进行搜索">
-    <input id="lnglat" class="text" type="text" placeholder="经纬度">
-    <input type="button" value="刷新" onclick="location.reload(true);" />
-    <div id="container"></div>
-    <div class="msg">提示：输入地点然后点击“查找”搜索，再点击地图地点设置对应位置信息</div>
-</div>
-
-<script type="text/javascript">
-function init(){
-    var infoWindow;
-    var map = new AMap.Map('container', {
-        zoom: 11,
-        resizeEnable: true
-    });
-    map.plugin(["AMap.Scale", "AMap.ToolBar", 'AMap.Geolocation', 'AMap.OverView'], function(){
-        map.addControl(new AMap.Scale());       // 比例尺
-        map.addControl(new AMap.ToolBar());     // 工具条
-        map.addControl(new AMap.OverView());    // 鹰眼
-
-        // 定位插件
-        geolocation = new AMap.Geolocation();
-        map.addControl(geolocation);
-        geolocation.getCurrentPosition();
-        AMap.event.addListener(geolocation, 'complete', function(obj){ // 返回定位信息
-            console.log(obj);
-            // 构建信息窗体中显示的内容
-            var info = [];
-            info.push("<div>类型 : " + obj.location_type + "定位");
-            info.push("状态 : " + obj.info);
-            info.push("经度 : " + obj.position.lat);
-            info.push("纬度 : " + obj.position.lng);
-            info.push("位置：" + obj.addressComponent.province + '-' + obj.addressComponent.city + '-' + obj.addressComponent.district + "</div>");
-            infoWindow = new AMap.InfoWindow({
-                content: info.join("<br/>")  //使用默认信息窗体框样式，显示信息内容
-            });
-            infoWindow.open(map, [obj.position.lng, obj.position.lat]);
-        });
-        AMap.event.addListener(geolocation, 'error', function(obj){ // 返回定位出错信息
-            console.log(obj);
-            alert('定位失败：' + obj.info + '--' + obj.message);
-        });
-
-        // 地图查询
-        auto = new AMap.Autocomplete({input: "where"});
-        placeSearch = new AMap.PlaceSearch({ // 构造地点查询类
-            map: map
-        });
-        AMap.event.addListener(auto, "select", function(e){ // 注册监听，当选中某条记录时会触发
-            placeSearch.setCity(e.poi.adcode);
-            placeSearch.search(e.poi.name); // 关键字查询查询
-        });
-
-        // 为地图注册click事件获取鼠标点击出的经纬度坐标
-        var clickEventListener = map.on('click', function(e){
-            document.getElementById("lnglat").value = e.lnglat.getLng() + ',' + e.lnglat.getLat()
-        });
-
-    });
-}
-
-
-</script>
+	<div class="content">
+	    <input id="where" class="text" type="text" placeholder="请输入关键字进行搜索">
+	    <input id="lnglat" class="text" type="text" placeholder="经纬度">
+	    <input type="button" value="刷新" onclick="location.reload(true);" />
+	    <div id="container"></div>
+	    <div class="msg">提示：输入地点然后点击“查找”搜索，再点击地图地点设置对应位置信息</div>
+	</div>
+	{tag:adminjs /}
 </body>
 </html>

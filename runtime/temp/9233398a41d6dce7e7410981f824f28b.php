@@ -1,0 +1,90 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:73:"F:\phpStudy\WWW\Hui.admin\public/../app/admin\view\public\codemirror.html";i:1518520876;}*/ ?>
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<link rel="Bookmark" href="/favicon.ico" >
+	<link rel="Shortcut Icon" href="/favicon.ico" />
+	<!--[if lt IE 9]>
+	<script type="text/javascript" src="__ROOT__/js/html5shiv.js"></script>
+	<script type="text/javascript" src="__ROOT__/js/respond.min.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" type="text/css" href="__ADMIN__/h-ui/css/H-ui.min.css" />
+	<link rel="stylesheet" type="text/css" href="__ADMIN__/lib/Hui-iconfont/1.0.8/iconfont.css" />
+	<link rel="stylesheet" href="__ROOT__/js/codemirror/codemirror.css">
+	<link rel="stylesheet" href="__ROOT__/js/codemirror/theme/ambiance.css">
+	<script type="text/javascript" src="__ROOT__/js/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="__ROOT__/js/layer/layer.js"></script>
+	<script type="text/javascript" src="__ROOT__/js/codemirror/codemirror.js"></script>
+	<script type="text/javascript" src="__ROOT__/js/codemirror/xml.js"></script>
+	<script type="text/javascript" src="__ROOT__/js/codemirror/javascript.js"></script>
+	<script type="text/javascript" src="__ROOT__/js/codemirror/clike.js"></script>
+	<script type="text/javascript" src="__ROOT__/js/codemirror/php.js"></script>
+	<!--[if IE 6]>
+	<script type="text/javascript" src="__ADMIN__/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+	<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
+	<title>代码编辑器</title>
+</head>
+<style type="text/css">
+	body{font-size: 14px; }
+	.CodeMirror {font-family: monospace;height: 465px;}
+</style>
+<body>
+<textarea id="code"><?php echo $code; ?></textarea>
+<div class="text-c mt-5">
+	<button class="btn btn-primary radius" onclick="save()" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存代码</button>
+</div>
+<input type="hidden" name="file" id="file" value="<?php echo $file; ?>">
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+	// 加载代码编辑器
+	var codemirror_option = {
+		lineNumbers   :true,
+		matchBrackets :true,
+		mode          :"application/x-httpd-php",
+		indentUnit    :4,
+		gutter        :true,
+		fixedGutter   :true,
+		indentWithTabs:true,
+		readOnly	  :false,
+		lineWrapping  :true,
+		enterMode     :"keep",
+		tabMode       :"shift",
+		theme: "ambiance"
+	};
+	var Textarea = document.getElementById('code');
+	var CodeMirrorEditor = CodeMirror.fromTextArea(Textarea, codemirror_option);
+	
+	/**
+	 * 该方法得到的结果是经过转义的数据
+	 * CodeMirrorEditor.getValue();
+	 * 该方法得到的结果是未经过转义的数据
+	 * CodeMirrorEditor.toTextArea();
+	 * CodeMirrorEditor.getTextArea().value;
+	 */
+	CodeMirrorEditor.getTextArea().value;
+	
+	// 保存修改后的代码
+	function save(){
+		var filepath = $.trim($("#file").val());
+		var codeValue = CodeMirrorEditor.getValue();
+		if(codeValue.length == 0){ 
+			layer.msg('Code Is Null!'); 
+			return false;
+		}
+		if(filepath.length == 0){
+			layer.msg('File Path Is Null!'); 
+			return false;
+		}
+		$.post("<?php echo url('Common/savecode'); ?>",{file:filepath, code:codeValue}, function(result){
+            layer.msg(result.msg);
+        });
+	}
+</script>
+</body>
+</html>

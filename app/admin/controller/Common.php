@@ -29,11 +29,6 @@ class Common extends Base{
 		download_shortcut($filename, $url, $icon);
 	}
 
-    // 消息列表
-    public function message_lis(){
-    	return '消息数量：' . Cookie::get('messageCount') . ',弹窗ID：' . Cookie::get('messageIndexID');
-    }
-
     // 文件上传页面
     public function uploadPage(Request $request){
     	$form = $request->param();

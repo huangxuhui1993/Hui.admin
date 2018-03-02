@@ -25,7 +25,6 @@ class Login extends Controller{
      */
     public function checkLogin(Request $request){
         if($request->isPost()){
-            
             $data = $request->post();
             // 数据验证
             $result = $this->validate($data, 'Login');
@@ -51,17 +50,22 @@ class Login extends Controller{
                     'loginip'     => $request->ip(),
                 ]);
                 add_logs('登录系统', 1);
-                send_mailer([ // 发送登录邮件
-                    'title'   => Config::get('websetup.sitename') . '管理系统登录通知邮件',
-                    'content' => '管理员：' . $user['username'] . '，登录系统，时间：' . date('Y-m-d H:i:s'),
-                    'email'   => Config::get('websetup.email'),
-                    'file'    => null
-                ]);
-                return json(['status' => 1, 'url' => url('index/index')]);
+                return json(['status' => 1, 'username' => $user['username'], 'url' => url('index/index')]);
             }
         }else{
             die('非法操作！');
         }
+    }
+
+    // 发送登录邮件
+    public function sendMailer(Request $request){
+        $data = [
+            'title'   => Config::get('websetup.sitename') . '管理系统登录通知邮件',
+            'content' => '管理员：' . $request->post('username') . '，登录系统，时间：' . date('Y-m-d H:i:s'),
+            'email'   => Config::get('websetup.email'),
+            'file'    => null
+        ];
+        send_mailer($data);
     }
 
     // 退出系统

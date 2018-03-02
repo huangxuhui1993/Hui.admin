@@ -1,7 +1,5 @@
 window.cookie_config = {expires:7, path:'/'};
 $(function(){
-    // jquery判断checked的方法:
-    // .is(':checked'); 所有版本:true/false 别忘记冒号哦
     // 全局配置参数
     laydate.skin('molv');
     $('.skin-minimal input').iCheck({
@@ -21,58 +19,39 @@ function sorting(url, obj){
     });
 }
 
-// 运行时间
+// 运行时间网络测试
 function run_time(){
-    var obj = $('#run-time');
-    obj.empty();
+    // 浏览器的操作系统平台
+    var platform = navigator.platform;
+    $('#plat-form').empty().text(platform);
+
     var starttime = new Date();
-    $.get(ajax_run_time_url, {}, function(data){
-        var endtime = new Date();
-        var runtime = endtime.getTime() - starttime.getTime();
-        obj.text(runtime + 'MS');
+    $.ajax({
+        type:'GET',
+        url:'/static/runtime.json',
+        cache:false,
+        success:function(data){
+            var endtime = new Date();
+            var runtime = endtime.getTime() - starttime.getTime();
+
+            var boxObj = $("#run-time-box");
+            boxObj.removeClass('label-default label-success label-warning label-danger');
+            if(runtime <= 200){
+                boxObj.addClass('label-success');
+            }else if(runtime > 200 && runtime <= 500){
+                boxObj.addClass('label-warning');
+            }else{
+                boxObj.addClass('label-danger');
+            }
+
+            $('#run-time').empty().text(runtime + '毫秒(MS)');
+        }
     });
 }
 
 // 文件上传窗口
 function upload_window(url){
     layer_open(url, '上传文件', 600, 240, 0.01, false);
-}
-
-// 打开系统消息详情
-function open_message_parent_html(obj){
-    window.parent.Hui_admin_tab(obj);
-}
-
-// message 获取消息提醒
-function message(){
-    $.get(ajax_messages_url, function(json){
-        $.cookie('messageCount', json.messageCount, cookie_config); // 更新消息数量
-        if(json.messageCount >= 1){
-            var index = layer.open({
-                    type: 2,
-                    id: 'message-layer',
-                    title: '新消息',
-                    area: ['300px', '150px'],
-                    anim: 2,
-                    isOutAnim: true,
-                    shade: false,
-                    offset: 'b',
-                    maxmin: true,
-                    content: common_message_lis_url
-            });
-            if(json.messageIndexID == 0){
-                $.cookie('messageIndexID', index, cookie_config);
-            }
-            if(json.messageCountCookie < json.messageCount){
-                // show_notification('您有新消息，请注意查看~', '');
-            }
-            layer.iframeSrc(json.messageIndexID, common_message_lis_url);
-        }else{
-            $.cookie('messageIndexID', 0, cookie_config);
-            layer.close(json.messageIndexID);
-        }
-        $('#message-count').text(json.messageCount);
-    });
 }
 
 // 确认选择邮箱
@@ -117,9 +96,63 @@ function conversion_window(url){
     layer_open(url, '文档转换', 850, 400, 0.1, false);
 }
 
+// 初始化高德地图
+function init_map(){
+    var infoWindow;
+    var map = new AMap.Map('container', {
+        zoom: 11,
+        resizeEnable: true
+    });
+    map.plugin(['AMap.Scale', 'AMap.ToolBar', 'AMap.Geolocation', 'AMap.OverView', 'AMap.MapType'], function(){
+        map.addControl(new AMap.Scale());    // 比例尺--展示地图在当前层级和纬度下的比例尺
+        map.addControl(new AMap.ToolBar());  // 工具条--集成了缩放、平移、定位等功能按钮在内的组合控件
+        map.addControl(new AMap.OverView()); // 鹰眼--在地图右下角显示地图的缩略图
+        map.addControl(new AMap.MapType());  // 类别切换--实现默认图层与卫星图、实施交通图层之间切换的控
+
+        // 定位插件
+        geolocation = new AMap.Geolocation();
+        map.addControl(geolocation);
+        geolocation.getCurrentPosition();
+        AMap.event.addListener(geolocation, 'complete', function(obj){ // 返回定位信息
+            console.log(obj);
+            // 构建信息窗体中显示的内容
+            var info = [];
+            info.push("<div>类型 : " + obj.location_type + "定位");
+            info.push("状态 : " + obj.info);
+            info.push("经度 : " + obj.position.lat);
+            info.push("纬度 : " + obj.position.lng);
+            info.push("位置：" + obj.addressComponent.province + '-' + obj.addressComponent.city + '-' + obj.addressComponent.district + "</div>");
+            infoWindow = new AMap.InfoWindow({
+                content: info.join("<br/>") //使用默认信息窗体框样式，显示信息内容
+            });
+            infoWindow.open(map, [obj.position.lng, obj.position.lat]);
+        });
+        AMap.event.addListener(geolocation, 'error', function(obj){ // 返回定位出错信息
+            console.log(obj);
+            parent.layer.msg('定位失败：' + obj.info + '--' + obj.message);
+        });
+
+        // 地图查询
+        auto = new AMap.Autocomplete({input: 'where'});
+        placeSearch = new AMap.PlaceSearch({ // 构造地点查询类
+            map: map
+        });
+        AMap.event.addListener(auto, 'select', function(e){ // 注册监听，当选中某条记录时会触发
+            placeSearch.setCity(e.poi.adcode);
+            placeSearch.search(e.poi.name); // 关键字查询查询
+        });
+
+        // 为地图注册click事件获取鼠标点击出的经纬度坐标
+        var clickEventListener = map.on('click', function(e){
+            $('#lnglat').val(e.lnglat.getLng() + ',' + e.lnglat.getLat());
+        });
+
+    });
+}
+
 // 地图定位窗口
 function positioning_window(url){
-    layer_open(url, '地图定位', 700, 700, 0.1, false);
+    layer_open(url, '地图定位', 750, 700, 0.1, false);
 }
 
 // 检测网速窗口
@@ -176,8 +209,8 @@ function export_data(url, title, type){
             window.onbeforeunload = '';
             parent.layer.close(index);
             if(result.error == 1){
-                parent.layer.msg(result.msg,{offset: '100px'});
-                return false;   
+                parent.layer.msg(result.msg, {offset: '100px'});
+                return false;
             }else{
                 parent.layer.open({
                     title: title,
@@ -186,8 +219,8 @@ function export_data(url, title, type){
                     shadeClose: true,
                     area: ['360px', '160px'],
                     content: '<div style="width:300px; height:40px; margin:10px; padding:20px;">恭喜，数据导出成功！<a href=\"' + result.file + '\" style="color:#F00">点此下载文件</a></div>'
-                }); 
-            }   
+                });
+            }
         }
     });
 }
@@ -204,7 +237,6 @@ function recyclebin_operation(style,msg){
             $("#document-form").submit();
         }
     });
-    
 }
 
 // 文档操作
@@ -219,7 +251,6 @@ function document_operation(style,msg){
             $("#document-form").submit();
         }
     });
-    
 }
 
 // 添加文档
@@ -229,14 +260,14 @@ function add_document(url){
         parent.layer.msg("请选择栏目！");
         return false;
     }else{
-        var addform = url+'?cid='+cid;
+        var addform = url + '?cid=' + cid;
         window.location.href = addform;
     }
 }
 
 // 设置信息状态
 function setup_status(url, status){
-    var msg = status == 0 ? '确定要启用？':'确定要禁用？';
+    var msg = status == 0 ? '确定要启用？' : '确定要禁用？';
     parent.layer.msg(msg, {
         time: 0,
         offset: '100px',
@@ -279,7 +310,7 @@ function prompt_html(url,code,msg,wait){
             window.location.href = url;
         };
     },500);
-    layer.confirm(msg,{
+    layer.confirm(msg, {
         title:'温馨的提示',
         icon: code,
         shade: 0.04,
@@ -313,7 +344,7 @@ function clear_cache(url){
 }
 
 // 备份数据库
-function backup_db(url,style){
+function backup_db(url, style){
     window.onbeforeunload = function(event){
         return '关闭或刷新页面，将导致导备份文件受损！';
     }
@@ -483,43 +514,6 @@ function db_statistical(val,src){
     });
 }
 
-// 全屏
-function full_screen(obj){
-    var flag = $(obj).attr("flag");
-    if (flag == 'on'){
-        // 判断各种浏览器，找到正确的方法
-        var element = document.documentElement;
-        var requestMethod = element.requestFullScreen || //W3C
-        element.webkitRequestFullScreen ||    //Chrome等
-        element.mozRequestFullScreen || //FireFox
-        element.msRequestFullScreen; //IE11
-        if (requestMethod) {
-            requestMethod.call(element);
-        }else if (typeof window.ActiveXObject !== "undefined") {//for Internet Explorer
-            var wscript = new ActiveXObject("WScript.Shell");
-            if (wscript !== null) {
-                wscript.SendKeys("{F11}");
-            }
-        }
-        $(obj).attr({"flag":"off","title":"退出全屏"});
-    }else{
-        // 判断各种浏览器，找到正确的方法
-        var exitMethod = document.exitFullscreen || //W3C
-        document.mozCancelFullScreen ||    //Chrome等
-        document.webkitExitFullscreen || //FireFox
-        document.webkitExitFullscreen; //IE11
-        if (exitMethod) {
-            exitMethod.call(document);
-        }else if (typeof window.ActiveXObject !== "undefined") {//for Internet Explorer
-            var wscript = new ActiveXObject("WScript.Shell");
-            if (wscript !== null) {
-                wscript.SendKeys("{F11}");
-            }
-        }
-        $(obj).attr({"flag":"on","title":"全屏"});
-    }
-}
-
 // 检测浏览器是否安装flash
 function flashChecker(){
     var hasFlash = 0,           // 是否安装了flash
@@ -579,6 +573,16 @@ function initialize_page(){
     }
 }
 
+// 刷新验证码
+function reload_verify(className){
+    var verifyimg = $('.' + className).attr('src');
+    if(verifyimg.indexOf('?') > 0){
+        $('.' + className).attr('src', verifyimg + '&random=' + Math.random());
+    }else{
+        $('.' + className).attr('src', verifyimg.replace(/\?.*$/,'') + '?' + Math.random());
+    }
+}
+
 // js打印日志
 function log(str){
     try{
@@ -632,7 +636,7 @@ function open_window(u, w, h, r, data){
     var l = (screen.width - w) / 2 - r;
     var t = (screen.height - h) / 2 - r;
     var e = window.open(u, "_blank", "width=" + w + ",height=" + h + ",toolbars=0,resizable=0,left=" + l + ",top=" + t);
-    e.parentData = {w:w,h:h,data:data};
+    e.parentData = {w:w, h:h, data:data};
     e.focus();
     return e;
 }

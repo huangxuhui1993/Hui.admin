@@ -42,9 +42,6 @@
 <script type="text/javascript" src="__ADMIN__/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
 <script type="text/javascript" src="__ROOT__/js/timerHandler/jquery.timerHandler.min.js"></script>
 <script type="text/javascript">
-// window.ajax_messages_url = "{:url('Ajax/message')}";
-// window.common_message_lis_url = "{:url('Common/message_lis')}";
-window.ajax_run_time_url = "{:url('Ajax/runTime')}";
 $(function(){
 	// 初始化页面
 	initialize_page();
@@ -54,19 +51,6 @@ $(function(){
 		className:"current",
 		index:0,
 	});
-
-	// $.cookie('messageCount', 0, cookie_config); // 初始化消息数量cookie
-	// $.cookie('messageIndexID', 0, cookie_config); // 初始化消息弹框唯一编号cookie
-	// message(); // 初始化消息
-
-	// 注册一个名为'MessageTimer'的定时器，每30秒运行一次
-	// var MessageTimer = $.timerHandler('MessageTimer').time('60s').call(function(count) {
-	// 	message();
-	// }).start();
-
-	// 浏览器的操作系统平台
-	var platform = navigator.platform;
-	$('#plat-form').empty().text(platform);
 
 	// 运行时间
 	run_time();
