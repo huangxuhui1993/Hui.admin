@@ -32,10 +32,10 @@ class Dbmanage extends Base{
      */
 	public function lis(){
 		$list = Db::query("show table status");
-		$this->assign('list',$list);
-		
+		$this->assign('list', $list);
+
 		// 面包屑
-		$this->assign('bread',breadcrumb([$this->bread,'数据库字典']));
+		$this->assign('bread', breadcrumb([$this->bread, '数据库字典']));
 		return $this->fetch();
 	}
 
@@ -51,7 +51,10 @@ class Dbmanage extends Base{
 			$data = $request->post();
 
 			if(!isset($data['name']) || !is_array($data['name']) || empty($data) || empty($data['name'])){
-				return hui_redirect('Dbmanage/lis', ['code' => 'error', 'msg' => '请选择要优化的数据表！']);
+				return hui_redirect('Dbmanage/lis', [
+					'code' => 'error',
+					'msg' => '请选择要优化的数据表！'
+				]);
 			}else{
 				$name = $data['name'];
 				$db = implode(",", $name);
@@ -86,15 +89,19 @@ class Dbmanage extends Base{
 				foreach ($table_arr as $k => $v) {
 					$table[] = $v['Name'];
 				}
-				if(!in_array($name,$table)){
+				if(!in_array($name, $table)){
 					$this->error('您查找的数据表不存在！');
 				}else{
 					$list = Db::query('SHOW FULL COLUMNS FROM '.$name);
-				    $this->assign('list',$list);
+				    $this->assign('list', $list);
 
 				    // 面包屑
-					$bread = [$this->bread,'数据表字典',$name];
-					$this->assign('bread',breadcrumb($bread));
+					$bread = [
+						$this->bread,
+						'数据表字典',
+						$name
+					];
+					$this->assign('bread', breadcrumb($bread));
 				    return $this->fetch();
 				}
 
@@ -126,28 +133,28 @@ class Dbmanage extends Base{
 
 				$data = $rows; //第一条曲线的数组  
 
-				$graph = new \Graph(800,400);
+				$graph = new \Graph(800, 400);
 				$graph->SetScale("textlin");  
-				$graph->SetShadow();     
-				$graph->img->SetMargin(60,30,30,70); //设置图像边距  
+				$graph->SetShadow();
+				$graph->img->SetMargin(60, 30, 30, 70); //设置图像边距  
 				   
 				$graph->graph_theme = null; //设置主题为null，否则value->Show(); 无效  
 				   
 				$lineplot = new \LinePlot($data); //创建设置两条曲线对象  
-				$lineplot->value->SetColor("red");  
-				$lineplot->value->Show();  
+				$lineplot->value->SetColor("red");
+				$lineplot->value->Show();
 				$graph->Add($lineplot);  //将曲线放置到图像上  
 				   
 				$graph->title->Set("记录数统计图");   //设置图像标题  
 				$graph->xaxis->title->Set("编号"); //设置坐标轴名称  
-				$graph->yaxis->title->Set("记录数");  
-				$graph->title->SetMargin(10);  
-				$graph->xaxis->title->SetMargin(10);  
-				$graph->yaxis->title->SetMargin(10);  
+				$graph->yaxis->title->Set("记录数");
+				$graph->title->SetMargin(10);
+				$graph->xaxis->title->SetMargin(10);
+				$graph->yaxis->title->SetMargin(10);
 				   
-				$graph->title->SetFont(FF_SIMSUN,FS_BOLD); //设置字体  
-				$graph->yaxis->title->SetFont(FF_SIMSUN,FS_BOLD);  
-				$graph->xaxis->title->SetFont(FF_SIMSUN,FS_BOLD);
+				$graph->title->SetFont(FF_SIMSUN, FS_BOLD); //设置字体  
+				$graph->yaxis->title->SetFont(FF_SIMSUN, FS_BOLD);
+				$graph->xaxis->title->SetFont(FF_SIMSUN, FS_BOLD);
 
 				break;
 			case '2':
@@ -162,10 +169,10 @@ class Dbmanage extends Base{
 
 				$data = $length; //第一条曲线的数组  
 	
-				$graph = new \Graph(800,400);  //创建新的Graph对象  
+				$graph = new \Graph(800, 400);  //创建新的Graph对象  
 				$graph->SetScale("textlin");  //刻度样式  
 				$graph->SetShadow();          //设置阴影  
-				$graph->img->SetMargin(40,30,40,50); //设置边距  
+				$graph->img->SetMargin(40, 30, 40, 50); //设置边距  
 				  
 				$graph->graph_theme = null; //设置主题为null，否则value->Show(); 无效  
 				  
@@ -182,10 +189,10 @@ class Dbmanage extends Base{
 				$graph->xaxis->title->SetMargin(5);  
 				$graph->xaxis->SetTickLabels($num);  
 				   
-				$graph->title->SetFont(FF_SIMSUN,FS_BOLD);  //设置字体  
-				$graph->yaxis->title->SetFont(FF_SIMSUN,FS_BOLD);  
-				$graph->xaxis->title->SetFont(FF_SIMSUN,FS_BOLD);  
-				$graph->xaxis->SetFont(FF_SIMSUN,FS_BOLD);
+				$graph->title->SetFont(FF_SIMSUN, FS_BOLD);  //设置字体  
+				$graph->yaxis->title->SetFont(FF_SIMSUN, FS_BOLD);  
+				$graph->xaxis->title->SetFont(FF_SIMSUN, FS_BOLD);  
+				$graph->xaxis->SetFont(FF_SIMSUN, FS_BOLD);
 
 				break;
 			case '3':
@@ -200,10 +207,10 @@ class Dbmanage extends Base{
 
 				$data = $free; //第一条曲线的数组  
 	
-				$graph = new \Graph(800,400);  //创建新的Graph对象  
+				$graph = new \Graph(800, 400);  //创建新的Graph对象  
 				$graph->SetScale("textlin");  //刻度样式  
 				$graph->SetShadow();          //设置阴影  
-				$graph->img->SetMargin(40,30,40,50); //设置边距  
+				$graph->img->SetMargin(40, 30, 40, 50); //设置边距  
 				  
 				$graph->graph_theme = null; //设置主题为null，否则value->Show(); 无效  
 				  
@@ -220,10 +227,10 @@ class Dbmanage extends Base{
 				$graph->xaxis->title->SetMargin(5);  
 				$graph->xaxis->SetTickLabels($num);  
 				   
-				$graph->title->SetFont(FF_SIMSUN,FS_BOLD);  //设置字体  
-				$graph->yaxis->title->SetFont(FF_SIMSUN,FS_BOLD);  
-				$graph->xaxis->title->SetFont(FF_SIMSUN,FS_BOLD);  
-				$graph->xaxis->SetFont(FF_SIMSUN,FS_BOLD);
+				$graph->title->SetFont(FF_SIMSUN, FS_BOLD);  //设置字体  
+				$graph->yaxis->title->SetFont(FF_SIMSUN, FS_BOLD);  
+				$graph->xaxis->title->SetFont(FF_SIMSUN, FS_BOLD);  
+				$graph->xaxis->SetFont(FF_SIMSUN, FS_BOLD);
 
 				break;
 			default:
@@ -242,7 +249,7 @@ class Dbmanage extends Base{
 	public function backlist(){
 		$db = Db::name('backup');
 		$list = $db->order('id desc')->paginate(15);
-		$this->assign('list',$list);
+		$this->assign('list', $list);
 
 		$this->assign('db_size', mysql_db_size());
 		$this->assign('backup_dir', Config::get('websetup.backup_dir'));
@@ -294,7 +301,7 @@ class Dbmanage extends Base{
 		$db = new DbBackup();
 		//参数：sql文件
 		$filename = 'cc.sql';
-		$back_path = self::$db_backup .$filename;
+		$back_path = self::$db_backup . $filename;
 		$db->restore ($back_path);
 	}
 
@@ -307,18 +314,21 @@ class Dbmanage extends Base{
 		if($request->isGet()){
 			$id = $request->param('id/d');
 			if(!isset($id)){
-				return hui_redirect('Dbmanage/backlist', ['code' => 'error','msg' => '参数错误！']);
+				return hui_redirect('Dbmanage/backlist', [
+					'code' => 'error',
+					'msg' => '参数错误！'
+				]);
 			}else{
 				ini_set("magic_quotes_runtime", 0);
 				$db = Db::name('backup');
-				$result = $db->where('id',$id)->find();
+				$result = $db->where('id', $id)->find();
 				if($result){
 			        // 获取数据库存储位置
-			        $sql_file = self::$db_backup .$result['filename'];
+			        $sql_file = self::$db_backup . $result['filename'];
 			        if(!is_file($sql_file)){
 			            $this->error('SQL文件不存在！');
 			        }else{
-				        $volume = explode( "_v",$sql_file);
+				        $volume = explode( "_v", $sql_file);
 				        $volume_path = $volume [0];
 			            // 存在分卷，则获取当前是第几分卷，循环执行余下分卷
 			            $volume_id = explode ( ".sql", $volume[1]);
@@ -336,14 +346,20 @@ class Dbmanage extends Base{
 			                ++$volume_id;
 			            }
 
-			            if($db->where('id',$id)->delete()) {
+			            if($db->where('id', $id)->delete()){
 			            	add_logs('删除备份文件', 1);
-							return hui_redirect('Dbmanage/backlist', ['code' => 'success', 'msg' => '备份文件删除成功！']);
+							return hui_redirect('Dbmanage/backlist', [
+								'code' => 'success',
+								'msg' => '备份文件删除成功！'
+							]);
 			            }
 			        }
 
 				}else{
-					return hui_redirect('Dbmanage/backlist', ['code' => 'error', 'msg' => '数据不存在！']);
+					return hui_redirect('Dbmanage/backlist', [
+						'code' => 'error',
+						'msg' => '数据不存在！'
+					]);
 				}
 
 			}

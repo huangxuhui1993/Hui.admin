@@ -29,9 +29,12 @@ class Fields extends Base{
 		$this->mid = Request::instance()->param('mid/d');
 
 		if(empty($this->mid)){
-			return hui_redirect('Models/lis', ['code' => 'error','msg' => '模型参数错误！']);
+			return hui_redirect('Models/lis', [
+				'code' => 'error',
+				'msg' => '模型参数错误！'
+			]);
 		}else{
-			$this->assign('mid',$this->mid);
+			$this->assign('mid', $this->mid);
 			// 实例化模型操作类库
 			self::$ModelClass = new ModelClass();
 			// 获取模型
@@ -49,12 +52,16 @@ class Fields extends Base{
 	public function lis(){
 		$db = new FieldsModel();
 		$list = $db->where(['mid' => $this->mid])->order('sorting ASC')->paginate(15);
-		$this->assign('list',$list);
-		$this->assign('count',$db->count());
+		$this->assign('list', $list);
+		$this->assign('count', $db->count());
 
 		// 面包屑
-		$bread = [$this->bread,'字段列表',self::$models->name.'【'.self::$models->table.'】'];
-		$this->assign('bread',breadcrumb($bread));
+		$bread = [
+			$this->bread,
+			'字段列表',
+			self::$models->name . '【' . self::$models->table . '】'
+		];
+		$this->assign('bread', breadcrumb($bread));
 		return $this->fetch();
 	}
 
@@ -66,7 +73,7 @@ class Fields extends Base{
 		if($request->isPost()){
 			$data = $request->post();
         	// 数据验证
-            $result = $this->validate($data,'Fields');
+            $result = $this->validate($data, 'Fields');
             if(true !== $result){
 				$with = [
 					'code' => 'error',
@@ -80,24 +87,27 @@ class Fields extends Base{
                     $message = null;
                     try{
                     	# 重新生成模型
-                    	self::$ModelClass->generateModel(self::$models->table,self::$models->id);
+                    	self::$ModelClass->generateModel(self::$models->table, self::$models->id);
 
                         # 重新生成验证器
-                        self::$ModelClass->generateValidate(self::$models->table,self::$models->id);
+                        self::$ModelClass->generateValidate(self::$models->table, self::$models->id);
 
                         # 创建数据表字段
-                        self::$ModelClass->createFields($data['cname'],$data['ename'],$data['type'],$this->mid);
+                        self::$ModelClass->createFields($data['cname'], $data['ename'], $data['type'], $this->mid);
 
                     }catch(Exception $e){
                         $message = $e->getMessage();
                     }
                     if(empty($message)){
-                    	add_logs('字段添加', 1);
-						$with = ['code' => 'success','msg' => '字段添加成功！'];
+                    	add_logs('添加字段，字段名称：' . $data['ename'], 1);
+						$with = [
+							'code' => 'success',
+							'msg' => '字段添加成功！'
+						];
 		            	$params = ['mid' => $this->mid];
 		                return hui_redirect('Fields/lis', $with, $params);
                     }else{
-                    	add_logs('字段添加：' . $message, 0);
+                    	add_logs('添加字段：' . $message, 0);
 						$with = [
 							'code' => 'error',
 							'msg' => $message,
@@ -107,8 +117,11 @@ class Fields extends Base{
 		                return hui_redirect('Fields/add', $with, $params);
                     }
 				}else{
-					add_logs('字段信息添加', 0);
-					$with = ['code' => 'error','msg' => '字段信息添加失败！'];
+					add_logs('添加字段信息，字段名称：' . $data['ename'], 0);
+					$with = [
+						'code' => 'error',
+						'msg' => '字段信息添加失败！'
+					];
 	            	$params = ['mid' => $this->mid];
 	                return hui_redirect('Fields/lis', $with, $params);
 				}
@@ -118,12 +131,17 @@ class Fields extends Base{
 
 		// 默认排序
 		$max = $db->max('sorting');
-		$sorting = isset($max) ? $max+2 : 1;
-		$this->assign('sorting',$sorting);
+		$sorting = isset($max) ? $max + 2 : 1;
+		$this->assign('sorting', $sorting);
 		
 		// 面包屑
-		$bread = [$this->bread,'字段列表',self::$models->name.'【'.self::$models->table.'】','添加字段'];
-		$this->assign('bread',breadcrumb($bread));
+		$bread = [
+			$this->bread,
+			'字段列表',
+			self::$models->name . '【' . self::$models->table . '】',
+			'添加字段'
+		];
+		$this->assign('bread', breadcrumb($bread));
 		return $this->fetch();
 	}
 
@@ -132,7 +150,10 @@ class Fields extends Base{
 		$id = $request->param('id/d');
 		
 		if(!isset($id) || empty($id)){
-			$with = ['code' => 'error','msg' => '字段参数错误！'];
+			$with = [
+				'code' => 'error',
+				'msg' => '字段参数错误！'
+			];
         	$params = ['mid' => $this->mid];
             return hui_redirect('Fields/lis', $with, $params);
 		}
@@ -144,41 +165,59 @@ class Fields extends Base{
 		if($request->isPost()){
 			$data = $request->post();
         	# 数据验证
-            $result = $this->validate($data,'Fields');
+            $result = $this->validate($data, 'Fields');
             if(true !== $result){
-            	$with = ['code' => 'error', 'msg' => $result];
-	        	$params = ['mid' => $this->mid, 'id' => $id];
+            	$with = [
+            		'code' => 'error',
+            		'msg' => $result
+            	];
+	        	$params = [
+	        		'mid' => $this->mid,
+	        		'id' => $id
+	        	];
 	            return hui_redirect('Fields/edit', $with, $params);
             }else{
-				if($db->allowField(true)->save($data,['id' => $id])){
+				if($db->allowField(true)->save($data, ['id' => $id])){
                     $message = null;
                     try{
                     	# 重新生成模型
-                    	self::$ModelClass->generateModel(self::$models->table,self::$models->id);
+                    	self::$ModelClass->generateModel(self::$models->table, self::$models->id);
 
                         # 重新生成验证器
-                        self::$ModelClass->generateValidate(self::$models->table,self::$models->id);
+                        self::$ModelClass->generateValidate(self::$models->table, self::$models->id);
 
                         # 修改数据表字段
-                        self::$ModelClass->editFields($det_rs['ename'],$det_rs['type'],$data['ename'],$data['type'],$data['cname'],$det_rs['mid']);
+                        self::$ModelClass->editFields($det_rs['ename'], $det_rs['type'], $data['ename'], $data['type'], $data['cname'], $det_rs['mid']);
                    
                     }catch(Exception $e){
                         $message = $e->getMessage();
                     }
                     if(empty($message)){
-                    	add_logs('字段编辑', 1);
-		            	$with = ['code' => 'success','msg' => '字段编辑成功！'];
+                    	add_logs('编辑字段，字段名称：' . $data['ename'], 1);
+		            	$with = [
+		            		'code' => 'success',
+		            		'msg' => '字段编辑成功！'
+		            	];
 			        	$params = ['mid' => $this->mid];
 			            return hui_redirect('Fields/lis', $with, $params);
                     }else{
-                    	add_logs('字段编辑：' . $message, 0);
-		            	$with = ['code' => 'error', 'msg' => $message];
-			        	$params = ['mid' => $this->mid, 'id' => $id];
+                    	add_logs('编辑字段：' . $message, 0);
+		            	$with = [
+		            		'code' => 'error',
+		            		'msg' => $message
+		            	];
+			        	$params = [
+			        		'mid' => $this->mid,
+			        		'id' => $id
+			        	];
 			            return hui_redirect('Fields/edit', $with, $params);
                     }
 				}else{
-					add_logs('字段信息编辑', 0);
-	            	$with = ['code' => 'error','msg' => '字段信息编辑失败！'];
+					add_logs('编辑字段信息，字段名称：' . $data['ename'], 0);
+	            	$with = [
+	            		'code' => 'error',
+	            		'msg' => '字段信息编辑失败！'
+	            	];
 		        	$params = ['mid' => $this->mid];
 		            return hui_redirect('Fields/lis', $with, $params);
 				}
@@ -187,9 +226,14 @@ class Fields extends Base{
 		}
 
 		// 面包屑
-		$bread = [$this->bread, '字段列表', self::$models->name . '【' . self::$models->table . '】','编辑字段'];
-		$this->assign('bread',breadcrumb($bread));
-		$this->assign('rs',$det_rs);
+		$bread = [
+			$this->bread,
+			'字段列表',
+			self::$models->name . '【' . self::$models->table . '】',
+			'编辑字段'
+		];
+		$this->assign('bread', breadcrumb($bread));
+		$this->assign('rs', $det_rs);
 		return $this->fetch();
 	}
 
@@ -199,7 +243,10 @@ class Fields extends Base{
 			
 			$id = $request->param('id/d');
 			if(!isset($id) || empty($id)){
-				$with = ['code' => 'error','msg' => '参数错误！'];
+				$with = [
+					'code' => 'error',
+					'msg' => '参数错误！'
+				];
             	$params = ['mid' => $this->mid];
                 return hui_redirect('Fields/lis', $with, $params);
 			}
@@ -209,31 +256,40 @@ class Fields extends Base{
                 $message = null;
                 try{
                     # 删除数据表字段
-                    self::$ModelClass->deleteFields($db->ename,$db->mid);
+                    self::$ModelClass->deleteFields($db->ename, $db->mid);
                     
                     # 重新生成模型
-                    self::$ModelClass->generateModel(self::$models->table,self::$models->id);
+                    self::$ModelClass->generateModel(self::$models->table, self::$models->id);
                     
                     # 更新验证器文件
-                    self::$ModelClass->generateValidate(self::$models->table,self::$models->id);
+                    self::$ModelClass->generateValidate(self::$models->table, self::$models->id);
                 
                 }catch(Exception $e){
                     $message = $e->getMessage();
                 }
                 if(empty($message)){
                 	add_logs('字段【' . $db->ename . '】删除', 1);
-                	$with = ['code' => 'success','msg' => '字段【'.$db->ename.'】删除成功！'];
+                	$with = [
+                		'code' => 'success',
+                		'msg' => '字段【' . $db->ename . '】删除成功！'
+                	];
 	            	$params = ['mid' => $this->mid];
 	                return hui_redirect('Fields/lis', $with, $params);
                 }else{
                 	add_logs('字段删除：' . $message, 0);
-                	$with = ['code' => 'error', 'msg' => $message];
+                	$with = [
+                		'code' => 'error',
+                		'msg' => $message
+                	];
 	            	$params = ['mid' => $this->mid];
 	                return hui_redirect('Fields/lis', $with, $params);
                 }
 			}else{
 				add_logs('字段信息删除', 0);
-            	$with = ['code' => 'error','msg' => '字段信息删除失败！'];
+            	$with = [
+            		'code' => 'error',
+            		'msg' => '字段信息删除失败！'
+            	];
             	$params = ['mid' => $this->mid];
                 return hui_redirect('Fields/lis', $with, $params);
 			}

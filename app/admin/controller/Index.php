@@ -82,22 +82,70 @@ class Index extends Base{
 	# 服务器环境
 	static private function serverData(){
 		return [
-			0  => ['name' => '系统类型及版本号', 'val' => php_uname()],
-			1  => ['name' => 'PHP运行方式', 'val' => php_sapi_name()],
-			2  => ['name' => 'PHP版本', 'val' => PHP_VERSION],
-			3  => ['name' => 'Zend版本', 'val' => Zend_Version()],
-			4  => ['name' => '数据库大小', 'val'=>truesize(mysql_db_size())],
-			5  => ['name' => '系统上传大小', 'val' => ini_get("file_uploads") ? ini_get("upload_max_filesize") : "禁用"],
-			6  => ['name' => '最大运行时间', 'val' => ini_get("max_execution_time")."秒"],
-			7  => ['name' => 'PHP安装路径', 'val' => DEFAULT_INCLUDE_PATH],
-			8  => ['name' => '应用根目录', 'val' => ROOT_PATH],
-			9  => ['name' => '磁盘大小', 'val' => function_exists('disk_free_space') ? truesize(floor(disk_free_space(ROOT_PATH))) : "禁用"],
-			10 => ['name' => '服务器IP地址', 'val' => GetHostByName($_SERVER['SERVER_NAME'])],
-			11 => ['name' => '客户端IP地址', 'val' => request()->ip()],
-			12 => ['name' => '服务器解译引擎', 'val' => $_SERVER['SERVER_SOFTWARE']],
-			13 => ['name' => '服务器语言', 'val' => $_SERVER['HTTP_ACCEPT_LANGUAGE']],
-			14 => ['name' => '端口号', 'val' => $_SERVER['SERVER_PORT']],
-			15 => ['name' => 'ThinkPHP框架版本号', 'val' => THINK_VERSION]
+			0  => [
+				'name' => '系统类型及版本号',
+				'val' => php_uname()
+			],
+			1  => [
+				'name' => 'PHP运行方式',
+				'val' => php_sapi_name()
+			],
+			2  => [
+				'name' => 'PHP版本',
+				'val' => PHP_VERSION
+			],
+			3  => [
+				'name' => 'Zend版本',
+				'val' => Zend_Version()
+			],
+			4  => [
+				'name' => '数据库大小',
+				'val'=>truesize(mysql_db_size())
+			],
+			5  => [
+				'name' => '系统上传大小',
+				'val' => ini_get("file_uploads") ? ini_get("upload_max_filesize") : "禁用"
+			],
+			6  => [
+				'name' => '最大运行时间',
+				'val' => ini_get("max_execution_time") . "秒"
+			],
+			7  => [
+				'name' => 'PHP安装路径',
+				'val' => DEFAULT_INCLUDE_PATH
+			],
+			8  => [
+				'name' => '应用根目录',
+				'val' => ROOT_PATH
+			],
+			9  => [
+				'name' => '磁盘大小',
+				'val' => function_exists('disk_free_space') ? truesize(floor(disk_free_space(ROOT_PATH))) : "禁用"
+			],
+			10 => [
+				'name' => '服务器IP地址',
+				'val' => GetHostByName($_SERVER['SERVER_NAME'])
+			],
+			11 => [
+				'name' => '客户端IP地址',
+				'val' => request()->ip()
+			],
+			12 => [
+				'name' => '服务器解译引擎',
+				'val' => $_SERVER['SERVER_SOFTWARE']
+			],
+			13 => [
+				'name' => '服务器语言',
+				'val' => $_SERVER['HTTP_ACCEPT_LANGUAGE']
+			],
+			14 => [
+				'name' => '端口号',
+				'val' => $_SERVER['SERVER_PORT']
+			],
+			15 => [
+				'name' => 'ThinkPHP框架版本号',
+				'val' => THINK_VERSION
+			]
 		];
 	}
 

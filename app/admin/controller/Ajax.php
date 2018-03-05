@@ -17,7 +17,10 @@ class Ajax extends Controller{
 		if($request->isAjax()){
 			$data = $request->post('type');
 			if(empty($data)){
-				return json(['message' => '参数错误！', 'code' => 1]);
+				return json([
+					'message' => '参数错误！',
+					'code' => 1
+				]);
 			}
 			// Ajax实时新闻
 			$curl = new HttpCurl();

@@ -14,6 +14,18 @@ use app\admin\model\Config as ConfigModel;
 class System extends Base{
 
 	private $bread = '系统管理';
+	
+	static private $title;
+
+    public function _initialize(){
+        parent::_initialize();
+
+        self::$title = [
+			2 => '网站配置',
+			3 => '接口配置',
+			4 => '文件配置'
+		];
+    }
 
     /**
      * 配置管理
@@ -23,19 +35,19 @@ class System extends Base{
 	public function configList(Request $request){
 		$where = [];
 		# 关键字查询
-		$keywords = preg_replace('# #','',$request->post('keywords'));
-		$this->assign('keywords',$keywords);
+		$keywords = remove_spaces($request->post('keywords'));
+		$this->assign('keywords', $keywords);
 		if(!empty($keywords)){
-			$where['name|title'] = ['like', '%'.$keywords.'%'];
+			$where['name|title'] = ['like', '%' . $keywords . '%'];
 		}
 
 		$db = new ConfigModel();
-		$list = $db->where($where)->order('id asc','sort asc')->paginate(15);
-		$this->assign('list',$list);
+		$list = $db->where($where)->order('id asc', 'sort asc')->paginate(15);
+		$this->assign('list', $list);
 
-		$this->assign('count',$db->where($where)->count());
+		$this->assign('count', $db->where($where)->count());
 
-		$this->assign('bread',breadcrumb([$this->bread,'配置管理']));
+		$this->assign('bread', breadcrumb([$this->bread, '配置管理']));
 		return $this->fetch();
 	}
 
@@ -48,23 +60,33 @@ class System extends Base{
 		if($request->isPost()){
 			$data = $request->post();
 			// 数据验证
-            $result = $this->validate($data,'Config');
+            $result = $this->validate($data, 'Config');
             if(true !== $result){
 		        add_logs($result, 0);
-                return hui_redirect('System/add', ['code' => 'error','msg' => $result,'data' => $data]);
+                return hui_redirect('System/add', [
+                	'code' => 'error',
+                	'msg' => $result,
+                	'data' => $data
+                ]);
             }else{
             	$db = new ConfigModel();
 				if($db->allowField(true)->save($data)){
 			        add_logs('添加配置项', 1);
-					return hui_redirect('System/config', ['code' => 'success','msg' => '添加配置项成功！']);
+					return hui_redirect('System/config', [
+						'code' => 'success',
+						'msg' => '添加配置项成功！'
+					]);
 				}else{
 					add_logs('添加配置项', 0);
-					return hui_redirect('System/config', ['code' => 'error','msg' => '添加配置项失败！']);
+					return hui_redirect('System/config', [
+						'code' => 'error',
+						'msg' => '添加配置项失败！'
+					]);
 				}
             }
             return;
 		}
-		$this->assign('bread',breadcrumb([$this->bread,'配置管理','添加配置']));
+		$this->assign('bread', breadcrumb([$this->bread, '配置管理', '添加配置']));
 		return $this->fetch();
 	}
 
@@ -83,18 +105,27 @@ class System extends Base{
 		if($request->isPost()){
 			$data = $request->post();
 			// 数据验证
-            $result = $this->validate($data,'Config');			
+            $result = $this->validate($data, 'Config');			
             if(true !== $result){
-            	$with = ['code' => 'error','msg' => $result];
+            	$with = [
+            		'code' => 'error',
+            		'msg' => $result
+            	];
 	        	$params = ['id' => $id];
 	            return hui_redirect('System/edit', $with, $params);
             }else{
-				if($db->allowField(true)->save($data,['id' => $id])){
+				if($db->allowField(true)->save($data, ['id' => $id])){
 					add_logs('编辑配置项', 1);
-					return hui_redirect('System/config', ['code' => 'success','msg' => '配置项编辑成功！']);
+					return hui_redirect('System/config', [
+						'code' => 'success',
+						'msg' => '配置项编辑成功！'
+					]);
 				}else{
 					add_logs('编辑配置项', 0);
-					return hui_redirect('System/config', ['code' => 'error','msg' => '配置项编辑失败！']);
+					return hui_redirect('System/config', [
+						'code' => 'error',
+						'msg' => '配置项编辑失败！'
+					]);
 				}
             }
             return;
@@ -103,7 +134,7 @@ class System extends Base{
 		// 获取全部原始数据
 		$det_rs = ConfigModel::get($id)->getData();
 		$this->assign('rs', $det_rs);
-		$this->assign('bread',breadcrumb([$this->bread,'配置管理','编辑配置']));
+		$this->assign('bread', breadcrumb([$this->bread, '配置管理', '编辑配置']));
 		return $this->fetch();
 	}
 
@@ -119,20 +150,35 @@ class System extends Base{
 				if($db){
 					if($db->delete()){
 						add_logs('删除配置项', 1);
-						return hui_redirect('System/config', ['code' => 'success','msg' => '配置项删除成功！']);
+						return hui_redirect('System/config', [
+							'code' => 'success',
+							'msg' => '配置项删除成功！'
+						]);
 					}else{
 						add_logs('删除配置项', 0);
-						return hui_redirect('System/config', ['code' => 'error','msg' => '配置项删除失败！']);
+						return hui_redirect('System/config', [
+							'code' => 'error',
+							'msg' => '配置项删除失败！'
+						]);
 					}
 				}else{
-					return hui_redirect('System/config', ['code' => 'error','msg' => '数据不存在！']);
+					return hui_redirect('System/config', [
+						'code' => 'error',
+						'msg' => '数据不存在！'
+					]);
 				}
 			}else{
-				return hui_redirect('System/config', ['code' => 'error','msg' => '参数错误！']);
+				return hui_redirect('System/config', [
+					'code' => 'error',
+					'msg' => '参数错误！'
+				]);
 			}
 		}else{
 			add_logs('删除配置项，非法操作', 0);
-			return hui_redirect('System/config', ['code' => 'error','msg' => '请您正常操作！']);
+			return hui_redirect('System/config', [
+				'code' => 'error',
+				'msg' => '请您正常操作！'
+			]);
 		}
 	}
 
@@ -150,17 +196,29 @@ class System extends Base{
 			$config = ConfigModel::get($id);
 			if($config){
 				if($config->allowField(true)->save($data)){
-					add_logs('配置项排序设置，ID:' . $id, 1);
-					return json(['state' => 1, 'msg' => "配置项【" . $config->title . "】排序成功！"]);
+					add_logs("配置项排序设置，ID:{$id}", 1);
+					return json([
+						'state' => 1,
+						'msg' => "配置项【" . $config->title . "】排序成功！"
+					]);
 				}else{
-					add_logs('配置项排序设置，ID:' . $id, 0);
-					return json(['state' => 0, 'msg' => "配置项【" . $config->title . "】排序失败！"]);
+					add_logs("配置项排序设置，ID:{$id}", 0);
+					return json([
+						'state' => 0,
+						'msg' => "配置项【" . $config->title . "】排序失败！"
+					]);
 				}
 			}else{
-				return json(['state' => 0, 'msg' => '数据不存在！']);
+				return json([
+					'state' => 0,
+					'msg' => '数据不存在！'
+				]);
 			}
 		}else{
-			return json(['state' => 0, 'msg' => '请您正常操作！']);
+			return json([
+				'state' => 0,
+				'msg' => '请您正常操作！'
+			]);
 		}
 	}
 
@@ -173,7 +231,7 @@ class System extends Base{
 		$group = $request->param('group/d');
 		if(!empty($group) && isset($group)){
 
-			$title = [2 => '网站配置', 3 => '接口配置', 4 => '文件配置'];
+			$title = self::$title;
 
 			$db = Db::name('config');
 
@@ -201,7 +259,7 @@ class System extends Base{
         if($request->isPost()){
 
 			$group = $request->param('group/d');
-			$title = [2 => '网站配置', 3 => '接口配置', 4 => '文件配置'];
+			$title = self::$title;
 
 			$db = Db::name('config');
 
@@ -217,12 +275,18 @@ class System extends Base{
 
 			if(self::updateConfigFile()){
 				add_logs($title[$group] . '更新', 1);
-            	$with = ['code' => 'success', 'msg' => $title[$group] . '更新成功！'];
+            	$with = [
+            		'code' => 'success',
+            		'msg' => $title[$group] . '更新成功！'
+            	];
 	        	$params = ['group' => $group];
 	            return hui_redirect('System/webSetup', $with, $params);
 			}else{
 				add_logs($title[$group] . '更新', 0);
-            	$with = ['code' => 'error', 'msg' => $title[$group] . '更新失败！'];
+            	$with = [
+            		'code' => 'error',
+            		'msg' => $title[$group] . '更新失败！'
+            	];
 	        	$params = ['group' => $group];
 	            return hui_redirect('System/webSetup', $with, $params);
 			}

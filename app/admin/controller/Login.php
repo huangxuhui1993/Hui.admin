@@ -50,7 +50,11 @@ class Login extends Controller{
                     'loginip'     => $request->ip(),
                 ]);
                 add_logs('登录系统', 1);
-                return json(['status' => 1, 'username' => $user['username'], 'url' => url('index/index')]);
+                return json([
+                    'status' => 1,
+                    'username' => $user['username'],
+                    'url' => url('index/index')
+                ]);
             }
         }else{
             die('非法操作！');

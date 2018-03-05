@@ -93,21 +93,30 @@ class Common extends Base{
 				['email','email','请输入正确的邮箱地址！']
 			]);
 			if(!$validate->check($data)) {
-				return hui_redirect('Common/userSetup', ['code' => 'error','msg' => $validate->getError()]);
+				return hui_redirect('Common/userSetup', [
+					'code' => 'error',
+					'msg' => $validate->getError()
+				]);
 			}else{
-				if($user->allowField(true)->save($data,['id'=>$id])){
+				if($user->allowField(true)->save($data, ['id' => $id])){
 					add_logs('账号设置', 1);
-					return hui_redirect('Common/userSetup', ['code' => 'success','msg' => '设置成功！']);
+					return hui_redirect('Common/userSetup', [
+						'code' => 'success',
+						'msg' => '设置成功！'
+					]);
 				}else{
 					add_logs('账号设置', 0);
-					return hui_redirect('Common/userSetup', ['code' => 'error','msg' => '设置失败！']);
+					return hui_redirect('Common/userSetup', [
+						'code' => 'error',
+						'msg' => '设置失败！'
+					]);
 				}
 			}
 			return;
 		}
 		# 获取全部原始数据
 		$det_rs = User::get($id)->getData();
-		$this->assign('rs',$det_rs);
+		$this->assign('rs', $det_rs);
 		return $this->fetch();
     }
 
@@ -172,27 +181,45 @@ class Common extends Base{
 				['code', 'require', '代码内容为空！'],
 			]);
 			if(!$validate->check($data)) {
-				return json(['error' => 1, 'msg' => $validate->getError()]);
+				return json([
+					'error' => 1,
+					'msg' => $validate->getError()
+				]);
 			}else{
 				$file = $data['file'];
 				if(!is_file($file)){
-					return json(['error' => 1, 'msg' => '文件不存在！']);
+					return json([
+						'error' => 1,
+						'msg' => '文件不存在！'
+					]);
 				}elseif(!is_writable($file)){
-                    return json(['error' => 1, 'msg' => '文件不可写！']);
+                    return json([
+                    	'error' => 1,
+                    	'msg' => '文件不可写！'
+                    ]);
                 }else{
 					# 内容写入文件
 					if(file_put_contents($file, $data['code'])){
 						add_logs("修改源代码{$file}", 1);
-						return json(['error' => 0, 'msg' => '代码修改成功！']);
+						return json([
+							'error' => 0,
+							'msg' => '代码修改成功！'
+						]);
 					}else{
                         add_logs("修改源代码{$file}", 0);
-                        return json(['error' => 0, 'msg' => '代码修改失败！']);
+                        return json([
+                        	'error' => 0,
+                        	'msg' => '代码修改失败！'
+                        ]);
                     }
 				}	
 			}
 		}else{
 			add_logs('修改源代码，非法操作！', 0);
-			return json(['error' => 1, 'msg' => '非法操作！']);
+			return json([
+				'error' => 1,
+				'msg' => '非法操作！'
+			]);
 		}
 	}
 

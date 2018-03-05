@@ -27,11 +27,11 @@ class Models extends Base{
 	public function lis(){
 		$db = new ModelsModel();
 		$result = $db->order('sorting ASC')->paginate(15);
-		$this->assign('list',$result);
-		$this->assign('count',$db->count());
+		$this->assign('list', $result);
+		$this->assign('count', $db->count());
 
 		// 面包屑
-		$this->assign('bread',breadcrumb([$this->bread,'模型列表']));
+		$this->assign('bread', breadcrumb([$this->bread, '模型列表']));
 		return $this->fetch();
 	}
 
@@ -46,9 +46,13 @@ class Models extends Base{
 		if($request->isPost()){
 			$data = $request->post();
         	# 数据验证
-            $result = $this->validate($data,'Models');
+            $result = $this->validate($data, 'Models');
             if(true !== $result){
-                return hui_redirect('Models/add', ['code' => 'error','msg' => $result,'data' => $data]);
+                return hui_redirect('Models/add', [
+                	'code' => 'error',
+                	'msg' => $result,
+                	'data' => $data
+                ]);
             }else{
 				if($db->allowField(true)->save($data)){
                     $message = '';
@@ -56,29 +60,40 @@ class Models extends Base{
                         # 生成模型文件
                         self::$ModelClass->generateModel($data['table']);
                         # 生成验证器
-                        self::$ModelClass->generateValidate($data['table'],$db->id);
+                        self::$ModelClass->generateValidate($data['table'], $db->id);
                         # 创建数据表
-                        self::$ModelClass->createTable($data['table'],$data['name']);
+                        self::$ModelClass->createTable($data['table'], $data['name']);
                     }catch(Exception $e){
                         $message = $e->getMessage();
                     }
                     if(empty($message)){
-                    	add_logs('模型添加', 1);
-                        return hui_redirect('Models/lis', ['code' => 'success','msg' => '模型添加成功！']);
+                    	add_logs('添加模型，模型名称：' . $data['table'], 1);
+                        return hui_redirect('Models/lis', [
+                        	'code' => 'success',
+                        	'msg' => '模型添加成功！'
+                        ]);
                     }else{
-                    	add_logs('模型添加：' . $message, 0);
-                        return hui_redirect('Models/add', ['code' => 'error', 'msg' => $message, 'data' => $data]);
+                    	add_logs('添加模型：' . $message, 0);
+                        return hui_redirect('Models/add', [
+                        	'code' => 'error',
+                        	'msg' => $message,
+                        	'data' => $data
+                        ]);
                     }
 				}else{
-					add_logs('模型信息添加', 0);
-					return hui_redirect('Models/add', ['code' => 'error','msg' => '模型信息添加失败！','data' => $data]);
+					add_logs('添加模型信息，模型名称：' . $data['table'], 0);
+					return hui_redirect('Models/add', [
+						'code' => 'error',
+						'msg' => '模型信息添加失败！',
+						'data' => $data
+					]);
 				}
             }
             return;
 		}
 
 		// 面包屑
-		$this->assign('bread',breadcrumb([$this->bread,'模型列表','添加模型']));
+		$this->assign('bread', breadcrumb([$this->bread, '模型列表', '添加模型']));
 		return $this->fetch();
 	}
 
@@ -92,7 +107,10 @@ class Models extends Base{
 	public function edit(Request $request){
 		$id = $request->param('id/d');
 		if(!isset($id) || empty($id)){
-			return hui_redirect('Models/lis', ['code' => 'error','msg' => '参数错误！']);
+			return hui_redirect('Models/lis', [
+				'code' => 'error',
+				'msg' => '参数错误！'
+			]);
 			return;
 		}
 		$db = new ModelsModel();
@@ -104,32 +122,44 @@ class Models extends Base{
         	# 数据验证
             $result = $this->validate($data,'Models');
             if(true !== $result){
-            	$with = ['code' => 'error','msg' => $result];
+            	$with = [
+            		'code' => 'error',
+            		'msg' => $result
+            	];
 	        	$params = ['id' => $id];
 	            return hui_redirect('Models/edit', $with, $params);
             }else{
-				if($db->allowField(true)->save($data,['id' => $id])){
+				if($db->allowField(true)->save($data, ['id' => $id])){
                     $message = '';
                     try{
                         # 修改模型，验证器
-                        self::$ModelClass->editValidateModel($det_rs['table'],$data['table'],$id);
+                        self::$ModelClass->editValidateModel($det_rs['table'], $data['table'], $id);
                         # 修改数据表
-                        self::$ModelClass->editTable($det_rs['table'],$data['table'],$data['name']);
+                        self::$ModelClass->editTable($det_rs['table'], $data['table'], $data['name']);
                     }catch(Exception $e){
                         $message = $e->getMessage();
                     }
                     if(empty($message)){
-                    	add_logs('模型编辑', 1);
-                        return hui_redirect('Models/lis', ['code' => 'success','msg' => '模型编辑成功！']);
+                    	add_logs('编辑模型，模型名称：' . $data['table'], 1);
+                        return hui_redirect('Models/lis', [
+                        	'code' => 'success',
+                        	'msg' => '模型编辑成功！'
+                        ]);
                     }else{
-                    	add_logs('模型编辑：' . $message, 0);
-                    	$with = ['code' => 'error','msg' => $message];
+                    	add_logs('编辑模型：' . $message, 0);
+                    	$with = [
+                    		'code' => 'error',
+                    		'msg' => $message
+                    	];
 			        	$params = ['id' => $id];
 			            return hui_redirect('Models/edit', $with, $params);
                     }
 				}else{
-					add_logs('模型信息编辑', 0);
-					return hui_redirect('Models/lis', ['code' => 'error','msg' => '模型信息编辑失败！']);
+					add_logs('编辑模型信息，模型名称：' . $data['table'], 0);
+					return hui_redirect('Models/lis', [
+						'code' => 'error',
+						'msg' => '模型信息编辑失败！'
+					]);
 				}
             }
             return;
@@ -137,17 +167,17 @@ class Models extends Base{
 
 		# 模型文件，验证器文件
         $modelName = ucfirst(strtolower(trim($det_rs['table'])));
-        $model_file = 'app/common/model/'.$modelName.'.php';
-        $validate_file = 'app/common/validate/'.$modelName.'.php';
+        $model_file = 'app/common/model/' . $modelName . '.php';
+        $validate_file = 'app/common/validate/' . $modelName . '.php';
         $file = [
         	'modelfile' => $model_file,
         	'validatefile' => $validate_file,
         ];
 
 		# 面包屑
-		$this->assign('bread',breadcrumb([$this->bread,'模型列表','编辑模型']));
-		$this->assign('rs',$det_rs);
-		$this->assign('file',$file);
+		$this->assign('bread', breadcrumb([$this->bread, '模型列表', '编辑模型']));
+		$this->assign('rs', $det_rs);
+		$this->assign('file', $file);
 		return $this->fetch();
 	}
 
@@ -162,7 +192,10 @@ class Models extends Base{
 		if($request->isGet()){
 			$id = $request->param('id/d');
 			if(!isset($id) || empty($id)){
-				return hui_redirect('Models/lis', ['code' => 'error','msg' => '参数错误！']);
+				return hui_redirect('Models/lis', [
+					'code' => 'error',
+					'msg' => '参数错误！'
+				]);
 			}
 			$db = ModelsModel::get($id);
 			if($db->delete()){
@@ -178,18 +211,30 @@ class Models extends Base{
                     $message = $e->getMessage();
                 }
                 if(empty($message)){
-                	add_logs('模型【' . $db->name . '】删除', 1);
-                    return hui_redirect('Models/lis', ['code' => 'success','msg' => '模型【'.$db->name.'】删除成功！']);
+                	add_logs('删除模型【' . $db->name . '】', 1);
+                    return hui_redirect('Models/lis', [
+                    	'code' => 'success',
+                    	'msg' => '模型【' . $db->name . '】删除成功！'
+                    ]);
                 }else{
-                	add_logs('模型删除：' . $message, 0);
-                    return hui_redirect('Models/lis', ['code' => 'error','msg' => $message]);
+                	add_logs('删除模型：' . $message, 0);
+                    return hui_redirect('Models/lis', [
+                    	'code' => 'error',
+                    	'msg' => $message
+                    ]);
                 }
 			}else{
-				add_logs('模型信息删除', 0);
-				return hui_redirect('Models/lis', ['code' => 'error','msg' => '模型信息删除失败！']);
+				add_logs('删除模型信息', 0);
+				return hui_redirect('Models/lis', [
+					'code' => 'error',
+					'msg' => '模型信息删除失败！'
+				]);
 			}
 		}else{
-			return hui_redirect('Models/lis', ['code' => 'error','msg' => '请正常操作！']);
+			return hui_redirect('Models/lis', [
+				'code' => 'error',
+				'msg' => '请正常操作！'
+			]);
 		}
 	}
 
@@ -208,17 +253,29 @@ class Models extends Base{
 			if($models){
 				$data['sorting'] = $data['sort'];
 				if($models->allowField(true)->save($data)){
-					add_logs('模型排序设置，ID:' . $id, 1);
-					return json(['state' => 1, 'msg' => "模型【" . $models->name . "】排序成功！"]);
+					add_logs("模型排序设置，ID:{$id}", 1);
+					return json([
+						'state' => 1,
+						'msg' => "模型【" . $models->name . "】排序成功！"
+					]);
 				}else{
 					add_logs('模型排序设置，ID:' . $id, 0);
-					return json(['state' => 0, 'msg' => "模型【" . $models->name . "】排序失败！"]);
+					return json([
+						'state' => 0,
+						'msg' => "模型【" . $models->name . "】排序失败！"
+					]);
 				}
 			}else{
-				return json(['state' => 0, 'msg' => '数据不存在！']);
+				return json([
+					'state' => 0,
+					'msg' => '数据不存在！'
+				]);
 			}
 		}else{
-			return json(['state' => 0, 'msg' => '请您正常操作！']);
+			return json([
+				'state' => 0,
+				'msg' => '请您正常操作！'
+			]);
 		}
 	}
 

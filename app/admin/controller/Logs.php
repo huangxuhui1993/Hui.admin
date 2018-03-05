@@ -25,10 +25,10 @@ class Logs extends Base{
 		$where = [];
 
 		# 关键字查询
-		$keywords = preg_replace('# #', '', $request->post('keywords'));
-		$this->assign('keywords',$keywords);
+		$keywords = remove_spaces($request->post('keywords'));
+		$this->assign('keywords', $keywords);
 		if(!empty($keywords)){
-			$where['username|ip|operate'] = ['like', '%'.$keywords.'%'];
+			$where['username|ip|operate'] = ['like', '%' . $keywords . '%'];
 		}
 
 		$db = new LogsModel();
@@ -65,7 +65,10 @@ class Logs extends Base{
 		if($request->isPost()){
 			$data = $request->post();
 			if(!isset($data['id']) || !is_array($data['id']) || empty($data) || empty($data['id'])){
-				return hui_redirect('Logs/lis', ['code' => 'error', 'msg' => '请选择要删除的数据！']);
+				return hui_redirect('Logs/lis', [
+					'code' => 'error',
+					'msg' => '请选择要删除的数据！'
+				]);
 			}else{
 				foreach($data['id'] as $k => $v){
 					$db = LogsModel::get($v);
@@ -73,28 +76,46 @@ class Logs extends Base{
 						$db->delete();
 					}else{
 						add_logs('批量删除日志', 0);
-						return hui_redirect('Logs/lis', ['code' => 'error', 'msg' => '批量删除失败！']);
+						return hui_redirect('Logs/lis', [
+							'code' => 'error',
+							'msg' => '批量删除失败！'
+						]);
 					}
 				}
 				add_logs('批量删除日志', 1);
-				return hui_redirect('Logs/lis', ['code' => 'success', 'msg' => '批量删除成功！']);
+				return hui_redirect('Logs/lis', [
+					'code' => 'success',
+					'msg' => '批量删除成功！'
+				]);
 			}
 		}else{
 			$id = $request->param('id/d');
 			if(!isset($id) || empty($id)){
-				return hui_redirect('Logs/lis', ['code' => 'error', 'msg' => '参数错误！']);
+				return hui_redirect('Logs/lis', [
+					'code' => 'error',
+					'msg' => '参数错误！'
+				]);
 			}else{
 				$db = LogsModel::get($id);
 				if($db){
 					if($db->delete()){
 						add_logs('删除日志', 1);
-						return hui_redirect('Logs/lis', ['code' => 'success', 'msg' => '删除成功！']);
+						return hui_redirect('Logs/lis', [
+							'code' => 'success',
+							'msg' => '删除成功！'
+						]);
 					}else{
 						add_logs('删除日志', 0);
-						return hui_redirect('Logs/lis', ['code' => 'error', 'msg' => '删除失败！']);
+						return hui_redirect('Logs/lis', [
+							'code' => 'error',
+							'msg' => '删除失败！'
+						]);
 					}
 				}else{
-					return hui_redirect('Logs/lis', ['code' => 'error', 'msg' => '数据不存在！']);
+					return hui_redirect('Logs/lis', [
+						'code' => 'error',
+						'msg' => '数据不存在！'
+					]);
 				}
 			}
 		}

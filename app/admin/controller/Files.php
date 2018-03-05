@@ -24,33 +24,33 @@ class Files extends Base{
 		$where = [];
 		# 状态查询
 		$state = $request->post('state/d');
-		$this->assign('state',$state);
+		$this->assign('state', $state);
 		if(!empty($state)){
 			if ($state === 1) {
-				$where['aid'] = ['neq',0];
+				$where['aid'] = ['neq', 0];
 			}else{
-				$where['aid'] = ['eq',0];
+				$where['aid'] = ['eq', 0];
 			}
 		}
 
 		# 关键字查询
-		$keywords = preg_replace('# #','',$request->post('keywords'));
-		$this->assign('keywords',$keywords);
+		$keywords = remove_spaces($request->post('keywords'));
+		$this->assign('keywords', $keywords);
 		if(!empty($keywords)){
-			$where['title|ext|name'] = ['like', '%'.$keywords.'%'];
+			$where['title|ext|name'] = ['like', '%' . $keywords . '%'];
 		}
 
         $db = new Attach();
 		$list = $db->where($where)->order('id desc')->paginate(75);
-		$this->assign('list',$list);
-		$this->assign('count',$db->where($where)->count());
+		$this->assign('list', $list);
+		$this->assign('count', $db->where($where)->count());
 
-        $this->assign('ycount',$db->where('aid!=0')->count());
+        $this->assign('ycount', $db->where('aid!=0')->count());
 
-        $this->assign('ncount',$db->where('aid=0')->count());
+        $this->assign('ncount', $db->where('aid=0')->count());
 
 		# 面包屑
-		$this->assign('bread',breadcrumb([self::$bread,'上传文件']));
+		$this->assign('bread', breadcrumb([self::$bread, '上传文件']));
 		return $this->fetch('upload_file');
 	}
 
@@ -71,7 +71,10 @@ class Files extends Base{
         }
         # 记录日志
         add_logs('清理未使用上传文件', 1);
-        return hui_redirect('Files/uploadFile', ['code' => 'success','msg' => '清理未使用上传文件成功！']);
+        return hui_redirect('Files/uploadFile', [
+            'code' => 'success',
+            'msg' => '清理未使用上传文件成功！'
+        ]);
     }
 
 	/**
@@ -81,19 +84,19 @@ class Files extends Base{
 	public function conversionFile(Request $request){
 		$where = [];
         # 关键字查询
-        $keywords = preg_replace('# #','',$request->post('keywords'));
-        $this->assign('keywords',$keywords);
+        $keywords = remove_spaces($request->post('keywords'));
+        $this->assign('keywords', $keywords);
         if(!empty($keywords)){
-            $where['title|name'] = ['like', '%'.$keywords.'%'];
+            $where['title|name'] = ['like', '%' . $keywords . '%'];
         }
 
         $db = new Convert();
 		$list = $db->where($where)->order('id desc')->paginate(75);
-		$this->assign('list',$list);
-		$this->assign('count',$db->where($where)->count());
+		$this->assign('list', $list);
+		$this->assign('count', $db->where($where)->count());
 
 		# 面包屑
-		$this->assign('bread',breadcrumb([self::$bread,'转换文件']));
+		$this->assign('bread', breadcrumb([self::$bread, '转换文件']));
 		return $this->fetch('conversion_file');
 	}
 
@@ -106,14 +109,23 @@ class Files extends Base{
             # 单文件删除
             $id = $request->param('id/d');
             if(!isset($id) || empty($id)){
-                return hui_redirect('Files/conversionFile', ['code' => 'error','msg' => '参数错误！']);
+                return hui_redirect('Files/conversionFile', [
+                    'code' => 'error',
+                    'msg' => '参数错误！'
+                ]);
             }else{
                 if(delete_conversion($id)){
                     add_logs('删除转换文件', 1);
-                    return hui_redirect('Files/conversionFile', ['code' => 'success','msg' => '转换文件删除成功！']);
+                    return hui_redirect('Files/conversionFile', [
+                        'code' => 'success',
+                        'msg' => '转换文件删除成功！'
+                    ]);
                 }else{
                     add_logs('删除转换文件', 0);
-                    return hui_redirect('Files/conversionFile', ['code' => 'error','msg' => '转换文件删除失败！']);
+                    return hui_redirect('Files/conversionFile', [
+                        'code' => 'error',
+                        'msg' => '转换文件删除失败！'
+                    ]);
                 }
             }
 
@@ -127,13 +139,22 @@ class Files extends Base{
                     } 
                 }
                 add_logs('批量删除转换文件', 1);
-                return hui_redirect('Files/conversionFile', ['code' => 'success','msg' => '批量删除转换文件成功！']);
+                return hui_redirect('Files/conversionFile', [
+                    'code' => 'success',
+                    'msg' => '批量删除转换文件成功！'
+                ]);
             }else{
-                return hui_redirect('Files/conversionFile', ['code' => 'error','msg' => '请选择要删除的文件！']);
+                return hui_redirect('Files/conversionFile', [
+                    'code' => 'error',
+                    'msg' => '请选择要删除的文件！'
+                ]);
             }
 
         }else{
-            return hui_redirect('Files/conversionFile', ['code' => 'error','msg' => '非法操作！']);
+            return hui_redirect('Files/conversionFile', [
+                'code' => 'error',
+                'msg' => '非法操作！'
+            ]);
         }
     }
 
@@ -146,19 +167,19 @@ class Files extends Base{
 	public function exportFile(Request $request){
         $where = [];
         # 关键字查询
-        $keywords = preg_replace('# #','',$request->post('keywords'));
-        $this->assign('keywords',$keywords);
+        $keywords = remove_spaces($request->post('keywords'));
+        $this->assign('keywords', $keywords);
         if(!empty($keywords)){
-            $where['title|name'] = ['like', '%'.$keywords.'%'];
+            $where['title|name'] = ['like', '%' . $keywords . '%'];
         }
 
         $db = new Export();
 		$list = $db->where($where)->order('id desc')->paginate(75);
-		$this->assign('list',$list);
-		$this->assign('count',$db->where($where)->count());
+		$this->assign('list', $list);
+		$this->assign('count', $db->where($where)->count());
 
 		# 面包屑
-		$this->assign('bread',breadcrumb([self::$bread,'导出文件']));
+		$this->assign('bread', breadcrumb([self::$bread, '导出文件']));
 		return $this->fetch('export_file');
     }
 
@@ -171,14 +192,23 @@ class Files extends Base{
             # 单文件删除
             $id = $request->param('id/d');
             if(!isset($id) || empty($id)){
-                return hui_redirect('Files/exportFile', ['code' => 'error','msg' => '参数错误！']);
+                return hui_redirect('Files/exportFile', [
+                    'code' => 'error',
+                    'msg' => '参数错误！'
+                ]);
             }else{
                 if(delete_export($id)){
                     add_logs('删除导出文件', 1);
-                    return hui_redirect('Files/exportFile', ['code' => 'success','msg' => '导出文件删除成功！']);
+                    return hui_redirect('Files/exportFile', [
+                        'code' => 'success',
+                        'msg' => '导出文件删除成功！'
+                    ]);
                 }else{
                     add_logs('删除导出文件', 0);
-                    return hui_redirect('Files/exportFile', ['code' => 'error','msg' => '导出文件删除失败！']);
+                    return hui_redirect('Files/exportFile', [
+                        'code' => 'error',
+                        'msg' => '导出文件删除失败！'
+                    ]);
                 }
             }
 
@@ -192,13 +222,22 @@ class Files extends Base{
                     }
                 }
                 add_logs('批量删除导出文件', 1);
-                return hui_redirect('Files/exportFile', ['code' => 'success','msg' => '批量删除导出文件成功！']);
+                return hui_redirect('Files/exportFile', [
+                    'code' => 'success',
+                    'msg' => '批量删除导出文件成功！'
+                ]);
             }else{
-                return hui_redirect('Files/exportFile', ['code' => 'error','msg' => '请选择要删除的文件！']);
+                return hui_redirect('Files/exportFile', [
+                    'code' => 'error',
+                    'msg' => '请选择要删除的文件！'
+                ]);
             }
 
         }else{
-            return hui_redirect('Files/exportFile', ['code' => 'error','msg' => '非法操作！']);
+            return hui_redirect('Files/exportFile', [
+                'code' => 'error',
+                'msg' => '非法操作！'
+            ]);
         }
     }
 

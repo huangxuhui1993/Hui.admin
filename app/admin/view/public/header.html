@@ -10,6 +10,11 @@
 					<li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe63c;</i>  工具 <i class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
 							<li>
+								<a href="javascript:;" onclick="notepad()">
+									<i class="Hui-iconfont">&#xe637;</i> 记事本
+								</a>
+							</li>
+							<li>
 								<a href="javascript:;" onclick="send_email_window('{:url('Email/send')}')">
 									<i class="Hui-iconfont">&#xe68a;</i> 发送邮件
 								</a>
@@ -42,10 +47,10 @@
 						</ul>
 					</li>
 					<li>
-						<span class="label label-default radius" >
+						<span class="label label-default radius" title="客户端操作系统">
 							<i class="Hui-iconfont">&#xe64f;</i> <span id="plat-form">...</span>
 						</span>
-						<span class="label label-default radius ml-10" id="run-time-box">
+						<span class="label label-default radius ml-10" id="run-time-box" title="请求响应速度">
 							<i class="Hui-iconfont">&#xe728;</i> <span id="run-time">...</span>
 						</span>
 					</li>

@@ -31,7 +31,7 @@ class Export extends Base{
      */
     public function xlsxExport(){
     	$fileName = 'Hui.admin系统日志信息';
-		$header = ['ID','管理员','客户端IP','操作','状态','时间'];
+		$header = ['ID', '管理员', '客户端IP', '操作', '状态', '时间'];
 		$data = Db::name('logs')->order('id asc')->select();
 		foreach($data as $key => $value){
 			$data[$key]['time'] = date('Y-m-d H:i:s',$value['time']);
@@ -57,16 +57,23 @@ class Export extends Base{
     private static function writer($fileName,$header,$data){
 		$writer = new XLSXWriter();
 
-		$writer->writeSheetRow('Sheet1',$header,['font'=>'宋体','font-size'=>10,'font-style'=>'bold', 'fill'=>'#eee','halign'=>'center', 'border'=>'left,right,top,bottom']);
+		$writer->writeSheetRow('Sheet1', $header, [
+			'font'=>'宋体',
+			'font-size'=>10,
+			'font-style'=>'bold',
+			'fill'=>'#eee',
+			'halign'=>'center',
+			'border'=>'left,right,top,bottom'
+		]);
 		
 		foreach($data as $row){
-			$writer->writeSheetRow('Sheet1',$row);
+			$writer->writeSheetRow('Sheet1', $row);
 		}
 		
 		$dir = HUI_FILES . Config::get('websetup.export_dir') . DS;
 		$file_name = date('YmdHis') . '.xlsx';
 		
-		$writer->writeToFile($dir.$file_name);
+		$writer->writeToFile($dir . $file_name);
         $url = Config::get('websetup.export_dir') . DS . $file_name;
 		# 记录导出文件信息
 		$db = new ExportModel();
@@ -83,7 +90,10 @@ class Export extends Base{
 				'file' => DS . Config::get('hui_files_path') . DS . $url
 			];
 		}else{
-			return ['error' => 1,'msg'  => '导出文件记录失败！'];	
+			return [
+				'error' => 1,
+				'msg'  => '导出文件记录失败！'
+			];	
 		}
     }
 

@@ -37,42 +37,38 @@ class Ueditor extends Base{
             // 上传图片
             case 'uploadimage':
             	$fieldName = $CONFIG['imageFieldName'];
-                $result = self::upload('photo',$request,$fieldName);
+                $result = self::upload('photo', $request, $fieldName);
                 break;
 
             // 上传涂鸦
             case 'uploadscrawl':
             	$fieldName = $CONFIG['scrawlFieldName'];
-                $result = self::upload('photo',$request,$fieldName);
+                $result = self::upload('photo', $request, $fieldName);
                 break;
 
             // 上传视频
             case 'uploadvideo':
             	$fieldName = $CONFIG['videoFieldName'];
-                $result = self::upload('video',$request,$fieldName);
+                $result = self::upload('video', $request, $fieldName);
                 break;
 
             // 上传文件
             case 'uploadfile':
             	$fieldName = $CONFIG['fileFieldName'];
-                $result = self::upload('attach',$request,$fieldName);
+                $result = self::upload('attach', $request, $fieldName);
                 break;
 
             default:
-                $result = json_encode([
-                    'state' => '请求地址出错'
-                ]);
+                $result = json_encode(['state' => '请求地址出错']);
                 break;
         }
 
         // 输出结果
         if(isset($callback)){
-            if(preg_match("/^[\w_]+$/",$callback)){
-                echo htmlspecialchars($callback).'('.$result.')';
+            if(preg_match("/^[\w_]+$/", $callback)){
+                echo htmlspecialchars($callback) . '(' . $result . ')';
             }else{
-                echo json_encode([
-                    'state' => 'callback参数不合法'
-                ]);
+                echo json_encode(['state' => 'callback参数不合法']);
             }
         }else{
             die($result);
@@ -81,7 +77,7 @@ class Ueditor extends Base{
 	}
 
     // 处理上传文件
-    private static function upload($type,$request,$fieldName){
+    private static function upload($type, $request, $fieldName){
         switch($type){
             case 'photo':
                 // 获取图片上传配置
@@ -94,7 +90,7 @@ class Ueditor extends Base{
                 // 图片上传参数
                 $url = isset($photo_dir) ? $photo_dir : 'images';
                 $size = isset($photo_size) ? $photo_size : 3145728; // 附件上传大小限制，单位：字节(b)，默认3MB
-                $ext = explode(',',$photo_ext);
+                $ext = explode(',', $photo_ext);
                 $is_water = isset($is_water) ? $is_water : 0;
                 $water = isset($photo_water) ? $photo_water : './static/images/water.png';
                 break;
@@ -108,7 +104,7 @@ class Ueditor extends Base{
                 // 附件上传参数
                 $url = isset($attach_dir) ? $attach_dir : 'attach';
                 $size = isset($attach_size) ? $attach_size : 104857600; // 附件上传大小限制，单位：字节(b)，默认100MB
-                $ext = explode(',',$attach_ext);
+                $ext = explode(',', $attach_ext);
                 break;
 
             case 'video':
@@ -120,7 +116,7 @@ class Ueditor extends Base{
                 // 视频上传参数
                 $url = isset($video_dir) ? $video_dir : 'video';
                 $size = isset($video_size) ? $video_size : 104857600; // 视频上传大小限制，单位B，默认100MB 
-                $ext = explode(',',$video_ext);
+                $ext = explode(',', $video_ext);
                 break;
 
             default:
@@ -171,21 +167,19 @@ class Ueditor extends Base{
                  */
                 $res = [
                     'state' => 'SUCCESS',
-                    'url' => '/'.Config::get('hui_files_path').'/'.$url.'/'.str_replace('\\','/',$info->getSaveName()),
+                    'url' => '/'. Config::get('hui_files_path') . '/' . $url . '/' . str_replace('\\', '/', $info->getSaveName()),
                     'title' => $_FILES[$fieldName]['name'],
                     "original" => $db->id, 
-                    'type' => '.'.$info->getExtension(),
+                    'type' => '.' . $info->getExtension(),
                     'size' => $info->getSize()
                 ];
             }else{
                 // 上传错误提示错误信息
-                $res = ['state' => $file->getError().'cc'];
+                $res = ['state' => $file->getError() . 'cc'];
             }
         }
 
         return json_encode($res);
     }
-
-
 
 }

@@ -35,14 +35,24 @@ class Email extends Base{
                 ['email', 'email', '请输入正确的邮箱地址！']
             ]);
 			if(!$validate->check($data)){
-				return hui_redirect('Email/lis', ['code' => 'error', 'msg' => $validate->getError(), 'data' => $data]);
+				return hui_redirect('Email/lis', [
+					'code' => 'error',
+					'msg' => $validate->getError(),
+					'data' => $data
+				]);
 			}else{
 				if($db->insert($data)){
 					add_logs('添加邮箱', 1);
-					return hui_redirect('Email/lis', ['code' => 'success', 'msg' => '添加邮箱成功！']);
+					return hui_redirect('Email/lis', [
+						'code' => 'success',
+						'msg' => '添加邮箱成功！'
+					]);
 				}else{
 					add_logs('添加邮箱', 0);
-					return hui_redirect('Email/lis', ['code' => 'error', 'msg' => '添加邮箱失败！']);
+					return hui_redirect('Email/lis', [
+						'code' => 'error',
+						'msg' => '添加邮箱失败！'
+					]);
 				}
 			}
 		}else{
@@ -66,15 +76,24 @@ class Email extends Base{
             ]);
 
 			if(!$validate->check($data)){
-				return json(['state' => 0, 'msg' => $validate->getError()]);
+				return json([
+					'state' => 0,
+					'msg' => $validate->getError()
+				]);
 			}else{
 				$data['time'] = time();
 				if($db->where('id', $data['id'])->update($data)){
 					add_logs('编辑邮箱' . $data['email'], 1);
-					return json(['state' => 1, 'msg' => '编辑成功！']);
+					return json([
+						'state' => 1,
+						'msg' => '编辑成功！'
+					]);
 				}else{
 					add_logs('编辑邮箱' . $data['email'], 0);
-					return json(['state' => 0, 'msg' => '编辑失败！']);
+					return json([
+						'state' => 0,
+						'msg' => '编辑失败！'
+					]);
 				}
 			}
 		}else{
@@ -101,7 +120,10 @@ class Email extends Base{
                 ['content', 'require', '邮件内容为空!'],
             ]);
             if(!$validate->check($data)) {
-                return json(['error' => 1, 'msg' => $validate->getError()]);
+                return json([
+                	'error' => 1,
+                	'msg' => $validate->getError()
+                ]);
             }else{
 
             	$file = isset($data['aid']) && is_numeric($data['aid']) ? '.' . get_file_url($data['aid'], '', false) : null;
@@ -125,10 +147,16 @@ class Email extends Base{
 						return json(['error' => 0]);
 					}catch(Exception $e) {
 						add_logs('发送邮件：' . $e->getMessage(), 0);
-						return json(['error' => 1, 'msg' => $e->getMessage()]);
+						return json([
+							'error' => 1,
+							'msg' => $e->getMessage()
+						]);
 					}
             	}else{
-            		return json(['error' => 1, 'msg' => '请选择邮箱！']);
+            		return json([
+            			'error' => 1,
+            			'msg' => '请选择邮箱！'
+            		]);
             	}
             }
         }else{

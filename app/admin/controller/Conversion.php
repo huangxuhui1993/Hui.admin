@@ -46,11 +46,14 @@ class Conversion extends Base{
             $data = $request->post();
             // 验证数据
             $validate = new Validate([
-                ['format','require','请选择转换格式'],
-                ['id','require','请上传Office文件']
+                ['format', 'require', '请选择转换格式'],
+                ['id', 'require', '请上传Office文件']
             ]);
             if(!$validate->check($data)) {
-                return json(['error' => 1,'msg' => $validate->getError()]);
+                return json([
+                    'error' => 1,
+                    'msg' => $validate->getError()
+                ]);
             }else{
                 // 实例化文件信息表模型
                 $attach = Attach::get($data['id']);
@@ -82,10 +85,16 @@ class Conversion extends Base{
                         return json(['error' => 0]);
                     }else{
                         add_logs('文件转换：' . $info['msg'], 0);
-                        return json(['error' => 1, 'msg' => $info['msg']]);
+                        return json([
+                            'error' => 1,
+                            'msg' => $info['msg']
+                        ]);
                     }
                 }else{
-                    return json(['error' => 1, 'msg' => '上传文件不存在']);
+                    return json([
+                        'error' => 1,
+                        'msg' => '上传文件不存在'
+                    ]);
                 }
 
             }
@@ -99,15 +108,15 @@ class Conversion extends Base{
      * @param $type
      * @return array
      */
-    private static function run_conversion($word_file,$convert_dir,$type){
+    private static function run_conversion($word_file, $convert_dir, $type){
         // 实例化转换类
         $convert = new Convert();
         $file_name = uniqid();
         switch($type){
             case 1:
                 // office文件转换pdf格式
-                $page = $convert->run($word_file,$convert_dir.$file_name.'.pdf');
-                if(isset($page) && $page>0){
+                $page = $convert->run($word_file, $convert_dir . $file_name . '.pdf');
+                if(isset($page) && $page > 0){
                     $info = [
                         'error'     => 0,
                         'page'      => $page,
@@ -115,11 +124,14 @@ class Conversion extends Base{
                         'file'      => $file_name
                     ];
                 }else{
-                    $info = ['error' => 1,'msg' => '转换失败'];
+                    $info = [
+                        'error' => 1,
+                        'msg' => '转换失败'
+                    ];
                 }
                 break;
             case 2:
-                $arr = $convert->pdf2swf($word_file,$convert_dir);
+                $arr = $convert->pdf2swf($word_file, $convert_dir);
                 if(is_array($arr) && $arr['error'] == 0){
                     $info = [
                         'error'     => 0,
@@ -128,11 +140,17 @@ class Conversion extends Base{
                         'file'      => $arr['swf_file']
                     ];
                 }else{
-                    $info = ['error' => 1,'msg' => '转换失败'];
+                    $info = [
+                        'error' => 1,
+                        'msg' => '转换失败'
+                    ];
                 }
                 break;        
             default:
-                $info = ['error' => 1,'msg' => '未知格式'];
+                $info = [
+                    'error' => 1,
+                    'msg' => '未知格式'
+                ];
                 break;
         }
         return $info;
@@ -147,9 +165,9 @@ class Conversion extends Base{
     public function lis(){
         $db = new ConvertModel();
         $list = $db->order('id desc')->paginate(12);
-        $this->assign('list',$list);
+        $this->assign('list', $list);
         $count = $db->count();
-        $this->assign('count',$count);
+        $this->assign('count', $count);
         return $this->fetch();
     }
 
@@ -163,7 +181,7 @@ class Conversion extends Base{
             $id = $request->param('id/d');
             // 获取全部原始数据
             $det_rs = ConvertModel::get($id)->getData();
-            $this->assign('rs',$det_rs);
+            $this->assign('rs', $det_rs);
             return $this->fetch();
         }
     }
@@ -176,7 +194,10 @@ class Conversion extends Base{
         if($request->isGet()){
             $id = $request->param('id/d');
             if(!isset($id) || empty($id)){
-                return hui_redirect('Conversion/lis', ['code' => 'error', 'msg' => '参数错误！']);
+                return hui_redirect('Conversion/lis', [
+                    'code' => 'error',
+                    'msg' => '参数错误！'
+                ]);
             }else{
                 $db = ConvertModel::get($id);
                 if($db){
@@ -187,13 +208,22 @@ class Conversion extends Base{
                             unlink($url);
                         }
                         add_logs('删除转换文件', 1);
-                        return hui_redirect('Conversion/lis', ['code' => 'success', 'msg' => '转换文件删除成功！']);
+                        return hui_redirect('Conversion/lis', [
+                            'code' => 'success',
+                            'msg' => '转换文件删除成功！'
+                        ]);
                     }else{
                         add_logs('删除转换文件', 0);
-                        return hui_redirect('Conversion/lis', ['code' => 'error', 'msg' => '转换文件删除失败！']);
+                        return hui_redirect('Conversion/lis', [
+                            'code' => 'error',
+                            'msg' => '转换文件删除失败！'
+                        ]);
                     }
                 }else{
-                    return hui_redirect('Conversion/lis', ['code' => 'error', 'msg' => '数据不存在！']);
+                    return hui_redirect('Conversion/lis', [
+                        'code' => 'error',
+                        'msg' => '数据不存在！'
+                    ]);
                 }
             }
         }

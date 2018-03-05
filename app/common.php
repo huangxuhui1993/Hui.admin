@@ -41,9 +41,17 @@ function scan_all($dir, $pid = 0){
             if($value !== '.' && $value !== '..'){
                 $child = $dir . '/' . $value;
                 if(is_file($child)){
-                    $file_list[] = ['id' => $key, 'pid' => $pid, 'name' => $value];
+                    $file_list[] = [
+                        'id' => $key,
+                        'pid' => $pid,
+                        'name' => $value
+                    ];
                 }elseif(is_dir($child)){
-                    $file_list[] = ['id' => $key, 'pid' => $pid, 'name' => $value];
+                    $file_list[] = [
+                        'id' => $key,
+                        'pid' => $pid,
+                        'name' => $value
+                    ];
                     scan_all($child, $key);
                 }
 
@@ -116,7 +124,10 @@ function get_upload_config($type = ''){
                 $ext = explode(',', $ext_string);
                 break;
             default:
-                return ['state' => 0, 'message' => '类型错误！'];
+                return [
+                    'state' => 0,
+                    'message' => '类型错误！'
+                ];
                 break;
         }
         if(!empty($url) && !empty($size) && !empty($ext) && is_array($ext)){
@@ -131,23 +142,39 @@ function get_upload_config($type = ''){
             ];
             return $arr;
         }else{
-            return ['state' => 0, 'message' => '上传配置出错！'];
+            return [
+                'state' => 0,
+                'message' => '上传配置出错！'
+            ];
         }
     }else{
-        return ['state' => 0, 'message' => '上传类型为空！'];
+        return [
+            'state' => 0,
+            'message' => '上传类型为空！'
+        ];
     }
 }
 
 // 获取IP地址信息
 function get_ip_address($ip = ''){
     $url = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php';
-    $data = ['format' => 'json', 'ip' => $ip];
+    $data = [
+        'format' => 'json',
+        'ip' => $ip
+    ];
     $result = HttpCurl::get($url, $data);
     $IPinfo = json_decode($result, true);
     if($IPinfo != -2){
-        $info = ['state' => 1, 'msg' => '查询成功！', 'address' => $IPinfo];
+        $info = [
+            'state' => 1,
+            'msg' => '查询成功！',
+            'address' => $IPinfo
+        ];
     }else{
-        $info = ['state' => 0, 'msg' => 'IP地址错误，无法查询！'];
+        $info = [
+            'state' => 0,
+            'msg' => 'IP地址错误，无法查询！'
+        ];
     }
     return $info;
 }
@@ -315,7 +342,13 @@ function site_run_time(){
  */
 function second_to_time($time = 0){
     if(is_numeric($time)){
-        $value = ['years' => 0, 'days' => 0, 'hours' => 0, 'minutes' => 0, 'seconds' => 0];
+        $value = [
+            'years'   => 0,
+            'days'    => 0,
+            'hours'   => 0,
+            'minutes' => 0,
+            'seconds' => 0
+        ];
         if($time >= 31556926){
             $value['years'] = floor($time / 31556926);
             $time = ($time % 31556926);
@@ -377,7 +410,7 @@ function msubstr($str, $start = 0, $length, $charset = "utf-8", $suffix = true) 
     if(function_exists("mb_substr")){
         $slice = mb_substr($str, $start, $length, $charset);
     }elseif(function_exists('iconv_substr')){
-        $slice = iconv_substr($str,$start,$length,$charset);
+        $slice = iconv_substr($str, $start, $length, $charset);
         if(false === $slice) {
             $slice = '';
         }
@@ -387,7 +420,7 @@ function msubstr($str, $start = 0, $length, $charset = "utf-8", $suffix = true) 
         $re['gbk']    = "/[\x01-\x7f]|[\x81-\xfe][\x40-\xfe]/";
         $re['big5']   = "/[\x01-\x7f]|[\x81-\xfe]([\x40-\x7e]|\xa1-\xfe])/";
         preg_match_all($re[$charset], $str, $match);
-        $slice = join("",array_slice($match[0], $start, $length));
+        $slice = join("", array_slice($match[0], $start, $length));
     }
     return $suffix ? $slice . '...' : $slice;
 }
@@ -516,7 +549,7 @@ function send_mailer($data = []){
  * @return string 数据库大小
  */
 function mysql_db_size(){
-    $sql = "SHOW TABLE STATUS FROM ".Config::get('database.database');
+    $sql = "SHOW TABLE STATUS FROM " . Config::get('database.database');
     $prefix = Config::get('database.prefix');
     if($prefix != null) {
         $sql .= " LIKE '{$prefix}%'";
@@ -560,10 +593,10 @@ function clean_sensitive_words($text = ''){
 function get_browser_lang(){
 	$language = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
 	if(!empty($language)){
-		$lang = substr($language,0,5);
-		if(preg_match('/zh-cn/i',$lang)){
+		$lang = substr($language, 0, 5);
+		if(preg_match('/zh-cn/i', $lang)){
 			$lang = '简体中文';
-		}elseif(preg_match('/zh/i',$lang)){
+		}elseif(preg_match('/zh/i', $lang)){
 			$lang = '繁体中文';
 		}else{
 			$lang = 'English';
@@ -651,7 +684,7 @@ function time_tips(){
  */
 function parse_config_attr($string){
     $array = preg_split('/[,;\r\n]+/', trim($string, ",;\r\n"));
-    if(strpos($string,':')){
+    if(strpos($string, ':')){
         $value = [];
         foreach($array as $val){
             list($k, $v) = explode(':', $val);
@@ -830,30 +863,30 @@ function get_channel($pid = 0, $path = ''){
             if ($val['pid'] == $pid){
                 if ($val['pid'] == 0){
                     $c_arr[] = [
-                        'id' => $val['id'],
-                        'pid' => $val['pid'],
-                        'cname' => $val['cname'],
-                        'mname' => $val['mname'],
-                        'model' => $val['model'],
-                        'outurl' => $val['outurl'],
-                        'sorting' => $val['sorting'],
-                        'keywords' => $val['keywords'],
-                        'describle' => $val['describle'],
-                        'status' => $val['status'],
+                        'id'          => $val['id'],
+                        'pid'         => $val['pid'],
+                        'cname'       => $val['cname'],
+                        'mname'       => $val['mname'],
+                        'model'       => $val['model'],
+                        'outurl'      => $val['outurl'],
+                        'sorting'     => $val['sorting'],
+                        'keywords'    => $val['keywords'],
+                        'describle'   => $val['describle'],
+                        'status'      => $val['status'],
                         'update_time' => $val['update_time']
                     ];
                 }else{
                     $c_arr[] = [
-                        'id' => $val['id'],
-                        'pid' => $val['pid'],
-                        'cname' => $path . $val['cname'],
-                        'mname' => $val['mname'],
-                        'model' => $val['model'],
-                        'outurl' => $val['outurl'],
-                        'sorting' => $val['sorting'],
-                        'keywords' => $val['keywords'],
-                        'describle' => $val['describle'],
-                        'status' => $val['status'],
+                        'id'          => $val['id'],
+                        'pid'         => $val['pid'],
+                        'cname'       => $path . $val['cname'],
+                        'mname'       => $val['mname'],
+                        'model'       => $val['model'],
+                        'outurl'      => $val['outurl'],
+                        'sorting'     => $val['sorting'],
+                        'keywords'    => $val['keywords'],
+                        'describle'   => $val['describle'],
+                        'status'      => $val['status'],
                         'update_time' => $val['update_time']
                     ];
                 }

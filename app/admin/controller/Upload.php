@@ -30,12 +30,18 @@ class Upload extends Base{
 
             $is_upload = Config::get('websetup.is_upload'); // 是否开启上传
             if($is_upload == 0){
-                return json(['error' => 1, 'message' => '系统未开启上传功能，无法上传文件！']);
+                return json([
+                    'error' => 1,
+                    'message' => '系统未开启上传功能，无法上传文件！'
+                ]);
             }else{
                 $data = $request->post();
                 
                 if(empty($data['flag'])){
-                    return json(['error' => 1, 'message' => '上传类型为空！']);
+                    return json([
+                        'error' => 1,
+                        'message' => '上传类型为空！'
+                    ]);
                 }else{
                     $result = $this->_upload($data, $request);
                     return json($result);
@@ -43,7 +49,10 @@ class Upload extends Base{
             }
 
         }else{
-           return json(['error' => 1, 'message' => '非法操作！']);
+            return json([
+                'error' => 1,
+                'message' => '非法操作！'
+            ]);
         }
 	}
 
@@ -96,7 +105,10 @@ class Upload extends Base{
                             $db->save($add_data);
                             $id = $db->id;
                         }else{
-                            return ['error' => 1, 'message' => '文件合并失败！'];
+                            return [
+                                'error' => 1,
+                                'message' => '文件合并失败！'
+                            ];
                         }
                     }
                 }else{
@@ -116,10 +128,16 @@ class Upload extends Base{
                 ];
 
             }else{
-                return ['error' => 1, 'message' => $file->getError()]; // 上传错误提示错误信息
+                return [
+                    'error' => 1,
+                    'message' => $file->getError()
+                ]; // 上传错误提示错误信息
             }
         }else{
-            return ['error' => 1, 'message' => $config['message']];
+            return [
+                'error' => 1,
+                'message' => $config['message']
+            ];
         }
     }
 
@@ -167,12 +185,21 @@ class Upload extends Base{
         if($request->isPost()){
             $chunks_path = $request->post('chunks_path');
             if(remove_dir($chunks_path)){
-                return json(['error' => 0, 'message' => '分片文件清除成功！']);
+                return json([
+                    'error' => 0,
+                    'message' => '分片文件清除成功！'
+                ]);
             }else{
-                return json(['error' => 1, 'message' => '分片文件清除失败！']);
+                return json([
+                    'error' => 1,
+                    'message' => '分片文件清除失败！'
+                ]);
             }
         }else{
-            return json(['error' => 1, 'message' => '非法操作！']);
+            return json([
+                'error' => 1,
+                'message' => '非法操作！'
+            ]);
         }
     }
 

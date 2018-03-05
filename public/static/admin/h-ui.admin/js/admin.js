@@ -9,6 +9,24 @@ $(function(){
     });
 });
 
+// 记事本
+function notepad(){
+    if(typeof(Storage) !== "undefined"){ // Check browser support
+        var data = localStorage.getItem("memoData");
+        layer.prompt({
+            title: '记事本',
+            formType: 2,
+            value: data,
+            area: ['500px', '400px'] // 自定义文本域宽高
+        }, function(text, index){
+            layer.close(index);
+            localStorage.setItem("memoData", text);
+        });
+    }else{
+        layer.msg("抱歉！您的浏览器不支持 Web Storage ...");
+    }
+}
+
 // 信息排序
 function sorting(url, obj){
     var sort = $(obj).val();
@@ -21,8 +39,7 @@ function sorting(url, obj){
 
 // 运行时间网络测试
 function run_time(){
-    // 浏览器的操作系统平台
-    var platform = navigator.platform;
+    var platform = navigator.platform; // 浏览器的操作系统平台
     $('#plat-form').empty().text(platform);
 
     var starttime = new Date();
@@ -397,7 +414,6 @@ function get_sql_file(url, sql_path){
 function code_path(url){
     layer.prompt({
         title: '请输入源代码路径',
-        value: 'public/static/notepad.txt',
         offset: '100px'
     }, function(file, index){
         layer.close(index);
