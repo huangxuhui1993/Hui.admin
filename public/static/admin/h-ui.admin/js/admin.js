@@ -20,7 +20,9 @@ function notepad(){
             area: ['500px', '400px'] // 自定义文本域宽高
         }, function(text, index){
             layer.close(index);
-            localStorage.setItem("memoData", text);
+            if(data != text){
+                localStorage.setItem("memoData", text);
+            }
         });
     }else{
         layer.msg("抱歉！您的浏览器不支持 Web Storage ...");
@@ -39,19 +41,18 @@ function sorting(url, obj){
 
 // 运行时间网络测试
 function run_time(){
-    var platform = navigator.platform; // 浏览器的操作系统平台
-    $('#plat-form').empty().text(platform);
+    $('#plat-form').empty().text(navigator.platform); // 浏览器的操作系统平台
 
-    var starttime = new Date();
+    var boxObj = $("#run-time-box"),
+    starttime = new Date();
     $.ajax({
         type:'GET',
         url:'/static/runtime.json',
         cache:false,
-        success:function(data){
+        complete:function(xhr,data){
+            log(data)
             var endtime = new Date();
             var runtime = endtime.getTime() - starttime.getTime();
-
-            var boxObj = $("#run-time-box");
             boxObj.removeClass('label-default label-success label-warning label-danger');
             if(runtime <= 200){
                 boxObj.addClass('label-success');
