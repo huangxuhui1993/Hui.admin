@@ -52,7 +52,6 @@ function run_time(){
         url:'/static/runtime.json',
         cache:false,
         complete:function(xhr, data){
-            log(xhr);
             var endTime = new Date();
             if(data == 'success'){
                 var runtime = endTime.getTime() - startTime.getTime();
