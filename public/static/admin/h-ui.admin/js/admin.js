@@ -12,7 +12,8 @@ $(function(){
 // 记事本
 function notepad(){
     if(typeof(Storage) !== "undefined"){ // Check browser support
-        var data = localStorage.getItem("memoData");
+        var local = window.localStorage,
+        data = local.getItem("memoData"); // 读取本地存储的信息
         layer.prompt({
             title: '记事本',
             formType: 2,
@@ -21,7 +22,8 @@ function notepad(){
         }, function(text, index){
             layer.close(index);
             if(data != text){
-                localStorage.setItem("memoData", text);
+                local.removeItem("memoData"); // 删除本地存储的信息
+                local.setItem("memoData", text); // 存储数据信息到本地
             }
         });
     }else{
@@ -42,27 +44,30 @@ function sorting(url, obj){
 // 运行时间网络测试
 function run_time(){
     $('#plat-form').empty().text(navigator.platform); // 浏览器的操作系统平台
-
-    var boxObj = $("#run-time-box"),
-    starttime = new Date();
+    var runTimeBox = $("#run-time-box"),
+    runTime = $('#run-time'),
+    startTime = new Date();
     $.ajax({
         type:'GET',
         url:'/static/runtime.json',
         cache:false,
-        complete:function(xhr,data){
-            log(data)
-            var endtime = new Date();
-            var runtime = endtime.getTime() - starttime.getTime();
-            boxObj.removeClass('label-default label-success label-warning label-danger');
-            if(runtime <= 200){
-                boxObj.addClass('label-success');
-            }else if(runtime > 200 && runtime <= 500){
-                boxObj.addClass('label-warning');
+        complete:function(xhr, data){
+            var endTime = new Date();
+            if(data == 'success'){
+                var runtime = endTime.getTime() - startTime.getTime();
+                runTimeBox.removeClass('label-default label-success label-warning label-danger');
+                if(runtime <= 200){
+                    runTimeBox.addClass('label-success');
+                }else if(runtime > 200 && runtime <= 500){
+                    runTimeBox.addClass('label-warning');
+                }else{
+                    runTimeBox.addClass('label-danger');
+                }
+                runTime.empty().text(runtime + '毫秒(MS)'); 
             }else{
-                boxObj.addClass('label-danger');
+                runTimeBox.addClass('label-danger');
+                runTime.empty().text('服务器连接失败！'); 
             }
-
-            $('#run-time').empty().text(runtime + '毫秒(MS)');
         }
     });
 }
