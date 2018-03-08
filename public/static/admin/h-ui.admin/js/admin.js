@@ -46,24 +46,24 @@ function run_time(){
     $('#plat-form').empty().text(navigator.platform); // 浏览器的操作系统平台
     var runTimeBox = $("#run-time-box"),
     runTime = $('#run-time'),
-    startTime = new Date();
+    sendDate = (new Date()).getTime();
     $.ajax({
         type:'GET',
         url:'/static/runtime.json',
         cache:false,
         complete:function(xhr, data){
-            var endTime = new Date();
+            var receiveDate = (new Date()).getTime();
             if(data == 'success'){
-                var runtime = endTime.getTime() - startTime.getTime();
+                var responseTimeMs = receiveDate - sendDate;
                 runTimeBox.removeClass('label-default label-success label-warning label-danger');
-                if(runtime <= 200){
+                if(responseTimeMs <= 200){
                     runTimeBox.addClass('label-success');
-                }else if(runtime > 200 && runtime <= 500){
+                }else if(responseTimeMs > 200 && responseTimeMs <= 500){
                     runTimeBox.addClass('label-warning');
                 }else{
                     runTimeBox.addClass('label-danger');
                 }
-                runTime.empty().text(runtime + '毫秒(MS)'); 
+                runTime.empty().text(responseTimeMs + '毫秒(MS)'); 
             }else{
                 runTimeBox.addClass('label-danger');
                 runTime.empty().text('服务器连接失败！'); 
@@ -175,7 +175,7 @@ function init_map(){
 
 // 地图定位窗口
 function positioning_window(url){
-    layer_open(url, '地图定位', 750, 700, 0.1, false);
+    layer_open(url, '地图定位', 750, 660, 0.1, false);
 }
 
 // 检测网速窗口

@@ -7,9 +7,11 @@ a:focus,a:hover{text-decoration:none;}
 .bg-1{background-color:#f5fafe;}
 h4{line-height:30px;}
 .Hui-header{position:absolute;top:0;right:0;left:0;z-index:999;padding:0 15px;height:44px;}
-.Hui-aside{left:0;z-index:99;overflow:auto;padding-top:10px;width:199px;border-right:1px solid #e5e5e5;background-color:hsla(0,0%,93%,.98);}
+/*.Hui-aside{left:0;z-index:99;overflow:auto;padding-top:10px;width:199px;border-right:1px solid #e5e5e5;background-color:hsla(0,0%,93%,.98);}*/
+.Hui-aside{left:0;z-index:99;overflow:auto;padding-top:10px;width:180px;border-right:1px solid #e5e5e5;background-color:hsla(0,0%,93%,.98);}
 .Hui-article-box,.Hui-aside{position:absolute;top:44px;bottom:0;}
-.Hui-article-box{right:0;left:199px;z-index:1;overflow:hidden;background-color:#fff;}
+/*.Hui-article-box{right:0;left:199px;z-index:1;overflow:hidden;background-color:#fff;}*/
+.Hui-article-box{right:0;left:180px;z-index:1;overflow:hidden;background-color:#fff;}
 .Hui-article{position:absolute;top:34px;right:0;bottom:0;left:0;z-index:1;overflow:auto;}
 .Hui-container{padding:45px 0 0;}
 .Hui-article-box,.Hui-aside,.dislpayArrow{-webkit-transition:all .2s ease 0s;transition:all .2s ease 0s;}
@@ -42,7 +44,8 @@ h4{line-height:30px;}
 .Hui-aside .menu_dropdown dd li a{padding-left:26px;border-bottom:none;font-weight:400;line-height:2pc;}
 .Hui-aside .menu_dropdown li a:hover{text-decoration:none;}
 .Hui-aside .menu_dropdown li.current a,.menu_dropdown li.current a:hover{background-color:hsla(0,0%,100%,.2);}
-.dislpayArrow{position:absolute;top:0;bottom:0;left:200px;z-index:10;width:0;height:100%;}
+/*.dislpayArrow{position:absolute;top:0;bottom:0;left:200px;z-index:10;width:0;height:100%;}*/
+.dislpayArrow{position:absolute;top:0;bottom:0;left:181px;z-index:10;width:0;height:100%;}
 .dislpayArrow a{position:absolute;top:50%;display:block;margin-top:-30px;width:17px;height:61px;outline:0;}
 .dislpayArrow a.open{background-position:0 -61px;}
 .dislpayArrow a:hover{background-position:right 0;text-decoration:none;}
