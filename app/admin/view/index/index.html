@@ -41,6 +41,7 @@
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="__ADMIN__/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
 <script type="text/javascript" src="__ROOT__/js/timerHandler/jquery.timerHandler.min.js"></script>
+<script src="__ROOT__/js/screenlog.min.js"></script>
 <script type="text/javascript">
 $(function(){
 	// 初始化页面
@@ -51,6 +52,31 @@ $(function(){
 		className:"current",
 		index:0,
 	});
+
+	// console.log([
+	//     "                   _ooOoo_",
+	//     "                  o8888888o",
+	//     "                  88\" . \"88",
+	//     "                  (| -_- |)",
+	//     "                  O\\  =  /O",
+	//     "               ____/`---'\\____",
+	//     "             .'  \\\\|     |//  `.",
+	//     "            /  \\\\|||  :  |||//  \\",
+	//     "           /  _||||| -:- |||||-  \\",
+	//     "           |   | \\\\\\  -  /// |   |",
+	//     "           | \\_|  ''\\---/''  |   |",
+	//     "           \\  .-\\__  `-`  ___/-. /",
+	//     "         ___`. .'  /--.--\\  `. . __",
+	//     "      .\"\" '<  `.___\\_<|>_/___.'  >'\"\".",
+	//     "     | | :  `- \\`.;`\\ _ /`;.`/ - ` : | |",
+	//     "     \\  \\ `-.   \\_ __\\ /__ _/   .-` /  /",
+	//     "======`-.____`-.___\\_____/___.-`____.-'======",
+	//     "                   `=---='",
+	//     "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+	//     "         佛祖保佑       永无BUG"
+	// ].join('\n'));
+
+	screenLog.init();
 
 	// 运行时间
 	run_time();
