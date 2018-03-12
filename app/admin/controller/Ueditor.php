@@ -16,14 +16,14 @@ class Ueditor extends Base{
 	public function fileUpload(Request $request){
       
         // 是否开启上传
-        $isupallow = Config::get('websetup.is_upload');
+        $isUpallow = Config::get('websetup.is_upload');
 
-        if ($isupallow == 0){
+        if($isUpallow == 0){
             return json(['state' => '系统未开启上传功能，无法上传文件！']);
         }
 
         // 加载配置文件
-        $CONFIG = json_decode(preg_replace("/\/\*[\s\S]+?\*\//", "", file_get_contents(ROOT_PATH."public/static/js/ueditor/php/config.json")),true);
+        $CONFIG = json_decode(preg_replace("/\/\*[\s\S]+?\*\//", "", file_get_contents(ROOT_PATH . "public/static/js/ueditor/php/config.json")), true);
 
 		// 接收请求参数
         $action = $request->param('action');
@@ -78,82 +78,35 @@ class Ueditor extends Base{
 
     // 处理上传文件
     private static function upload($type, $request, $fieldName){
-        switch($type){
-            case 'photo':
-                // 获取图片上传配置
-                $photo_dir = Config::get('websetup.photo_dir');
-                $photo_size = Config::get('websetup.photo_size');
-                $photo_ext = Config::get('websetup.photo_ext');
-                $photo_ext = isset($photo_ext) ? $photo_ext : 'png,jpg,jpeg,bmp,gif';
-                $is_water = Config::get('websetup.is_water');
-                $photo_water = Config::get('websetup.photo_water');
-                // 图片上传参数
-                $url = isset($photo_dir) ? $photo_dir : 'images';
-                $size = isset($photo_size) ? $photo_size : 3145728; // 附件上传大小限制，单位：字节(b)，默认3MB
-                $ext = explode(',', $photo_ext);
-                $is_water = isset($is_water) ? $is_water : 0;
-                $water = isset($photo_water) ? $photo_water : './static/images/water.png';
-                break;
+        $config = get_upload_config($type); // 获取上传配置
 
-            case 'attach':
-                // 获取附件上传配置
-                $attach_dir = Config::get('websetup.attach_dir');
-                $attach_size = Config::get('websetup.attach_size');
-                $attach_ext = Config::get('websetup.attach_ext');
-                $attach_ext = isset($attach_ext) ? $attach_ext : 'rar,tar,7z,zip,gz,txt,chm,xml,doc,ppt,pdf,xls,xlsx,pptx,docx';
-                // 附件上传参数
-                $url = isset($attach_dir) ? $attach_dir : 'attach';
-                $size = isset($attach_size) ? $attach_size : 104857600; // 附件上传大小限制，单位：字节(b)，默认100MB
-                $ext = explode(',', $attach_ext);
-                break;
+        if($config['state'] == 1){
+            
+            $url = $config['url']; // 上传文件夹
 
-            case 'video':
-                // 获取视频上传配置
-                $video_dir = Config::get('websetup.video_dir');
-                $video_size = Config::get('websetup.video_size');
-                $video_ext = Config::get('websetup.video_ext');
-                $video_ext = isset($video_ext) ? $video_ext : 'swf,flv,wav,ram,wma,mp4';
-                // 视频上传参数
-                $url = isset($video_dir) ? $video_dir : 'video';
-                $size = isset($video_size) ? $video_size : 104857600; // 视频上传大小限制，单位B，默认100MB 
-                $ext = explode(',', $video_ext);
-                break;
-
-            default:
-                return false;
-                break;
-        }
-
-        if(empty($url) || empty($size) || empty($ext)){
-            $res = ['state' => '后台上传配置出错！'];
-        }else{
             // 获取表单上传文件
             $file = $request->file($fieldName);
-            $where = [
-                'size' => $size,
-                'ext' => $ext
-            ];
+            $validate = ['size' => $config['size'], 'ext' => $config['ext']];
             
             // 移动文件
-            $info = $file->validate($where)->move(HUI_FILES.$url);
+            $info = $file->validate($validate)->move(HUI_FILES . $url);
             
             if($info){
                 // 文档ID
                 $aid = $request->param('aid');
                 // 数据库存储上传文件数据
                 $db = new AttachModel();
-                $data = [
+                $db->save([
                     'aid'   => isset($aid) ? $aid : '',
                     'uid'   => session('uid'),
                     'type'  => $type,
                     'title' => $_FILES[$fieldName]['name'],
                     'name'  => $info->getFilename(),
-                    'url'   => $url.'/'.str_replace('\\','/',$info->getSaveName()),
+                    'url'   => $url . '/' . str_replace('\\', '/', $info->getSaveName()),
                     'thumb' => '',
                     'ext'   => $info->getExtension(),
                     'size'  => $info->getSize()
-                ];
-                $db->save($data);
+                ]);
                 /**
                  * 得到上传文件所对应的各个参数,数组结构
                  * [
@@ -165,21 +118,24 @@ class Ueditor extends Base{
                  *     "size" => "",           // 文件大小
                  * ]
                  */
-                $res = [
-                    'state' => 'SUCCESS',
-                    'url' => '/'. Config::get('hui_files_path') . '/' . $url . '/' . str_replace('\\', '/', $info->getSaveName()),
-                    'title' => $_FILES[$fieldName]['name'],
-                    "original" => $db->id, 
-                    'type' => '.' . $info->getExtension(),
-                    'size' => $info->getSize()
+                $result = [
+                    'state'    => 'SUCCESS',
+                    'url'      => '/'. Config::get('hui_files_path') . '/' . $url . '/' . str_replace('\\', '/', $info->getSaveName()),
+                    'title'    => $_FILES[$fieldName]['name'],
+                    "original" => $db->id,
+                    'type'     => '.' . $info->getExtension(),
+                    'size'     => $info->getSize()
                 ];
             }else{
                 // 上传错误提示错误信息
-                $res = ['state' => $file->getError() . 'cc'];
+                $result = ['state' => $file->getError()];
             }
+
+        }else{
+            $result = ['state' => '后台上传配置出错！'];
         }
 
-        return json_encode($res);
+        return json_encode($result);
     }
 
 }

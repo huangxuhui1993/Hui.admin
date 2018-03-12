@@ -18,7 +18,6 @@ class Index extends Base{
 	}
 
 	public function welcome(){
-
 		$this->assign('access_list', self::accessData()); 		// 访问统计数据
 
 		$this->assign('source_list', self::sourceData());		// 访问来源统计数据

@@ -17,8 +17,8 @@ class Channel extends Base{
 	 * @return 
 	 */
 	public function lis(){
-		$list = get_channel($pid = 0," ┣━  ");
-		$this->assign('list',$list);
+		$list = get_channel($pid = 0, " ┣━  ");
+		$this->assign('list', $list);
 
 		# 面包屑
 		$this->assign('bread', breadcrumb([$this->bread, '栏目列表']));
@@ -112,12 +112,12 @@ class Channel extends Base{
 		}
 
 		// 获取栏目
-		$c_list = get_channel($pid = 0, "┣━ ");
-		$this->assign('c_list', $c_list);
+		$channel_list = get_channel($pid = 0, "┣━ ");
+		$this->assign('c_list', $channel_list);
 
 		// 栏目模型
-		$m_list = $models->field("id,name")->order("sorting asc")->select();
-		$this->assign("m_list", $m_list);
+		$models_list = $models->field("id,name")->order("sorting asc")->select();
+		$this->assign("m_list", $models_list);
 
 		// 获取栏目原始数据
 		$rs = ChannelModel::get($id)->getData();

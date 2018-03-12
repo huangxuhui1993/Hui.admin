@@ -21,19 +21,19 @@
 				{/if}
 
 				{if condition="get_auth('Dbmanage/statistical/style/1')"}
-					<a class="btn btn-primary radius" href="javascript:;" onclick="db_statistical('1','{:url('Dbmanage/statistical', ['style' => 1])}')">
+					<a class="btn btn-primary radius" href="javascript:;" onclick="db_statistical(this)" title="记录数统计图" alt="{:url('Dbmanage/statistical', ['style' => 1])}">
 						<i class="Hui-iconfont">&#xe61c;</i> 记录数统计图
 					</a>
 				{/if}
 
 				{if condition="get_auth('Dbmanage/statistical/style/2')"}
-					<a class="btn btn-primary radius" href="javascript:;" onclick="db_statistical('2','{:url('Dbmanage/statistical', ['style' => 2])}')">
+					<a class="btn btn-primary radius" href="javascript:;" onclick="db_statistical(this)" title="大小统计图" alt="{:url('Dbmanage/statistical', ['style' => 2])}">
 						<i class="Hui-iconfont">&#xe618;</i> 大小统计图
 					</a>
 				{/if}
 
 				{if condition="get_auth('Dbmanage/statistical/style/3')"}
-					<a class="btn btn-primary radius" href="javascript:;" onclick="db_statistical('3','{:url('Dbmanage/statistical', ['style' => 3])}')">
+					<a class="btn btn-primary radius" href="javascript:;" onclick="db_statistical(this)" title="碎片统计图" alt="{:url('Dbmanage/statistical', ['style' => 3])}">
 						<i class="Hui-iconfont">&#xe618;</i> 碎片统计图
 					</a>
 				{/if}

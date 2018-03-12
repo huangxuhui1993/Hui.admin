@@ -92,7 +92,7 @@ class Dbmanage extends Base{
 				if(!in_array($name, $table)){
 					$this->error('您查找的数据表不存在！');
 				}else{
-					$list = Db::query('SHOW FULL COLUMNS FROM '.$name);
+					$list = Db::query('SHOW FULL COLUMNS FROM ' . $name);
 				    $this->assign('list', $list);
 
 				    // 面包屑
@@ -310,7 +310,6 @@ class Dbmanage extends Base{
      * @param Request $request
      */
 	public function delSql(Request $request){
-		
 		if($request->isGet()){
 			$id = $request->param('id/d');
 			if(!isset($id)){
@@ -368,6 +367,5 @@ class Dbmanage extends Base{
 			die('非法操作！');
 		}
 	}
-
 
 }

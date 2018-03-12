@@ -104,12 +104,12 @@ class Document extends Base{
 				$this->assign("mrs", $mrs);
 				
 				# 获取字段
-				$f_list = Db::name('fields')->where(['mid' => $crs['model']])->order("sorting asc")->select();
-				$this->assign("f_list", $f_list);
+				$fields_list = Db::name('fields')->where(['mid' => $crs['model']])->order("sorting asc")->select();
+				$this->assign("f_list", $fields_list);
 				
 				# 获取文档属性
-				$d_list = $doc->field("id,mark,name")->where('status=1')->order("sorting asc")->select();
-				$this->assign('d_list', $d_list);
+				$doc_list = $doc->field("id,mark,name")->where('status=1')->order("sorting asc")->select();
+				$this->assign('d_list', $doc_list);
 				
 				# 点击次数
 				$this->assign('hits', rand(20, 200));
@@ -521,7 +521,7 @@ class Document extends Base{
 		$db = new DocumentModel();
 
 		# 是否放入回收站
-		$where['isrec'] = ['eq',1];
+		$where['isrec'] = ['eq', 1];
 		$field = 'id,topic,color,cid,hits,uid,create_time,status,isrec';
 		$list = $db->where($where)->field($field)->order('sorting ASC')->paginate(15);
 		$this->assign('list', $list);

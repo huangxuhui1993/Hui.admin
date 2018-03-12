@@ -40,7 +40,6 @@ class Fields extends Base{
 			// 获取模型
 			self::$models = ModelsModel::get($this->mid);
 		}
-
     }
 
     /**

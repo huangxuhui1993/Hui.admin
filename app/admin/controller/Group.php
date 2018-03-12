@@ -109,7 +109,7 @@ class Group extends Base{
 					}
 				}
 	        	// 数据验证
-	            $result = $this->validate($data,'AuthGroup');
+	            $result = $this->validate($data, 'AuthGroup');
 	            if(true !== $result){
 	            	$with = [
 	            		'code' => 'error',

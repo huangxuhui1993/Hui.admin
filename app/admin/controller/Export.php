@@ -19,7 +19,7 @@ class Export extends Base{
     public function _initialize(){
         parent::_initialize();
         set_time_limit(0);
-        ini_set('memory_limit','300M');
+        ini_set('memory_limit', '300M');
 		error_reporting(E_ALL);
 		date_default_timezone_set('Asia/Shanghai');	
     }
@@ -34,7 +34,7 @@ class Export extends Base{
 		$header = ['ID', '管理员', '客户端IP', '操作', '状态', '时间'];
 		$data = Db::name('logs')->order('id asc')->select();
 		foreach($data as $key => $value){
-			$data[$key]['time'] = date('Y-m-d H:i:s',$value['time']);
+			$data[$key]['time'] = date('Y-m-d H:i:s', $value['time']);
 			if($value['status'] == 1){
 				$data[$key]['status'] = '成功';
 			}elseif($value['status'] == 0){
@@ -42,7 +42,7 @@ class Export extends Base{
 			}
 
 		}
-		$result = self::writer($fileName,$header,$data);
+		$result = self::writer($fileName, $header, $data);
 		return json($result);
     }
 
@@ -54,16 +54,16 @@ class Export extends Base{
      * @param    array  $data   数据
      * @return
      */
-    private static function writer($fileName,$header,$data){
+    private static function writer($fileName, $header, $data){
 		$writer = new XLSXWriter();
 
 		$writer->writeSheetRow('Sheet1', $header, [
-			'font'=>'宋体',
-			'font-size'=>10,
-			'font-style'=>'bold',
-			'fill'=>'#eee',
-			'halign'=>'center',
-			'border'=>'left,right,top,bottom'
+			'font'       => '宋体',
+			'font-size'  => 10,
+			'font-style' => 'bold',
+			'fill'       => '#eee',
+			'halign'     => 'center',
+			'border'     => 'left,right,top,bottom'
 		]);
 		
 		foreach($data as $row){

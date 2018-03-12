@@ -87,10 +87,10 @@ class Common extends Base{
 			$data = $request->post();
 			# 验证数据
 			$validate = new Validate([
-				['id','require','抱歉缺少参数！'],
-				['username','require|unique:user|min:5','请输入管理账号！|抱歉，该账号已存在！|账号最少五位！'],
-				['password','min:6','密码最少六位！'],
-				['email','email','请输入正确的邮箱地址！']
+				['id', 'require', '抱歉缺少参数！'],
+				['username', 'require|unique:user|min:5', '请输入管理账号！|抱歉，该账号已存在！|账号最少五位！'],
+				['password', 'min:6', '密码最少六位！'],
+				['email', 'email', '请输入正确的邮箱地址！']
 			]);
 			if(!$validate->check($data)) {
 				return hui_redirect('Common/userSetup', [

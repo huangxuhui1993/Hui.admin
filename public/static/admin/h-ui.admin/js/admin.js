@@ -48,10 +48,10 @@ function run_time(){
     runTime = $('#run-time'),
     sendDate = (new Date()).getTime();
     $.ajax({
-        type:'GET',
-        url:'/static/runtime.json',
-        cache:false,
-        complete:function(xhr, data){
+        type: 'GET',
+        url: '/static/runtime.json',
+        cache: false,
+        complete: function(xhr, data){
             var receiveDate = (new Date()).getTime();
             if(data == 'success'){
                 var responseTimeMs = receiveDate - sendDate;
@@ -63,11 +63,11 @@ function run_time(){
                 }else{
                     runTimeBox.addClass('label-danger');
                 }
-                log('[' + xhr.status + '　' + xhr.statusText + '　' + responseTimeMs + 'ms]');
-                runTime.empty().text(responseTimeMs + '毫秒(MS)'); 
+                runTime.empty().html(responseTimeMs + '毫秒(MS)');
+
             }else{
                 runTimeBox.addClass('label-danger');
-                runTime.empty().text('服务器连接失败！'); 
+                runTime.empty().text('服务器连接失败！');
             }
         }
     });
@@ -158,9 +158,7 @@ function init_map(){
 
         // 地图查询
         auto = new AMap.Autocomplete({input: 'where'});
-        placeSearch = new AMap.PlaceSearch({ // 构造地点查询类
-            map: map
-        });
+        placeSearch = new AMap.PlaceSearch({map: map}); // 构造地点查询类
         AMap.event.addListener(auto, 'select', function(e){ // 注册监听，当选中某条记录时会触发
             placeSearch.setCity(e.poi.adcode);
             placeSearch.search(e.poi.name); // 关键字查询查询
@@ -190,7 +188,7 @@ function table_details(title, url){
 }
 
 // 查看图片
-function see_img(src,title){
+function see_img(src, title){
     layer.photos({
         photos: {
             "title": title,
@@ -250,7 +248,7 @@ function export_data(url, title, type){
 }
 
 // 回收站操作
-function recyclebin_operation(style,msg){
+function recyclebin_operation(style, msg){
     parent.layer.msg('确定要' + msg + '！', {
         time: 0,
         offset: '100px',
@@ -264,7 +262,7 @@ function recyclebin_operation(style,msg){
 }
 
 // 文档操作
-function document_operation(style,msg){
+function document_operation(style, msg){
     parent.layer.msg('确定要' + msg + '！', {
         time: 0,
         offset: '100px',
@@ -325,7 +323,7 @@ function prompt_window(msg, code){
 }
 
 // 跳转提示页面
-function prompt_html(url,code,msg,wait){
+function prompt_html(url, code, msg, wait){
     code = parseInt(code);
     wait = parseInt(wait);
     var interval = setInterval(function(){
@@ -431,14 +429,14 @@ function code_path(url){
 }
 
 // 模型验证器
-function models_path(url,file){
+function models_path(url, file){
     var str = encodeURIComponent(file);
     var file_path = url + '?path=' + str;
     code_window(file_path, '源代码：www/' + file, 2);
 }
 
 // 删除信息提示
-function delete_info(url,title){
+function delete_info(url, title){
     parent.layer.msg('您确定删除' + title + '？', {
         time: 0,
         offset: '100px',
@@ -526,14 +524,14 @@ function search(){
 }
 
 // 数据库统计图
-function db_statistical(val,src){
+function db_statistical(obj){
     parent.layer.open({
-        title: false,
+        title: $(obj).attr('title'),
         type: 1,
         closeBtn: 1,
-        area: ['800px', '410px'],
+        area: ['800px', '450px'],
         shadeClose: true,
-        content: '<img src="' + src + '">'
+        content: '<img src="' + $(obj).attr('alt') + '">'
     });
 }
 
@@ -562,7 +560,7 @@ function flashChecker(){
             }
         }
     }
-    return {f:hasFlash,v:flashVersion};
+    return {f:hasFlash, v:flashVersion};
 }
 
 // js获取当前时间
@@ -602,7 +600,7 @@ function reload_verify(className){
     if(verifyimg.indexOf('?') > 0){
         $('.' + className).attr('src', verifyimg + '&random=' + Math.random());
     }else{
-        $('.' + className).attr('src', verifyimg.replace(/\?.*$/,'') + '?' + Math.random());
+        $('.' + className).attr('src', verifyimg.replace(/\?.*$/, '') + '?' + Math.random());
     }
 }
 
