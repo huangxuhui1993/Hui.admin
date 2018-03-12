@@ -63,8 +63,7 @@ function run_time(){
                 }else{
                     runTimeBox.addClass('label-danger');
                 }
-                log(xhr.responseText);
-                log(responseTimeMs);
+                log('[' + xhr.status + '　' + xhr.statusText + '　' + responseTimeMs + 'ms]');
                 runTime.empty().text(responseTimeMs + '毫秒(MS)'); 
             }else{
                 runTimeBox.addClass('label-danger');
