@@ -1,5 +1,29 @@
 window.cookie_config = {expires:7, path:'/'};
 $(function(){
+
+    // console.log([
+    //     "                   _ooOoo_",
+    //     "                  o8888888o",
+    //     "                  88\" . \"88",
+    //     "                  (| -_- |)",
+    //     "                  O\\  =  /O",
+    //     "               ____/`---'\\____",
+    //     "             .'  \\\\|     |//  `.",
+    //     "            /  \\\\|||  :  |||//  \\",
+    //     "           /  _||||| -:- |||||-  \\",
+    //     "           |   | \\\\\\  -  /// |   |",
+    //     "           | \\_|  ''\\---/''  |   |",
+    //     "           \\  .-\\__  `-`  ___/-. /",
+    //     "         ___`. .'  /--.--\\  `. . __",
+    //     "      .\"\" '<  `.___\\_<|>_/___.'  >'\"\".",
+    //     "     | | :  `- \\`.;`\\ _ /`;.`/ - ` : | |",
+    //     "     \\  \\ `-.   \\_ __\\ /__ _/   .-` /  /",
+    //     "======`-.____`-.___\\_____/___.-`____.-'======",
+    //     "                   `=---='",
+    //     "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    //     "         佛祖保佑       永无BUG"
+    // ].join('\n'));
+
     // 全局配置参数
     laydate.skin('molv');
     $('.skin-minimal input').iCheck({
@@ -41,11 +65,15 @@ function sorting(url, obj){
     });
 }
 
+// 运行时间窗口
+function run_time_window(){
+    $("#run-time-modal").modal("show");
+}
+
 // 运行时间网络测试
 function run_time(){
     $('#plat-form').empty().text(navigator.platform); // 浏览器的操作系统平台
     var runTimeBox = $("#run-time-box"),
-    runTime = $('#run-time'),
     sendDate = (new Date()).getTime();
     $.ajax({
         type: 'GET',
@@ -63,11 +91,15 @@ function run_time(){
                 }else{
                     runTimeBox.addClass('label-danger');
                 }
-                runTime.empty().html(responseTimeMs + '毫秒(MS)');
+                $('#run-time').empty().html(responseTimeMs + '毫秒(ms)');
 
+                // 仪表盘统计图
+                $("#response_time_ms").val(responseTimeMs);
+                runTimeChartOption.series[0].data[0].value = $("#response_time_ms").val();
+                runTimeChart.setOption(runTimeChartOption, true);
             }else{
                 runTimeBox.addClass('label-danger');
-                runTime.empty().text('服务器连接失败！');
+                $('#run-time').empty().text('服务器连接失败！');
             }
         }
     });

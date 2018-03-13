@@ -38,12 +38,48 @@
 
 {tag:adminjs /}
 
+<!-- 请求响应速度S -->
+<div id="run-time-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content radius">
+			<div class="modal-header">
+				<h3 class="modal-title">请求响应速度</h3>
+				<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+			</div>
+			<div class="modal-body" id="run-time-main" style="width:600px;height:420px;"></div>
+		</div>
+	</div>
+</div>
+<input type="hidden" name="response_time_ms" id="response_time_ms"/>
+<!-- 请求响应速度E -->
+
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="__ADMIN__/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
 <script type="text/javascript" src="__ROOT__/js/timerHandler/jquery.timerHandler.min.js"></script>
-<script src="__ROOT__/js/screenlog.min.js"></script>
+<script src="__ROOT__/js/echarts/echarts.min.js"></script>
+
 <script type="text/javascript">
+// 基于准备好的dom，初始化echarts实例
+var runTimeChart = echarts.init(document.getElementById('run-time-main'));
+// 指定图表的配置项和数据
+var runTimeChartOption = {
+    tooltip : {formatter: "{a} <br/>{b} : {c}%"},
+    toolbox: {
+        feature: {
+            restore: {},
+            saveAsImage: {}
+        }
+    },
+    series: [{
+            name: '请求响应速度',
+            type: 'gauge',
+            detail: {formatter:'{value}ms'},
+            data: [{value: 50, name: '速度毫秒(ms)'}]
+	}]
+};
+
 $(function(){
+
 	// 初始化页面
 	initialize_page();
 	$("body").Huitab({
@@ -53,37 +89,13 @@ $(function(){
 		index:0,
 	});
 
-	// screenLog.init();
-
-	// console.log([
-	//     "                   _ooOoo_",
-	//     "                  o8888888o",
-	//     "                  88\" . \"88",
-	//     "                  (| -_- |)",
-	//     "                  O\\  =  /O",
-	//     "               ____/`---'\\____",
-	//     "             .'  \\\\|     |//  `.",
-	//     "            /  \\\\|||  :  |||//  \\",
-	//     "           /  _||||| -:- |||||-  \\",
-	//     "           |   | \\\\\\  -  /// |   |",
-	//     "           | \\_|  ''\\---/''  |   |",
-	//     "           \\  .-\\__  `-`  ___/-. /",
-	//     "         ___`. .'  /--.--\\  `. . __",
-	//     "      .\"\" '<  `.___\\_<|>_/___.'  >'\"\".",
-	//     "     | | :  `- \\`.;`\\ _ /`;.`/ - ` : | |",
-	//     "     \\  \\ `-.   \\_ __\\ /__ _/   .-` /  /",
-	//     "======`-.____`-.___\\_____/___.-`____.-'======",
-	//     "                   `=---='",
-	//     "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
-	//     "         佛祖保佑       永无BUG"
-	// ].join('\n'));
-
 	// 运行时间
 	run_time();
 	var RunTime = $.timerHandler('RunTime').time('10s').call(function(count) {
 		run_time();
 	}).start();
 });
+
 </script>
 </body>
 </html>
