@@ -94,8 +94,7 @@ function run_time(){
                 $('#run-time').empty().html(responseTimeMs + '毫秒(ms)');
 
                 // 仪表盘统计图
-                $("#response_time_ms").val(responseTimeMs);
-                runTimeChartOption.series[0].data[0].value = $("#response_time_ms").val();
+                runTimeChartOption.series[0].data[0].value = responseTimeMs;
                 runTimeChart.setOption(runTimeChartOption, true);
             }else{
                 runTimeBox.addClass('label-danger');

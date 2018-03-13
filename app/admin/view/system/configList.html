@@ -62,7 +62,7 @@
                     <td class="width-50">
 
                     	{if condition="get_auth('System/sorting')"}
-	                		<input type="text" value="{$vo.sort}" alt="{$vo.id}" onchange="sorting('{:url('System/sorting')}', this)" class="text-c input-text radius">
+	                		<input type="number" value="{$vo.sort}" alt="{$vo.id}" onchange="sorting('{:url('System/sorting')}', this)" class="text-c input-text radius">
 	                	{else/}
 	                		{$vo.sort}
 	                	{/if}

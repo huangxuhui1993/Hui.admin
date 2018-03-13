@@ -50,7 +50,6 @@
 		</div>
 	</div>
 </div>
-<input type="hidden" name="response_time_ms" id="response_time_ms"/>
 <!-- 请求响应速度E -->
 
 <!--请在下方写此页面业务相关的脚本-->
@@ -59,9 +58,9 @@
 <script src="__ROOT__/js/echarts/echarts.min.js"></script>
 
 <script type="text/javascript">
-// 基于准备好的dom，初始化echarts实例
+// 初始化echarts实例
 var runTimeChart = echarts.init(document.getElementById('run-time-main'));
-// 指定图表的配置项和数据
+// 配置项和数据
 var runTimeChartOption = {
     tooltip : {formatter: "{a} <br/>{b} : {c}%"},
     toolbox: {
@@ -74,7 +73,10 @@ var runTimeChartOption = {
             name: '请求响应速度',
             type: 'gauge',
             detail: {formatter:'{value}ms'},
-            data: [{value: 50, name: '速度毫秒(ms)'}]
+            data: [{
+            	value: 0, 
+            	name: '速度毫秒(ms)'
+            }]
 	}]
 };
 
