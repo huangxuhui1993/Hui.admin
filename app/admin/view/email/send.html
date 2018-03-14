@@ -58,7 +58,7 @@
 $(document).ready(function(){
 	// 百度编辑器
     window.UEDITOR_HOME_URL = "__ADMIN__/lib/Ueditor/";
-    var Ueditor = UE.getEditor('content',{
+    var Ueditor = UE.getEditor('content', {
         initialFrameHeight: 250,
         initialFrameWidth: 670,
         autoFloatEnabled: false,
@@ -90,6 +90,12 @@ $(document).ready(function(){
 						layer.msg('邮件发送成功!');
 						$("#title").val("");
 						Ueditor.setContent('');
+
+						// 发送邮件操作
+						log(result.data);
+				        $.post("{:url('Email/sendMailer')}", result.data, function(data){
+				            log(data);
+				        });
 					}else{
 						layer.msg(result.msg);
 					}

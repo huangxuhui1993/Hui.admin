@@ -59,7 +59,7 @@
 	                    <td>{$vo.cid|get_channel_name}</td>
 	                    <td>{$vo.cid|get_channel_model_name}</td>
 	                    <td>{$vo.hits}</td>
-	                    <td>{$vo.uid|get_username}</td>
+	                    <td>{:get_user_info($vo['uid'])['username']}</td>
 	                    <td>{$vo.create_time}</td>
 					</tr>
 				{/volist}

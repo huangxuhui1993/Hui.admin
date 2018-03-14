@@ -138,7 +138,7 @@ function email_edit(url, id){
 
 // 选择邮箱窗口
 function select_email_window(url){
-    layer_open(url, '邮箱列表', 900, 500, 0.01, false);
+    layer_open(url, '邮箱列表', 850, 500, 0.01, true);
 }
 
 // 发送邮件窗口

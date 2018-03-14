@@ -56,12 +56,12 @@
                     <td>{:get_user_info($vo.uid)['username']}</td>
                     <td align="center">{:date('Y-m-d H:i:s',$vo['create_time'])}</td>
                     <td class="f-14">
-                        <a title="恢复备份" href="" data-toggle="tooltip" data-placement="top">
+                        <a title="恢复备份" href="" class="btn btn-success radius" data-toggle="tooltip" data-placement="top">
 	                    	<i class="Hui-iconfont">&#xe645;</i>
 	                    </a>
 
 	                    {if condition="get_auth('Dbmanage/delSql')"}
-		                    <a title="删除备份" href="javascript:;" onclick="delete_info('{:url('Dbmanage/delSql', ['id' => $vo['id']])}','备份文件')" class="ml-15" data-toggle="tooltip" data-placement="top">
+		                    <a title="删除备份" href="javascript:;" onclick="delete_info('{:url('Dbmanage/delSql', ['id' => $vo['id']])}','备份文件')" class="btn btn-danger radius" data-toggle="tooltip" data-placement="top">
 		                    	<i class="Hui-iconfont">&#xe6e2;</i>
 		                    </a>
 	                    {/if}

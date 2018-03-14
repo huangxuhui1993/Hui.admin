@@ -102,13 +102,12 @@ class Email extends Base{
 	}
 
     /**
-     * send 发送邮件
+     * send 发送邮件页面
      * @param  Request $request 请求信息
      * @return json
      */
 	public function send(Request $request){
         if($request->isAjax()){
-        	$db = Db::name('email');
 
             $form = $request->post();
 			$data = remove_array_spaces($form);
@@ -119,49 +118,47 @@ class Email extends Base{
                 ['title', 'require', '邮件标题为空!'],
                 ['content', 'require', '邮件内容为空!'],
             ]);
-            if(!$validate->check($data)) {
-                return json([
-                	'error' => 1,
-                	'msg' => $validate->getError()
-                ]);
+            if(!$validate->check($data)){
+                return json(['error' => 1, 'msg' => $validate->getError()]);
             }else{
-
-            	$file = isset($data['aid']) && is_numeric($data['aid']) ? '.' . get_file_url($data['aid'], '', false) : null;
-            	
-            	$list = $db->where('id', 'in', $data['emails'])->select();
-
-            	if($list){
-            		$emails = [];
-            		foreach($list as $key => $value){
-            			$emails[] = $value['email'];
-            		}
-
-					try{
-						send_mailer([
-							'title'   => $data['title'],
-							'content' => $data['content'],
-							'email'   => $emails,
-							'file'    => $file
-						]);
-						add_logs('发送邮件', 1);
-						return json(['error' => 0]);
-					}catch(Exception $e) {
-						add_logs('发送邮件：' . $e->getMessage(), 0);
-						return json([
-							'error' => 1,
-							'msg' => $e->getMessage()
-						]);
-					}
-            	}else{
-            		return json([
-            			'error' => 1,
-            			'msg' => '请选择邮箱！'
-            		]);
-            	}
+            	return json(['error' => 0, 'data' => $data]);
             }
         }else{
             return $this->fetch();
         }
+	}
+
+	// 发送邮件操作
+	public function sendMailer(Request $request){
+		$data = $request->post();
+    	$db = Db::name('email');
+
+    	$file = isset($data['aid']) && is_numeric($data['aid']) ? '.' . get_file_url($data['aid'], '', false) : null;
+    	
+    	$list = $db->where('id', 'in', $data['emails'])->select();
+
+    	if($list){
+    		$emails = [];
+    		foreach($list as $key => $value){
+    			$emails[] = $value['email'];
+    		}
+
+			try{
+				send_mailer([
+					'title'   => $data['title'],
+					'content' => $data['content'],
+					'email'   => $emails,
+					'file'    => $file
+				]);
+				add_logs('发送邮件', 1);
+				return json(['error' => 0]);
+			}catch(Exception $e) {
+				add_logs('发送邮件：' . $e->getMessage(), 0);
+				return json(['error' => 1, 'msg' => $e->getMessage()]);
+			}
+    	}else{
+    		return json(['error' => 1, 'msg' => '请选择邮箱！']);
+    	}
 	}
 
 }

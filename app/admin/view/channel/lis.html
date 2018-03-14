@@ -56,7 +56,7 @@
                     <td class="text-c f-14">
 
                     	{if condition="get_auth('Channel/channelStatus')"}
-							<a onclick="setup_status('{:url('Channel/channelStatus',['id'=>$vo['id'],'status'=>$vo['status']['2']])}','{$vo.status.2}')" href="javascript:;" title="状态" data-toggle="tooltip" data-placement="top">
+							<a title="状态" href="javascript:;" onclick="setup_status('{:url('Channel/channelStatus', ['id' => $vo['id'], 'status' => $vo['status']['2']])}', '{$vo.status.2}')" class="btn btn-default radius" data-toggle="tooltip" data-placement="top">
 								{eq name="vo.status.2" value="1"}
 									<i class="Hui-iconfont">&#xe631;</i>
 								{else /}
@@ -66,13 +66,13 @@
 						{/if}
 
 						{if condition="get_auth('Channel/edit')"}
-							<a title="编辑" href="{:url('Channel/edit',['id'=>$vo['id']])}" class="ml-15" data-toggle="tooltip" data-placement="top">
+							<a title="编辑" href="{:url('Channel/edit', ['id'=>$vo['id']])}" class="btn btn-primary radius" data-toggle="tooltip" data-placement="top">
 								<i class="Hui-iconfont">&#xe6df;</i>
 							</a>
 						{/if}
 
 						{if condition="get_auth('Channel/del')"}
-							<a title="删除" href="javascript:;" onclick="delete_info('{:url('Channel/del',['id'=>$vo['id']])}','栏目')" class="ml-15" data-toggle="tooltip" data-placement="top">
+							<a title="删除" href="javascript:;" onclick="delete_info('{:url('Channel/del', ['id' => $vo['id']])}', '栏目')" class="btn btn-danger radius" data-toggle="tooltip" data-placement="top">
 								<i class="Hui-iconfont">&#xe6e2;</i>
 							</a>
 						{/if}

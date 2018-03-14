@@ -18,68 +18,30 @@ class Index extends Base{
 	}
 
 	public function welcome(){
-		$this->assign('access_list', self::accessData()); 		// 访问统计数据
 
-		$this->assign('source_list', self::sourceData());		// 访问来源统计数据
+		// 文档数量
+		$document_count = Db::name('document')->count();
+		$this->assign('document_count', $document_count);
 
-		$this->assign('document_list', self::documentData());	// 文档统计数据
+		// 文件数量
+		$file_count = Db::name('attach')->count();
+		$this->assign('file_count', $file_count);
 
-		$this->assign('map_list', self::mapData());				// 地图统计数据
+		// 用户数量
+		$user_count = Db::name('user')->count();
+		$this->assign('user_count', $user_count);
 
-		$this->assign('server_list', self::serverData());		// 服务器环境
+		// 日志数量
+		$logs_count = Db::name('logs')->count();
+		$this->assign('logs_count', $logs_count);
+
+		$this->assign('server_list', $this->serverData()); // 服务器环境
 
 		return $this->fetch();
 	}
 
-	# 访问统计数据
-	static private function accessData(){
-		return [
-			'x' => '["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"]',
-			'y' => '[10,20,15,25,20,40,35,20,15,25,20,40]'
-		];
-	}
-
-	# 访问来源统计数据
-	static private function sourceData(){
-		return [
-			'source' => "['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']",
-			'value' => "[
-	            {value:335, name:'直接访问'},
-	            {value:310, name:'邮件营销'},
-	            {value:234, name:'联盟广告'},
-	            {value:135, name:'视频广告'},
-	            {value:1548, name:'搜索引擎'}
-        	]"
-		];
-	}
-
-	# 文档统计数据
-	static private function documentData(){
-		return [
-			'x' => '["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"]',
-			'y' => '[8,10,15,9,15,20,12,10,18,10,15,12]'
-		];
-	}	
-
-	# 地图统计数据
-	static private function mapData(){
-		$map = Db::name('map_statistics');
-		$result = $map->select();
-		foreach($result as $value){
-			$arr[] = [
-		        'name' => $value['province'], 
-		        'value' => $value['count'] 
-		    ];
-		}
-		return [
-			'min' => $map->min('count'),
-			'max' => $map->max('count'),
-			'map' => json_encode($arr)
-		];
-	}
-
 	# 服务器环境
-	static private function serverData(){
+	private function serverData(){
 		return [
 			0  => [
 				'name' => '系统类型及版本号',

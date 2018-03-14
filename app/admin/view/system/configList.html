@@ -71,13 +71,13 @@
 					<td class="f-14">
 
 						{if condition="get_auth('System/edit')"}
-							<a title="编辑" href="{:url('System/edit', ['id' => $vo['id']])}" data-toggle="tooltip" data-placement="top">
+							<a title="编辑" href="{:url('System/edit', ['id' => $vo['id']])}" class="btn btn-primary radius" data-toggle="tooltip" data-placement="top">
 								<i class="Hui-iconfont">&#xe6df;</i>
 							</a>
 						{/if}
 
 						{if condition="get_auth('System/del')"}
-							<a title="删除" href="javascript:;" onclick="delete_info('{:url('System/del', ['id' => $vo['id']])}','配置项')" class="ml-15" data-toggle="tooltip" data-placement="top">
+							<a title="删除" href="javascript:;" onclick="delete_info('{:url('System/del', ['id' => $vo['id']])}','配置项')" class="btn btn-danger radius" data-toggle="tooltip" data-placement="top">
 								<i class="Hui-iconfont">&#xe6e2;</i>
 							</a>
 						{/if}

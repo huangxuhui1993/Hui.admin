@@ -97,7 +97,7 @@
 	                    <td class="f-14">
 
 	                    	{if condition="get_auth('Document/documentStatus')"}
-								<a onclick="setup_status('{:url('Document/documentStatus', ['id' => $vo['id'], 'status' => $vo['status']['2']])}', '{$vo.status.2}')" href="javascript:;" title="状态" data-toggle="tooltip" data-placement="top">
+								<a title="状态" href="javascript:;" onclick="setup_status('{:url('Document/documentStatus', ['id' => $vo['id'], 'status' => $vo['status']['2']])}', '{$vo.status.2}')" class="btn btn-default radius" data-toggle="tooltip" data-placement="top">
 									{eq name="vo.status.2" value="1"}
 										<i class="Hui-iconfont">&#xe631;</i>
 									{else /}
@@ -107,7 +107,7 @@
 							{/if}
 
 							{if condition="get_auth('Document/editform')"}
-								<a title="编辑" href="{:url('Document/editform', ['cid' => $vo['cid'], 'id' => $vo['id']])}" class="ml-15" data-toggle="tooltip" data-placement="top">
+								<a title="编辑" href="{:url('Document/editform', ['cid' => $vo['cid'], 'id' => $vo['id']])}" class="btn btn-primary radius" data-toggle="tooltip" data-placement="top">
 									<i class="Hui-iconfont">&#xe6df;</i>
 								</a>
 							{/if}

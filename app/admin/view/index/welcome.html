@@ -5,35 +5,88 @@
 <body>
 <div class="page-container">
 
-	<div class="panel panel-default">
+	<div class="row cl">
+
+		<div class="col-lg-3 col-xs-6 mt-10">
+			<div class="panel panel-secondary radius">
+				<div class="panel-header">
+					文档数量 <i class="Hui-iconfont">&#xe616;</i>
+				</div>
+				<div class="panel-body">
+					<p class="text-c f-24">{$document_count}条</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-3 col-xs-6 mt-10">
+			<div class="panel panel-success radius">
+				<div class="panel-header">
+					文件数量 <i class="Hui-iconfont">&#xe63e;</i>
+				</div>
+				<div class="panel-body">
+					<p class="text-c f-24">{$file_count}个</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-3 col-xs-6 mt-10">
+			<div class="panel panel-warning radius">
+				<div class="panel-header">
+					用户数量 <i class="Hui-iconfont">&#xe62c;</i>
+				</div>
+				<div class="panel-body">
+					<p class="text-c f-24">{$user_count}个</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-3 col-xs-6 mt-10">
+			<div class="panel panel-danger radius">
+				<div class="panel-header">
+					日志数量 <i class="Hui-iconfont">&#xe623;</i>
+				</div>
+				<div class="panel-body">
+					<p class="text-c f-24">{$logs_count}条</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="panel panel-default mt-20">
 		<div class="panel-body">
-			<p class="f-20 text-success">欢迎使用Hui.admin v1.0管理系统！</p>
 			<p><i class="Hui-iconfont">&#xe690;</i> 运行时间：{:site_run_time()}</p>
 			<p><i class="Hui-iconfont">&#xe668;</i> {:time_tips()}</p>
 			<p><i class="Hui-iconfont">&#xe671;</i> 上次登录IP：{$session_loginip}　　<i class="Hui-iconfont">&#xe606;</i> 上次登录时间：{:date('Y-m-d H:i:s', $session_logintime)}　　<i class="Hui-iconfont">&#xe64b;</i> 登录次数：{:get_user_info($session_uid)['loginnumber']}</p>
 		</div>
 	</div>
 
-	<table class="table table-border table-bordered table-bg mt-20 radius">
-		<thead>
-			<tr class="success">
-				<th colspan="2" scope="col"><i class="Hui-iconfont">&#xe64f;</i> 服务器信息</th>
-			</tr>
-		</thead>
-		<tbody>
-		{volist name="server_list" id="vo"}
-			<tr>
-				<td>{$vo.name}</td>
-				<td><span class="label label-secondary radius">{$vo.val}</span></td>
-			</tr>
-		{/volist}
-		</tbody>
-	</table>
+	<div class="row cl mt-20">
+		<div class="col-lg-12 col-xs-12">
+			<table class="table table-border table-bordered table-bg radius">
+				<thead>
+					<tr class="success">
+						<th colspan="2" scope="col"><i class="Hui-iconfont">&#xe64f;</i> 服务器信息</th>
+					</tr>
+				</thead>
+				<tbody>
+				{volist name="server_list" id="vo"}
+					<tr>
+						<td>{$vo.name}</td>
+						<td><span class="label label-secondary radius">{$vo.val}</span></td>
+					</tr>
+				{/volist}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
 </div>
+
 <footer class="footer mt-20">
 	<div class="container">
-		<p>本后台系统由<a href="http://www.h-ui.net/" target="_blank" title="H-ui前端框架">H-ui前端框架</a>提供前端技术支持</p>
+		<p>本后台系统由<a href="javascript:;" title="H-ui前端框架">H-ui前端框架</a>提供前端技术支持</p>
 	</div>
 </footer>
+
 </body>
 </html>
