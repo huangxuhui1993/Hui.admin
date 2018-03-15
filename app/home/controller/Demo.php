@@ -5,8 +5,16 @@ use think\Config;
 use think\Request;
 use think\Controller;
 use org\util\HttpCurl;
+use think\Cache;
 
 class Demo extends Controller{
+
+	public function test(){
+		echo phpinfo();
+
+		// Cache::store('redis')->set('name', 'hui', 3600);
+		// Cache::get('name');
+	}
 
 	public function pjax(){
 		return $this->fetch();
